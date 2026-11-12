@@ -1,0 +1,1392 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZiminStore</title>
+<meta name="description" content="ZiminStore: semakan similarity Turnitin untuk pelajar. RM3.50 setiap dokumen, laporan PDF.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: circuit-board hero with a glass order console, then pricing calculator, five-step flow, features, FAQ, contact band, footer. Single dark theme by design. */
+:root{
+  color-scheme: dark;
+  --bg:#050B1A;
+  --bg-2:#081330;
+  --navy:#0D1D42;
+  --blue:#2F6BFF;
+  --blue-2:#4D85FF;
+  --cyan:#22D3EE;
+  --gold:#F2B84B;
+  --gold-2:#FFD98A;
+  --text:#EAF1FF;
+  --muted:#97A8CC;
+  --dim:#6578A3;
+  --line:rgba(130,165,255,.16);
+  --line-2:rgba(130,165,255,.28);
+  --glass:rgba(14,30,68,.52);
+  --glass-2:rgba(20,42,92,.42);
+  --ok:#3DDC97;
+  --warn:#FF7A7A;
+
+  --f-display:"Unbounded","Manrope",system-ui,sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+
+  --r-lg:22px; --r-md:16px; --r-sm:11px;
+  --max:1180px;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--f-body);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+a{color:inherit}
+h1,h2,h3{font-family:var(--f-display);line-height:1.12;margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
+.wrap{max-width:var(--max);margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* ---------- NAV ---------- */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(5,11,26,.72);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border-bottom-color:var(--line)}
+.nav-in{display:flex;align-items:center;gap:20px;height:74px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0}
+.brand svg{width:40px;height:40px}
+.brand-txt{display:flex;flex-direction:column;line-height:1}
+.wordmark{font-family:var(--f-display);font-weight:800;font-size:17px;letter-spacing:.02em;display:inline-block;transform:skewX(-8deg)}
+.wordmark b{font-weight:800;background:linear-gradient(90deg,var(--blue-2),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand-tag{font-size:8.5px;letter-spacing:.28em;color:var(--gold);font-weight:700;margin-top:5px}
+.nav-links{display:flex;gap:4px;margin-left:auto}
+.nav-links a{text-decoration:none;font-size:14px;font-weight:600;color:var(--muted);padding:8px 12px;border-radius:10px;transition:color .2s,background .2s}
+.nav-links a:hover{color:var(--text);background:rgba(130,165,255,.08)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.lang{display:flex;border:1px solid var(--line-2);border-radius:999px;padding:3px;background:rgba(8,19,48,.6)}
+.lang button{all:unset;cursor:pointer;font-size:11px;font-weight:800;letter-spacing:.08em;padding:5px 9px;border-radius:999px;color:var(--dim)}
+.lang button[aria-pressed="true"]{background:var(--blue);color:#fff}
+.lang button:focus-visible{outline:2px solid var(--cyan)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  font:700 14.5px/1 var(--f-body);text-decoration:none;cursor:pointer;
+  padding:13px 20px;border-radius:12px;border:1px solid transparent;
+  transition:transform .2s var(--ease),box-shadow .25s,background .2s,border-color .2s;white-space:nowrap;
+}
+.btn svg{width:17px;height:17px}
+.btn-primary{background:linear-gradient(180deg,#3B78FF,#2559E8);color:#fff;box-shadow:0 8px 26px -8px rgba(47,107,255,.75),inset 0 1px 0 rgba(255,255,255,.22)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px -8px rgba(47,107,255,.9),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-ghost{background:rgba(20,42,92,.35);border-color:var(--line-2);color:var(--text)}
+.btn-ghost:hover{border-color:rgba(34,211,238,.55);background:rgba(20,42,92,.6)}
+.btn-gold{background:linear-gradient(180deg,var(--gold-2),var(--gold));color:#1A1203;box-shadow:0 10px 28px -10px rgba(242,184,75,.7)}
+.btn-gold:hover{transform:translateY(-2px)}
+.btn-sm{padding:10px 15px;font-size:13.5px}
+.burger{all:unset;display:none;cursor:pointer;width:42px;height:42px;border-radius:12px;border:1px solid var(--line-2);place-items:center}
+.burger span,.burger span::before,.burger span::after{display:block;width:18px;height:2px;background:var(--text);border-radius:2px;position:relative;transition:transform .25s,opacity .2s}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0}
+.burger span::before{top:-6px}.burger span::after{top:6px}
+.nav.open .burger span{background:transparent}
+.nav.open .burger span::before{transform:translateY(6px) rotate(45deg)}
+.nav.open .burger span::after{transform:translateY(-6px) rotate(-45deg)}
+.mobile-menu{display:none}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;overflow:hidden;margin-top:-75px;padding-top:75px}
+#circuit{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.hero::after{content:"";position:absolute;inset:auto 0 0;height:180px;background:linear-gradient(transparent,var(--bg));z-index:1;pointer-events:none}
+.glow{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.glow.g1{width:520px;height:520px;background:rgba(47,107,255,.32);top:-120px;right:-80px}
+.glow.g2{width:380px;height:380px;background:rgba(34,211,238,.16);bottom:40px;left:-140px}
+.hero-in{position:relative;z-index:2;display:grid;grid-template-columns:1.08fr .92fr;gap:56px;align-items:center;padding-block:72px 110px}
+.hero-copy{min-width:0}
+.chip{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;color:#CFE0FF;padding:7px 14px 7px 8px;border-radius:999px;background:rgba(20,42,92,.55);border:1px solid var(--line-2);backdrop-filter:blur(8px)}
+.chip i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:rgba(34,211,238,.16)}
+.chip i::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:blink 2.4s infinite}
+@keyframes blink{50%{opacity:.35}}
+.hero h1{font-size:clamp(34px,5.2vw,62px);font-weight:700;margin-top:22px}
+.hero h1 .hl{background:linear-gradient(92deg,#5C93FF 10%,var(--cyan) 90%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{font-size:clamp(16px,1.6vw,18px);color:var(--muted);max-width:52ch;margin-top:20px}
+.price-strip{display:flex;align-items:center;gap:18px;margin-top:30px;flex-wrap:wrap}
+.price-big{display:flex;align-items:baseline;gap:6px;padding:12px 18px;border-radius:16px;background:linear-gradient(135deg,rgba(242,184,75,.16),rgba(242,184,75,.04));border:1px solid rgba(242,184,75,.45)}
+.price-big .rm{font-family:var(--f-display);font-size:15px;color:var(--gold);font-weight:700}
+.price-big .amt{font-family:var(--f-display);font-size:34px;font-weight:800;color:var(--gold-2);line-height:1}
+.price-big .per{font-size:13px;color:#E9D3A6;font-weight:600}
+.price-note{font-size:13.5px;color:var(--muted);line-height:1.45}
+.price-note strong{color:var(--text);display:block;font-size:14.5px}
+.hero-cta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+.hero-cta .btn{padding:15px 24px;font-size:15px}
+
+/* order console */
+.console-wrap{position:relative;perspective:1400px;min-width:0}
+.console{
+  position:relative;border-radius:var(--r-lg);padding:22px;
+  background:linear-gradient(160deg,rgba(26,52,112,.62),rgba(9,20,48,.7));
+  border:1px solid var(--line-2);
+  backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.03) inset,0 0 60px -20px rgba(47,107,255,.5);
+  transform:rotateY(-9deg) rotateX(5deg);transform-style:preserve-3d;transition:transform .6s var(--ease);
+}
+.console-wrap:hover .console{transform:rotateY(-3deg) rotateX(2deg)}
+.console::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(140deg,rgba(34,211,238,.7),transparent 35%,transparent 65%,rgba(242,184,75,.6));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.c-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.c-title{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.c-id{font-family:var(--f-mono);font-size:19px;color:var(--text);margin-top:4px;font-weight:600}
+.sample{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px dashed rgba(242,184,75,.55);padding:5px 9px;border-radius:8px;white-space:nowrap}
+.files{display:grid;gap:9px;margin-top:18px}
+.file{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:13px;background:rgba(5,11,26,.45);border:1px solid var(--line)}
+.ficon{width:36px;height:40px;border-radius:7px;display:grid;place-items:center;font:800 9.5px var(--f-mono);letter-spacing:.04em;flex-shrink:0;position:relative}
+.ficon.pdf{background:linear-gradient(160deg,#FF6B6B,#C93445);color:#fff}
+.ficon.doc{background:linear-gradient(160deg,#4D85FF,#2148C9);color:#fff}
+.fmeta{min-width:0;flex:1}
+.fname{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fsub{font-size:11.5px;color:var(--dim)}
+.fprice{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.c-total{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding:14px 4px 4px;border-top:1px dashed var(--line-2)}
+.c-total span{font-size:13px;color:var(--muted)}
+.c-total strong{font-family:var(--f-display);font-size:22px;color:var(--gold-2)}
+.track{list-style:none;margin:16px 0 0;padding:16px;border-radius:14px;background:rgba(5,11,26,.5);border:1px solid var(--line);display:grid;gap:12px}
+.track li{display:grid;grid-template-columns:22px 1fr auto;gap:11px;align-items:center;font-size:13.5px;position:relative}
+.track li::before{content:"";position:absolute;left:10px;top:22px;width:2px;height:16px;background:var(--line-2)}
+.track li:last-child::before{display:none}
+.track li.done::before{background:var(--cyan)}
+.dot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--line-2);background:var(--bg)}
+.done .dot{border-color:var(--cyan);background:rgba(34,211,238,.15)}
+.done .dot::after{content:"";width:8px;height:5px;border-left:2px solid var(--cyan);border-bottom:2px solid var(--cyan);transform:rotate(-45deg) translate(1px,-1px)}
+.active .dot{border-color:var(--blue-2)}
+.active .dot::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--blue-2);box-shadow:0 0 12px var(--blue-2);animation:blink 1.4s infinite}
+.track .lbl{font-weight:600}
+.track li:not(.done):not(.active) .lbl{color:var(--dim)}
+.track .t{font-size:11px;color:var(--dim);font-family:var(--f-mono)}
+.badge-float{position:absolute;border-radius:14px;padding:10px 14px;font-weight:800;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:float 6s ease-in-out infinite}
+.bf-1{top:-18px;right:-14px;background:rgba(242,184,75,.15);border:1px solid rgba(242,184,75,.5);color:var(--gold-2);font-family:var(--f-display);font-size:14px}
+.bf-2{bottom:-20px;left:28px;background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.45);color:#B9F3FF;font-size:12.5px;display:flex;align-items:center;gap:8px;animation-delay:-3s}
+.bf-2 svg{width:16px;height:16px}
+@keyframes float{50%{transform:translateY(-10px)}}
+
+/* trust bar */
+.trust{position:relative;z-index:2;margin-top:-56px}
+.trust-in{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:var(--r-lg);background:rgba(10,22,52,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);overflow:hidden}
+.trust-item{display:flex;gap:13px;align-items:center;padding:20px 22px;min-width:0}
+.trust-item+.trust-item{border-left:1px solid var(--line)}
+.ti-ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;background:rgba(47,107,255,.14);color:var(--blue-2)}
+.ti-ic svg{width:20px;height:20px}
+.trust-item strong{display:block;font-size:14.5px}
+.trust-item span{font-size:12.5px;color:var(--muted)}
+
+/* ---------- SECTIONS ---------- */
+section.block{padding-block:110px 0}
+.kicker{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan)}
+.kicker::before{content:"";width:26px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--cyan))}
+.sec-head{max-width:720px}
+.sec-head h2{font-size:clamp(27px,3.6vw,42px);font-weight:700;margin-top:16px}
+.sec-head p{color:var(--muted);font-size:17px;margin-top:16px;max-width:60ch}
+.center{text-align:center;margin-inline:auto}
+.center p{margin-inline:auto}
+
+/* pricing */
+.pricing{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;margin-top:52px;align-items:stretch}
+.card{border-radius:var(--r-lg);border:1px solid var(--line);background:linear-gradient(170deg,var(--glass-2),rgba(8,19,48,.55));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);min-width:0}
+.price-card{padding:38px;position:relative;overflow:hidden;border-color:rgba(242,184,75,.35)}
+.price-card::after{content:"";position:absolute;width:340px;height:340px;right:-120px;top:-140px;border-radius:50%;background:radial-gradient(circle,rgba(242,184,75,.22),transparent 65%)}
+.pc-label{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.pc-name{font-family:var(--f-display);font-size:22px;font-weight:600;margin-top:12px}
+.pc-price{display:flex;align-items:baseline;gap:8px;margin-top:22px}
+.pc-price .rm{font-family:var(--f-display);font-size:26px;font-weight:700;color:var(--gold)}
+.pc-price .amt{font-family:var(--f-display);font-size:clamp(64px,9vw,96px);font-weight:800;line-height:.9;background:linear-gradient(180deg,#FFE7B0,var(--gold) 70%,#C98E22);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pc-price .per{font-size:16px;color:var(--muted);font-weight:600}
+.incl{list-style:none;padding:0;margin:28px 0 0;display:grid;gap:13px}
+.incl li{display:flex;gap:12px;align-items:flex-start;font-size:15px}
+.incl li svg{width:20px;height:20px;flex-shrink:0;color:var(--cyan);margin-top:2px}
+.calc{padding:34px;display:flex;flex-direction:column}
+.calc h3{font-size:19px;font-weight:600}
+.calc > p{color:var(--muted);font-size:14.5px;margin-top:8px}
+.stepper{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:26px;padding:12px;border-radius:16px;background:rgba(5,11,26,.55);border:1px solid var(--line)}
+.stepper label{font-size:14px;font-weight:700;padding-left:8px}
+.stp{display:flex;align-items:center;gap:6px}
+.stp button{all:unset;cursor:pointer;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(47,107,255,.16);border:1px solid rgba(47,107,255,.35);color:#CFE0FF;transition:background .2s}
+.stp button:hover{background:rgba(47,107,255,.32)}
+.stp button:focus-visible{outline:2px solid var(--cyan)}
+.stp button:disabled{opacity:.35;cursor:not-allowed}
+.stp button svg{width:16px;height:16px}
+.stp input{width:62px;height:42px;text-align:center;font:700 20px var(--f-mono);color:var(--text);background:transparent;border:0;-moz-appearance:textfield;appearance:textfield}
+.stp input::-webkit-inner-spin-button,.stp input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.breakdown{margin-top:18px;display:grid;gap:10px;font-size:14px}
+.breakdown div{display:flex;justify-content:space-between;color:var(--muted)}
+.breakdown .mono{color:var(--text)}
+.total-row{margin-top:auto;padding-top:22px}
+.total-box{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 20px;border-radius:16px;background:linear-gradient(120deg,rgba(47,107,255,.22),rgba(34,211,238,.1));border:1px solid rgba(77,133,255,.45)}
+.total-box span{font-size:13.5px;font-weight:700;color:#CFE0FF}
+.total-box strong{font-family:var(--f-display);font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.calc .btn{width:100%;margin-top:14px;padding:15px}
+.calc .small{font-size:12.5px;color:var(--dim);margin-top:12px;text-align:center}
+
+/* steps */
+.steps{list-style:none;padding:0;margin:56px 0 0;display:grid;grid-template-columns:repeat(5,1fr);gap:16px;position:relative;counter-reset:s}
+.steps::before{content:"";position:absolute;top:36px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--gold));opacity:.5}
+.step{position:relative;padding:0 6px;text-align:center;min-width:0}
+.s-ic{position:relative;width:72px;height:72px;margin:0 auto;border-radius:22px;display:grid;place-items:center;background:linear-gradient(160deg,#173170,#0B1A3E);border:1px solid var(--line-2);box-shadow:0 12px 30px -12px rgba(47,107,255,.7);color:var(--cyan)}
+.s-ic svg{width:28px;height:28px}
+.s-num{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:800 11px var(--f-mono);background:var(--gold);color:#1A1203;box-shadow:0 0 0 4px var(--bg)}
+.step h3{font-size:15px;font-weight:700;margin-top:20px;letter-spacing:.04em;text-transform:uppercase}
+.step p{font-size:14px;color:var(--muted);margin-top:8px}
+.statuses{margin-top:54px;padding:24px;border-radius:var(--r-lg);border:1px solid var(--line);background:rgba(8,19,48,.5)}
+.statuses-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.statuses-head h3{font-size:16px;font-weight:600}
+.statuses-head p{font-size:13px;color:var(--dim)}
+.st-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.pill{display:inline-flex;align-items:center;gap:9px;padding:9px 14px;border-radius:999px;font-size:13px;font-weight:700;border:1px solid}
+.pill i{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+.pill small{font-weight:500;color:var(--muted);font-size:12px}
+.p-pending{color:var(--gold);border-color:rgba(242,184,75,.4);background:rgba(242,184,75,.08)}
+.p-verified{color:var(--cyan);border-color:rgba(34,211,238,.4);background:rgba(34,211,238,.08)}
+.p-processing{color:var(--blue-2);border-color:rgba(77,133,255,.45);background:rgba(77,133,255,.1)}
+.p-ready{color:var(--ok);border-color:rgba(61,220,151,.4);background:rgba(61,220,151,.08)}
+.p-action{color:var(--warn);border-color:rgba(255,122,122,.4);background:rgba(255,122,122,.08)}
+
+/* features */
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px}
+.feat{padding:28px;transition:transform .3s var(--ease),border-color .3s}
+.feat:hover{transform:translateY(-4px);border-color:var(--line-2)}
+.f-ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:var(--cyan);background:linear-gradient(150deg,rgba(47,107,255,.25),rgba(34,211,238,.08));border:1px solid rgba(77,133,255,.3)}
+.f-ic.gold{color:var(--gold);background:linear-gradient(150deg,rgba(242,184,75,.22),rgba(242,184,75,.05));border-color:rgba(242,184,75,.35)}
+.f-ic svg{width:23px;height:23px}
+.feat h3{font-family:var(--f-body);font-size:18px;font-weight:800;margin-top:20px;letter-spacing:0}
+.feat p{color:var(--muted);font-size:15px;margin-top:9px}
+
+/* faq */
+.faq-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:56px;align-items:start}
+.faq-side{position:sticky;top:110px}
+.faq-side .card{padding:22px;margin-top:28px}
+.faq-side .card p{color:var(--muted);font-size:14.5px;margin-top:6px}
+.faq-side .card strong{font-size:15.5px}
+.faq-side .btn{margin-top:16px}
+.faq{display:grid;gap:12px}
+.faq details{border-radius:var(--r-md);border:1px solid var(--line);background:rgba(10,22,52,.5);transition:border-color .25s,background .25s}
+.faq details[open]{border-color:rgba(77,133,255,.45);background:rgba(16,34,74,.55)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:18px;padding:19px 22px;font-weight:700;font-size:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .pm{width:28px;height:28px;border-radius:9px;flex-shrink:0;display:grid;place-items:center;background:rgba(47,107,255,.15);position:relative}
+.faq summary .pm::before,.faq summary .pm::after{content:"";position:absolute;width:11px;height:2px;border-radius:2px;background:var(--cyan);transition:transform .3s var(--ease)}
+.faq summary .pm::after{transform:rotate(90deg)}
+.faq details[open] .pm::after{transform:rotate(0)}
+.faq .ans{padding:0 22px 20px;color:var(--muted);font-size:15px;max-width:68ch}
+.faq .ans strong{color:var(--text)}
+
+/* contact band */
+.contact{margin-top:110px}
+.band{position:relative;overflow:hidden;border-radius:28px;padding:54px;display:grid;grid-template-columns:1.3fr auto;gap:32px;align-items:center;background:radial-gradient(120% 140% at 0% 0%,#1C3E92 0%,#0C1D48 45%,#08122E 100%);border:1px solid var(--line-2)}
+.band::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(circle at 85% 50%,#000,transparent 70%);-webkit-mask-image:radial-gradient(circle at 85% 50%,#000,transparent 70%);opacity:.6}
+.band > *{position:relative}
+.band h2{font-size:clamp(25px,3.2vw,36px);font-weight:700}
+.band p{color:#B8C8EA;margin-top:12px;max-width:52ch}
+.band .acts{display:flex;flex-direction:column;gap:12px;min-width:0}
+.btn-wa{background:linear-gradient(180deg,#2FE07A,#16B65A);color:#04210F;box-shadow:0 12px 30px -10px rgba(37,211,102,.7);padding:16px 26px;font-size:15.5px}
+.btn-wa:hover{transform:translateY(-2px)}
+
+/* footer */
+footer{margin-top:110px;border-top:1px solid var(--line);background:linear-gradient(180deg,rgba(8,19,48,.6),var(--bg))}
+.f-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:40px;padding-block:64px 40px}
+.f-grid h4{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 16px;font-weight:800}
+.f-grid ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.f-grid ul a,.f-grid ul span{text-decoration:none;color:var(--muted);font-size:14.5px}
+.f-grid ul a:hover{color:var(--text)}
+.f-about p{color:var(--muted);font-size:14.5px;margin-top:18px;max-width:36ch}
+.f-pay{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.f-pay span{font-size:11.5px;font-weight:700;padding:6px 10px;border-radius:8px;border:1px solid var(--line-2);color:#CFE0FF}
+.legal{border-top:1px solid var(--line);padding-block:24px 34px;display:grid;gap:10px}
+.legal p{font-size:12.5px;color:var(--dim);max-width:110ch}
+.legal .row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* floating whatsapp */
+.wa-float{position:fixed;z-index:40;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;text-decoration:none;padding:13px 18px 13px 14px;border-radius:999px;background:linear-gradient(180deg,#2FE07A,#16B65A);color:#04210F;font-weight:800;font-size:14px;box-shadow:0 14px 34px -10px rgba(37,211,102,.75);transition:transform .25s var(--ease)}
+.wa-float:hover{transform:translateY(-3px)}
+.wa-float svg{width:24px;height:24px}
+
+/* toast */
+.toast{position:fixed;z-index:70;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;max-width:min(440px,calc(100vw - 32px));padding:14px 18px;border-radius:14px;background:rgba(13,29,66,.95);border:1px solid rgba(242,184,75,.45);font-size:14px;box-shadow:0 20px 40px -14px rgba(0,0,0,.7);transition:opacity .3s,transform .3s var(--ease);display:flex;gap:12px;align-items:flex-start}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast svg{width:20px;height:20px;color:var(--gold);flex-shrink:0;margin-top:1px}
+
+/* entrance */
+@media (prefers-reduced-motion:no-preference){
+  .rise{animation:rise .9s var(--ease) both}
+  .d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}.d5{animation-delay:.44s}
+  @keyframes rise{from{opacity:.001;transform:translateY(18px)}}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:1060px){
+  .nav-links{display:none}
+  .burger{display:grid}
+  .nav-actions .btn-ghost{display:none}
+  .mobile-menu{display:block;max-height:0;overflow:hidden;transition:max-height .35s var(--ease);background:rgba(5,11,26,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+  .nav.open .mobile-menu{max-height:420px;border-top:1px solid var(--line)}
+  .nav.open{background:rgba(5,11,26,.96)}
+  .mobile-menu .wrap{display:grid;gap:4px;padding-block:14px 20px}
+  .mobile-menu a:not(.btn){text-decoration:none;font-weight:700;padding:12px 6px;border-bottom:1px solid var(--line);color:var(--text)}
+  .mobile-menu .m-acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .hero-in{grid-template-columns:1fr;gap:64px;padding-block:48px 110px}
+  .console-wrap{max-width:520px;width:100%;margin:0 auto}
+  .trust-in{grid-template-columns:repeat(2,1fr)}
+  .trust-item:nth-child(3){border-left:0}
+  .trust-item:nth-child(n+3){border-top:1px solid var(--line)}
+  .pricing{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr;gap:0;max-width:560px}
+  .steps::before{top:20px;bottom:20px;left:35px;right:auto;width:2px;height:auto;background:linear-gradient(180deg,var(--blue),var(--cyan),var(--gold))}
+  .step{display:grid;grid-template-columns:72px 1fr;gap:20px;text-align:left;padding:0 0 26px}
+  .step h3{margin-top:10px}
+  .s-ic{margin:0}
+  .features{grid-template-columns:repeat(2,1fr)}
+  .faq-grid{grid-template-columns:1fr;gap:36px}
+  .faq-side{position:static}
+  .band{grid-template-columns:1fr;padding:40px}
+  .f-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  .wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .nav-in{height:66px;gap:10px}
+  .brand svg{width:34px;height:34px}
+  .wordmark{font-size:15px}
+  .nav-actions .btn-primary{display:none}
+  .hero{margin-top:-67px;padding-top:67px}
+  .console{transform:none;padding:16px}
+  .console-wrap:hover .console{transform:none}
+  .bf-1{right:6px;top:-22px}
+  .bf-2{left:12px;bottom:-22px}
+  .trust{margin-top:-64px}
+  .trust-in{grid-template-columns:1fr}
+  .trust-item{padding:16px 18px}
+  .trust-item+.trust-item{border-left:0;border-top:1px solid var(--line)}
+  section.block{padding-top:84px}
+  .price-card,.calc{padding:24px}
+  .features{grid-template-columns:1fr}
+  .feat{padding:22px}
+  .band{padding:28px 22px;border-radius:22px}
+  .f-grid{grid-template-columns:1fr;gap:30px}
+  .wa-float span{display:none}
+  .wa-float{padding:14px}
+  .faq summary{padding:17px 16px;font-size:15px}
+  .faq .ans{padding:0 16px 18px}
+  .statuses{padding:18px}
+}
+
+/* ---------- Connected customer/admin portal ---------- */
+.portal-backdrop{position:fixed;inset:0;z-index:1000;background:rgba(2,7,19,.82);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:18px;overflow:auto}
+.portal-backdrop.open{display:flex}
+.portal-shell{width:min(960px,100%);max-height:min(92vh,900px);overflow:auto;background:#08142d;border:1px solid rgba(130,165,255,.25);border-radius:22px;box-shadow:0 30px 100px rgba(0,0,0,.55);padding:clamp(18px,3vw,30px)}
+.portal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}
+.portal-head h2{font-size:clamp(20px,3vw,28px)}
+.portal-close{border:1px solid var(--line-2);background:rgba(255,255,255,.06);color:var(--text);border-radius:12px;padding:9px 13px;cursor:pointer}
+.portal-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.portal-tabs button,.portal-btn{border:1px solid var(--line-2);background:rgba(255,255,255,.05);color:var(--text);border-radius:11px;padding:10px 14px;font:600 13px var(--f-body);cursor:pointer}
+.portal-tabs button.active,.portal-btn.primary{background:linear-gradient(120deg,var(--blue),#2455d9);border-color:transparent}
+.portal-btn:disabled{opacity:.5;cursor:not-allowed}
+.portal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.portal-card{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:15px;padding:16px;margin-bottom:14px;min-width:0}
+.portal-card h3{font:700 15px var(--f-body);margin-bottom:12px}
+.portal-field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.portal-field label{font-size:12px;color:var(--muted)}
+.portal-field input,.portal-field select,.portal-field textarea{width:100%;border:1px solid var(--line-2);border-radius:10px;background:#050d20;color:var(--text);padding:12px;font:14px var(--f-body);min-width:0}
+.portal-field input[type=file]{padding:9px}
+.portal-note{font-size:12px;color:var(--muted);line-height:1.6}
+.portal-alert{padding:11px 13px;border-radius:10px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);font-size:13px;margin:10px 0;color:#c9f8ff}
+.portal-alert.error{background:rgba(255,90,90,.08);border-color:rgba(255,90,90,.25);color:#ffd1d1}
+.portal-alert.success{background:rgba(61,220,151,.08);border-color:rgba(61,220,151,.25);color:#c7ffe6}
+.portal-hidden{display:none!important}
+.portal-table-wrap{overflow:auto}
+.portal-table{width:100%;border-collapse:collapse;font-size:12px;min-width:620px}
+.portal-table th,.portal-table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.portal-table th{color:var(--muted);font-weight:700}
+.portal-status{display:inline-block;border:1px solid var(--line-2);border-radius:999px;padding:4px 8px;font-size:11px;white-space:nowrap}
+.portal-status.ready{color:#7ef0b8;border-color:rgba(61,220,151,.4)}
+.portal-status.pending{color:#ffd98a;border-color:rgba(242,184,75,.4)}
+.portal-actions{display:flex;gap:7px;flex-wrap:wrap}
+.portal-actions button{font-size:11px;padding:7px 9px}
+.portal-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.portal-kpi{padding:13px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.035)}
+.portal-kpi small{display:block;color:var(--muted);font-size:11px}
+.portal-kpi strong{display:block;font:700 21px var(--f-display);margin-top:5px}
+.portal-order{border:1px solid var(--line);border-radius:13px;padding:13px;margin:10px 0;background:rgba(255,255,255,.025)}
+.portal-order-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.portal-order small{color:var(--muted)}
+.portal-file-link{color:#8bdff0;text-decoration:underline;font-size:12px}
+@media(max-width:640px){.portal-grid{grid-template-columns:1fr}.portal-kpis{grid-template-columns:1fr 1fr}.portal-shell{padding:16px}.portal-backdrop{padding:8px}}
+.portal-qr{display:block;width:min(220px,100%);height:auto;margin:10px 0;border-radius:12px;background:#fff;padding:8px}
+
+/* ---------- Small phones (320px to 380px) ----------
+   Below ~380px the nav row (brand + BM/EN + burger) was up to 380px wide, pushing
+   the menu button off screen; console file rows and the hero price badge also
+   overflowed at 320px. Design is unchanged, only spacing and sizes tighten. */
+html{overflow-x:clip}
+@media (max-width:380px){
+  .wrap{padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+  .nav-in{gap:8px;height:62px}
+  .brand{gap:7px;min-width:0;flex-shrink:1}
+  .brand svg{width:30px;height:30px;flex-shrink:0}
+  .wordmark{font-size:12.5px}
+  .brand-tag{font-size:6.5px;letter-spacing:.14em}
+  .nav-actions{gap:6px;margin-left:auto;flex-shrink:0}
+  .lang{padding:2px}
+  .lang button{padding:4px 6px;font-size:10px}
+  .burger{width:38px;height:38px}
+  .hero{margin-top:-63px;padding-top:63px}
+  .hero h1{font-size:30px}
+  .price-big{flex-wrap:wrap;padding:10px 14px}
+  .price-big .amt{font-size:28px}
+  .pc-price{flex-wrap:wrap}
+  .pc-price .amt{font-size:58px}
+  .hero-cta .btn{width:100%;white-space:normal}
+  .console{padding:12px}
+  .file{gap:8px;padding:9px}
+  .ficon{width:30px;height:34px;font-size:8px}
+  .fname{font-size:12.5px}
+  .fprice{font-size:11.5px}
+  .c-total strong{font-size:19px}
+  .track{padding:12px}
+  .badge-float{display:none}
+  .stepper{flex-wrap:wrap;justify-content:center}
+  .total-box{flex-wrap:wrap}
+  .total-box strong{font-size:26px}
+  .btn{white-space:normal;text-align:center}
+  .band{padding:24px 16px}
+  .portal-shell{padding:12px;border-radius:16px}
+  .portal-head{flex-wrap:wrap}
+  .portal-kpis{grid-template-columns:1fr}
+  .portal-tabs button{flex:1 1 auto}
+}
+
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top" aria-label="ZiminStore, laman utama">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <defs>
+          <linearGradient id="lgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4D85FF"/><stop offset="1" stop-color="#22D3EE"/></linearGradient>
+          <linearGradient id="lgG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFD98A"/><stop offset="1" stop-color="#F2B84B"/></linearGradient>
+        </defs>
+        <rect x="2" y="2" width="44" height="44" rx="13" fill="#0D1D42" stroke="url(#lgA)" stroke-width="1.5"/>
+        <path d="M14 14h20l-14.5 17H34" fill="none" stroke="url(#lgA)" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M13 37c6-2.6 14-2.8 22-1" fill="none" stroke="url(#lgG)" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-txt"><span class="wordmark">ZIMIN<b>STORE</b></span><span class="brand-tag">STUDENT BANTU STUDENT</span></span>
+    </a>
+    <nav class="nav-links" aria-label="Utama">
+      <a href="#harga" data-i18n="nav.price">Harga</a>
+      <a href="#cara" data-i18n="nav.how">Cara Tempahan</a>
+      <a href="#ciri" data-i18n="nav.features">Ciri</a>
+      <a href="#soalan" data-i18n="nav.faq">Soalan Lazim</a>
+      <a href="#hubungi" data-i18n="nav.contact">Hubungi</a>
+    </nav>
+    <div class="nav-actions">
+      <div class="lang" role="group" aria-label="Bahasa / Language">
+        <button type="button" id="lang-bm" data-lang="bm" aria-pressed="true">BM</button>
+        <button type="button" id="lang-en" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a href="#" class="btn btn-ghost btn-sm" data-portal="login" data-i18n="nav.login">Log Masuk</a>
+      <a href="#" class="btn btn-primary btn-sm" data-portal="order" data-i18n="nav.start">Mula Tempahan</a>
+      <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="wrap">
+      <a href="#harga" data-i18n="nav.price">Harga</a>
+      <a href="#cara" data-i18n="nav.how">Cara Tempahan</a>
+      <a href="#ciri" data-i18n="nav.features">Ciri</a>
+      <a href="#soalan" data-i18n="nav.faq">Soalan Lazim</a>
+      <a href="#hubungi" data-i18n="nav.contact">Hubungi</a>
+      <div class="m-acts">
+        <a href="#" class="btn btn-ghost" data-portal="register" data-i18n="nav.register">Daftar</a>
+        <a href="#" class="btn btn-primary" data-portal="order" data-i18n="nav.start">Mula Tempahan</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <canvas id="circuit" aria-hidden="true"></canvas>
+  <div class="glow g1"></div><div class="glow g2"></div>
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <span class="chip rise"><i></i><span data-i18n="hero.chip">Semakan Similarity Turnitin untuk pelajar</span></span>
+      <h1 class="rise d1" data-i18n="hero.title">Semak similarity tugasan anda <span class="hl">sebelum dihantar.</span></h1>
+      <p class="hero-sub rise d2" data-i18n="hero.sub">Muat naik dokumen PDF atau DOCX, buat bayaran dan muat turun laporan PDF melalui satu portal yang mudah dijejak. Dibina oleh pelajar, untuk pelajar.</p>
+      <div class="price-strip rise d3">
+        <div class="price-big"><span class="rm">RM</span><span class="amt">3.50</span><span class="per" data-i18n="price.per">/ dokumen</span></div>
+        <p class="price-note"><strong data-i18n="hero.pn1">Laporan PDF disertakan</strong><span data-i18n="hero.pn2">Tiada caj tambahan mengikut halaman</span></p>
+      </div>
+      <div class="hero-cta rise d4">
+        <a href="#" class="btn btn-primary" data-portal="order">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+          <span data-i18n="hero.cta1">Muat Naik Dokumen</span>
+        </a>
+        <a href="#cara" class="btn btn-ghost" data-i18n="hero.cta2">Lihat Cara Tempahan</a>
+      </div>
+    </div>
+
+    <div class="console-wrap rise d5" aria-label="Contoh paparan pesanan">
+      <div class="console">
+        <div class="c-head">
+          <div>
+            <div class="c-title" data-i18n="con.order">Pesanan</div>
+            <div class="c-id">ZS-10042</div>
+          </div>
+          <span class="sample" data-i18n="con.sample">Contoh paparan</span>
+        </div>
+        <div class="files">
+          <div class="file">
+            <span class="ficon doc">DOCX</span>
+            <div class="fmeta"><div class="fname">Tugasan1_Penulisan.docx</div><div class="fsub" data-i18n="con.f1">1.2 MB · dimuat naik</div></div>
+            <span class="fprice">RM3.50</span>
+          </div>
+          <div class="file">
+            <span class="ficon pdf">PDF</span>
+            <div class="fmeta"><div class="fname">Laporan_Refleksi.pdf</div><div class="fsub" data-i18n="con.f2">860 KB · dimuat naik</div></div>
+            <span class="fprice">RM3.50</span>
+          </div>
+        </div>
+        <div class="c-total"><span data-i18n="con.total">2 dokumen × RM3.50</span><strong>RM7.00</strong></div>
+        <ol class="track">
+          <li class="done"><span class="dot"></span><span class="lbl" data-i18n="con.t1">Pesanan diterima</span><span class="t">10:42</span></li>
+          <li class="done"><span class="dot"></span><span class="lbl" data-i18n="con.t2">Bayaran disahkan</span><span class="t">10:51</span></li>
+          <li class="active"><span class="dot"></span><span class="lbl" data-i18n="con.t3">Sedang diproses</span><span class="t" data-i18n="con.now">kini</span></li>
+          <li><span class="dot"></span><span class="lbl" data-i18n="con.t4">Laporan PDF tersedia</span><span class="t"></span></li>
+        </ol>
+      </div>
+      <div class="badge-float bf-1">RM3.50</div>
+      <div class="badge-float bf-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span data-i18n="con.private">Fail peribadi</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- trust -->
+<div class="trust">
+  <div class="wrap">
+    <div class="trust-in">
+      <div class="trust-item"><span class="ti-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span><div><strong data-i18n="tr.1a">PDF &amp; DOCX</strong><span data-i18n="tr.1b">Format fail diterima</span></div></div>
+      <div class="trust-item"><span class="ti-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg></span><div><strong data-i18n="tr.2a">Laporan PDF</strong><span data-i18n="tr.2b">Dimuat turun dari akaun</span></div></div>
+      <div class="trust-item"><span class="ti-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg></span><div><strong data-i18n="tr.3a">DuitNow QR</strong><span data-i18n="tr.3b">eWallet atau aplikasi bank</span></div></div>
+      <div class="trust-item"><span class="ti-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><div><strong data-i18n="tr.4a">Dokumen peribadi</strong><span data-i18n="tr.4b">Storan tertutup</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PRICING ================= -->
+<section class="block" id="harga">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker" data-i18n="pr.kicker">Harga</span>
+      <h2 data-i18n="pr.title">Satu harga untuk setiap dokumen.</h2>
+      <p data-i18n="pr.sub">Tiada caj tambahan mengikut bilangan halaman. Jumlah dikira secara automatik apabila anda menambah dokumen ke dalam pesanan.</p>
+    </div>
+    <div class="pricing">
+      <div class="card price-card">
+        <span class="pc-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg><span data-i18n="pr.label">Servis Utama</span></span>
+        <div class="pc-name" data-i18n="pr.name">Semakan Similarity Turnitin</div>
+        <div class="pc-price"><span class="rm">RM</span><span class="amt">3.50</span><span class="per" data-i18n="price.per">/ dokumen</span></div>
+        <ul class="incl">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i1">Laporan similarity dalam format PDF</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i2">Menerima fail PDF dan DOCX</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i3">Order ID untuk menjejak setiap pesanan</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i4">Pautan muat turun dalam akaun anda sahaja</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i5">Tiada caj tambahan mengikut halaman</span></li>
+        </ul>
+      </div>
+
+      <div class="card calc">
+        <h3 data-i18n="calc.title">Kira jumlah anda</h3>
+        <p data-i18n="calc.sub">Tambah bilangan dokumen untuk melihat jumlah bayaran.</p>
+        <div class="stepper">
+          <label for="qty" data-i18n="calc.qty">Bilangan dokumen</label>
+          <div class="stp">
+            <button type="button" id="minus" aria-label="Kurangkan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+            <input id="qty" type="number" inputmode="numeric" min="1" max="50" value="3">
+            <button type="button" id="plus" aria-label="Tambah"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+          </div>
+        </div>
+        <div class="breakdown">
+          <div><span data-i18n="calc.unit">Harga seunit</span><span class="mono">RM3.50</span></div>
+          <div><span data-i18n="calc.docs">Dokumen</span><span class="mono" id="qty-out">× 3</span></div>
+          <div><span data-i18n="calc.report">Laporan PDF</span><span class="mono" id="rep-out">3</span></div>
+        </div>
+        <div class="total-row">
+          <div class="total-box"><span data-i18n="calc.total">Jumlah perlu dibayar</span><strong id="total" aria-live="polite">RM10.50</strong></div>
+          <a href="#" class="btn btn-gold" data-portal="order" id="calc-cta">Tempah 3 dokumen</a>
+          <p class="small" data-i18n="calc.note">Jumlah sebenar dikira semula dalam portal berdasarkan fail yang dimuat naik.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="block" id="cara">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="kicker" data-i18n="how.kicker">Cara Tempahan</span>
+      <h2 data-i18n="how.title">Lima langkah dari muat naik hingga laporan.</h2>
+      <p data-i18n="how.sub">Setiap peringkat mempunyai status yang jelas, jadi anda sentiasa tahu keadaan pesanan anda.</p>
+    </div>
+    <ol class="steps" style="margin-inline:auto">
+      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span class="s-num">1</span></div><div><h3 data-i18n="how.s1">Muat Naik</h3><p data-i18n="how.s1p">Pilih satu atau lebih fail PDF atau DOCX.</p></div></li>
+      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/><path d="M18 15v6M15 18h6"/></svg><span class="s-num">2</span></div><div><h3 data-i18n="how.s2">Pesanan</h3><p data-i18n="how.s2p">Order ID dijana dan jumlah dikira secara automatik.</p></div></li>
+      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 20h.01M17 20h.01M20 17h.01"/></svg><span class="s-num">3</span></div><div><h3 data-i18n="how.s3">Bayaran</h3><p data-i18n="how.s3p">Bayar melalui DuitNow QR dan muat naik bukti bayaran.</p></div></li>
+      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span class="s-num">4</span></div><div><h3 data-i18n="how.s4">Proses</h3><p data-i18n="how.s4p">Bayaran disahkan secara manual oleh admin, kemudian dokumen diproses.</p></div></li>
+      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9.5 14.5L12 17l2.5-2.5"/></svg><span class="s-num">5</span></div><div><h3 data-i18n="how.s5">Laporan</h3><p data-i18n="how.s5p">Laporan PDF tersedia untuk dimuat turun dalam akaun anda.</p></div></li>
+    </ol>
+
+    <div class="statuses">
+      <div class="statuses-head">
+        <h3 data-i18n="st.title">Status pesanan dalam akaun anda</h3>
+        <p data-i18n="st.note">Laporan hanya tersedia selepas PDF sebenar dimuat naik oleh admin.</p>
+      </div>
+      <div class="st-row">
+        <span class="pill p-pending"><i></i><span data-i18n="st.1">Menunggu Bayaran</span></span>
+        <span class="pill p-verified"><i></i><span data-i18n="st.2">Bayaran Disahkan</span></span>
+        <span class="pill p-processing"><i></i><span data-i18n="st.3">Sedang Diproses</span></span>
+        <span class="pill p-ready"><i></i><span data-i18n="st.4">Laporan Tersedia</span></span>
+        <span class="pill p-action"><i></i><span data-i18n="st.5">Perlu Tindakan</span><small data-i18n="st.5s">fail bermasalah</small></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="block" id="ciri">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker" data-i18n="ft.kicker">Ciri Servis</span>
+      <h2 data-i18n="ft.title">Dibina supaya anda tahu apa yang berlaku pada setiap pesanan.</h2>
+    </div>
+    <div class="features">
+      <article class="card feat"><div class="f-ic gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></div><h3 data-i18n="ft.1">Harga telus</h3><p data-i18n="ft.1p">RM3.50 setiap dokumen. Jumlah dipaparkan dengan jelas sebelum anda membuat bayaran.</p></article>
+      <article class="card feat"><div class="f-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h9a2 2 0 0 1 2 2v12"/><path d="M5 7h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/></svg></div><h3 data-i18n="ft.2">Banyak dokumen, satu pesanan</h3><p data-i18n="ft.2p">Muat naik beberapa tugasan serentak dan jejak semuanya di bawah satu Order ID.</p></article>
+      <article class="card feat"><div class="f-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg></div><h3 data-i18n="ft.3">Dokumen kekal peribadi</h3><p data-i18n="ft.3p">Fail disimpan dalam storan tertutup. Hanya anda dan admin yang memproses pesanan boleh mengaksesnya.</p></article>
+      <article class="card feat"><div class="f-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3 data-i18n="ft.4">Status yang jelas</h3><p data-i18n="ft.4p">Setiap peringkat dipaparkan dalam akaun anda, dari pengesahan bayaran hingga laporan siap.</p></article>
+      <article class="card feat"><div class="f-ic gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 15l2 2 4-4"/></svg></div><h3 data-i18n="ft.5">Laporan PDF sebenar</h3><p data-i18n="ft.5p">Laporan dimuat naik hanya selepas semakan selesai. Tiada keputusan yang dijana secara automatik oleh laman ini.</p></article>
+      <article class="card feat"><div class="f-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg></div><h3 data-i18n="ft.6">Bantuan melalui WhatsApp</h3><p data-i18n="ft.6p">Ada masalah fail atau bayaran? Hubungi kami terus melalui WhatsApp untuk bantuan.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="block" id="soalan">
+  <div class="wrap faq-grid">
+    <div class="faq-side">
+      <div class="sec-head">
+        <span class="kicker" data-i18n="faq.kicker">Soalan Lazim</span>
+        <h2 data-i18n="faq.title">Perkara yang selalu ditanya.</h2>
+      </div>
+      <div class="card">
+        <strong data-i18n="faq.side">Tidak jumpa jawapan?</strong>
+        <p data-i18n="faq.sidep">Hantar soalan anda melalui WhatsApp dan kami akan membalas secepat mungkin.</p>
+        <a class="btn btn-ghost btn-sm wa-link" href="#" target="_blank" rel="noopener" data-i18n="faq.ask">Tanya di WhatsApp</a>
+      </div>
+    </div>
+    <div class="faq">
+      <details open><summary><span data-i18n="q1">Apakah yang saya terima selepas membuat tempahan?</span><span class="pm"></span></summary><div class="ans" data-i18n="a1">Anda akan menerima <strong>laporan similarity dalam format PDF</strong> bagi setiap dokumen. Laporan boleh dimuat turun daripada akaun ZiminStore anda sebaik sahaja status pesanan bertukar kepada Laporan Tersedia.</div></details>
+      <details><summary><span data-i18n="q2">Berapakah harganya?</span><span class="pm"></span></summary><div class="ans" data-i18n="a2"><strong>RM3.50 bagi setiap dokumen</strong>, tanpa caj tambahan mengikut bilangan halaman. Contohnya, tiga dokumen berjumlah RM10.50.</div></details>
+      <details><summary><span data-i18n="q3">Format fail apakah yang diterima?</span><span class="pm"></span></summary><div class="ans" data-i18n="a3">Kami menerima fail <strong>PDF</strong> dan <strong>DOCX</strong>. Pastikan dokumen anda boleh dibuka dan teksnya boleh dipilih, bukan imej yang diimbas.</div></details>
+      <details><summary><span data-i18n="q4">Bolehkah saya menghantar beberapa dokumen sekali gus?</span><span class="pm"></span></summary><div class="ans" data-i18n="a4">Boleh. Muat naik semua dokumen dalam satu pesanan. Jumlah bayaran dikira secara automatik dan setiap dokumen akan mempunyai laporan PDF tersendiri.</div></details>
+      <details><summary><span data-i18n="q5">Bagaimanakah cara membuat bayaran?</span><span class="pm"></span></summary><div class="ans" data-i18n="a5">Imbas DuitNow QR yang dipaparkan dalam portal menggunakan mana-mana aplikasi perbankan atau eWallet, kemudian muat naik bukti bayaran. Admin akan <strong>mengesahkan bayaran secara manual</strong> sebelum dokumen diproses.</div></details>
+      <details><summary><span data-i18n="q6">Bagaimanakah saya menjejak pesanan?</span><span class="pm"></span></summary><div class="ans" data-i18n="a6">Setiap pesanan mempunyai <strong>Order ID</strong>. Log masuk ke akaun anda untuk melihat status terkini, daripada Menunggu Bayaran hingga Laporan Tersedia.</div></details>
+      <details><summary><span data-i18n="q7">Adakah dokumen saya selamat?</span><span class="pm"></span></summary><div class="ans" data-i18n="a7">Dokumen dan laporan disimpan dalam storan tertutup dengan kawalan akses. Pautan muat turun hanya boleh dibuka oleh pemilik akaun. Kami tidak berkongsi dokumen anda dengan pelanggan lain.</div></details>
+      <details><summary><span data-i18n="q8">Adakah ZiminStore bergabung dengan Turnitin?</span><span class="pm"></span></summary><div class="ans" data-i18n="a8"><strong>Tidak.</strong> ZiminStore ialah servis bebas yang dikendalikan oleh pelajar dan tidak bergabung dengan, ditaja atau disahkan oleh Turnitin, LLC.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="contact" id="hubungi">
+  <div class="wrap">
+    <div class="band">
+      <div>
+        <span class="kicker" data-i18n="ct.kicker">Hubungi Kami</span>
+        <h2 style="margin-top:14px" data-i18n="ct.title">Ada soalan sebelum menempah?</h2>
+        <p data-i18n="ct.sub">Tanya tentang format fail, bayaran atau status pesanan. Kami sedia membantu melalui WhatsApp.</p>
+      </div>
+      <div class="acts">
+        <a class="btn btn-wa wa-link" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.8 9.8 0 0 0-8.4 14.9L2.2 21.8l4.8-1.3A9.8 9.8 0 1 0 12 2.2zm0 17.8a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.2.2-.6.2-1 .1-1.2l-.4-.2z"/></svg>
+          <span data-i18n="ct.wa">Hubungi di WhatsApp</span>
+        </a>
+        <a href="#" class="btn btn-ghost" data-portal="register" data-i18n="ct.reg">Daftar Akaun</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="f-grid">
+      <div class="f-about">
+        <a class="brand" href="#top" aria-label="ZiminStore">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="13" fill="#0D1D42" stroke="url(#lgA)" stroke-width="1.5"/><path d="M14 14h20l-14.5 17H34" fill="none" stroke="url(#lgA)" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 37c6-2.6 14-2.8 22-1" fill="none" stroke="url(#lgG)" stroke-width="2.4" stroke-linecap="round"/></svg>
+          <span class="brand-txt"><span class="wordmark">ZIMIN<b>STORE</b></span><span class="brand-tag">STUDENT BANTU STUDENT</span></span>
+        </a>
+        <p data-i18n="fo.about">Servis semakan similarity dokumen untuk pelajar. Harga telus, status jelas dan dokumen dilindungi.</p>
+        <div class="f-pay"><span>DuitNow QR</span><span>Touch 'n Go eWallet</span><span data-i18n="fo.bank">Perbankan dalam talian</span></div>
+      </div>
+      <div>
+        <h4 data-i18n="fo.links">Pautan</h4>
+        <ul>
+          <li><a href="#harga" data-i18n="nav.price">Harga</a></li>
+          <li><a href="#cara" data-i18n="nav.how">Cara Tempahan</a></li>
+          <li><a href="#ciri" data-i18n="nav.features">Ciri</a></li>
+          <li><a href="#soalan" data-i18n="nav.faq">Soalan Lazim</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-i18n="fo.account">Akaun</h4>
+        <ul>
+          <li><a href="#" data-portal="login" data-i18n="nav.login">Log Masuk</a></li>
+          <li><a href="#" data-portal="register" data-i18n="nav.register">Daftar</a></li>
+          <li><a href="#" data-portal="track" data-i18n="fo.track">Jejak Pesanan</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-i18n="fo.service">Servis</h4>
+        <ul>
+          <li><span data-i18n="fo.s1">Semakan Similarity Turnitin</span></li>
+          <li><span data-i18n="fo.s2">RM3.50 setiap dokumen</span></li>
+          <li><span data-i18n="fo.s3">Laporan dalam format PDF</span></li>
+          <li><a href="#" class="wa-link" target="_blank" rel="noopener">WhatsApp</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p data-i18n="fo.disc">ZiminStore ialah servis bebas dan tidak bergabung dengan, ditaja atau disahkan oleh Turnitin, LLC. Turnitin ialah tanda dagangan Turnitin, LLC. Laporan yang diberikan ialah laporan sebenar yang dimuat naik selepas semakan, bukan hasil yang dijana oleh laman ini.</p>
+      <div class="row"><p>© 2026 ZiminStore. <span data-i18n="fo.rights">Hak cipta terpelihara.</span></p><p>Student Bantu Student</p></div>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float wa-link" href="#" target="_blank" rel="noopener" aria-label="WhatsApp ZiminStore">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.8 9.8 0 0 0-8.4 14.9L2.2 21.8l4.8-1.3A9.8 9.8 0 1 0 12 2.2zm0 17.8a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.2.2-.6.2-1 .1-1.2l-.4-.2z"/></svg>
+  <span>WhatsApp</span>
+</a>
+
+
+<!-- Connected ZiminStore portal -->
+<div class="portal-backdrop" id="zs-portal" aria-hidden="true">
+  <section class="portal-shell" role="dialog" aria-modal="true" aria-labelledby="zs-portal-title">
+    <div class="portal-head">
+      <div><div class="kicker">ZIMINSTORE ACCOUNT</div><h2 id="zs-portal-title">Portal pelanggan</h2></div>
+      <button class="portal-close" id="zs-close" type="button" aria-label="Tutup">✕</button>
+    </div>
+    <div id="zs-message" class="portal-alert portal-hidden" role="status"></div>
+    <div id="zs-auth-view">
+      <div class="portal-tabs">
+        <button type="button" class="active" data-auth-tab="login">Log masuk</button>
+        <button type="button" data-auth-tab="register">Daftar akaun</button>
+        <button type="button" data-auth-tab="reset">Lupa kata laluan</button>
+      </div>
+      <form id="zs-login-form" class="portal-card">
+        <h3>Log masuk akaun</h3>
+        <div class="portal-field"><label for="zs-login-email">E-mel</label><input id="zs-login-email" type="email" autocomplete="email" required></div>
+        <div class="portal-field"><label for="zs-login-password">Kata laluan</label><input id="zs-login-password" type="password" autocomplete="current-password" required minlength="8"></div>
+        <button class="portal-btn primary" type="submit">Log masuk</button>
+      </form>
+      <form id="zs-register-form" class="portal-card portal-hidden">
+        <h3>Cipta akaun pelanggan</h3>
+        <div class="portal-field"><label for="zs-reg-name">Nama penuh</label><input id="zs-reg-name" type="text" autocomplete="name" required maxlength="100"></div>
+        <div class="portal-field"><label for="zs-reg-email">E-mel</label><input id="zs-reg-email" type="email" autocomplete="email" required></div>
+        <div class="portal-field"><label for="zs-reg-phone">Nombor telefon (pilihan)</label><input id="zs-reg-phone" type="tel" autocomplete="tel"></div>
+        <div class="portal-field"><label for="zs-reg-password">Kata laluan (minimum 8 aksara)</label><input id="zs-reg-password" type="password" autocomplete="new-password" required minlength="8"></div>
+        <button class="portal-btn primary" type="submit">Daftar</button>
+        <p class="portal-note">Jika pengesahan e-mel diaktifkan, semak peti masuk untuk mengesahkan akaun.</p>
+      </form>
+      <form id="zs-reset-form" class="portal-card portal-hidden">
+        <h3>Reset kata laluan</h3>
+        <div class="portal-field"><label for="zs-reset-email">E-mel akaun</label><input id="zs-reset-email" type="email" required></div>
+        <button class="portal-btn primary" type="submit">Hantar pautan reset</button>
+      </form>
+      <form id="zs-newpass-form" class="portal-card portal-hidden">
+        <h3>Tetapkan kata laluan baharu</h3>
+        <div class="portal-field"><label for="zs-newpass">Kata laluan baharu (minimum 8 aksara)</label><input id="zs-newpass" type="password" autocomplete="new-password" required minlength="8"></div>
+        <div class="portal-field"><label for="zs-newpass2">Ulang kata laluan baharu</label><input id="zs-newpass2" type="password" autocomplete="new-password" required minlength="8"></div>
+        <button class="portal-btn primary" type="submit">Simpan kata laluan</button>
+      </form>
+    </div>
+    <div id="zs-dashboard" class="portal-hidden">
+      <div class="portal-head"><div><strong id="zs-welcome">Akaun</strong><div class="portal-note" id="zs-account-email"></div></div><button class="portal-btn" id="zs-logout" type="button">Log keluar</button></div>
+      <div class="portal-tabs" id="zs-dash-tabs">
+        <button type="button" class="active" data-dash-tab="orders">Pesanan saya</button>
+        <button type="button" data-dash-tab="new-order">Tempahan baharu</button>
+        <button type="button" class="portal-hidden" id="zs-admin-tab" data-dash-tab="admin">Admin</button>
+      </div>
+      <section id="zs-orders-panel"><div class="portal-card"><h3>Pesanan anda</h3><div id="zs-orders-list" class="portal-note">Memuatkan pesanan...</div></div></section>
+      <section id="zs-new-order-panel" class="portal-hidden">
+        <div class="portal-card">
+          <h3>Muat naik dokumen</h3>
+          <div class="portal-field"><label for="zs-documents">Pilih PDF atau DOCX (maksimum 20 MB setiap fail, sehingga 50 fail)</label><input id="zs-documents" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple required></div>
+          <div class="portal-kpis"><div class="portal-kpi"><small>Bilangan dokumen</small><strong id="zs-doc-count">0</strong></div><div class="portal-kpi"><small>Harga setiap dokumen</small><strong>RM3.50</strong></div><div class="portal-kpi"><small>Jumlah</small><strong id="zs-doc-total">RM0.00</strong></div></div>
+          <button class="portal-btn primary" id="zs-create-order" type="button">Cipta pesanan</button>
+          <p class="portal-note">Pesanan disimpan selepas semua fail berjaya dimuat naik. Pastikan anda mempunyai hak untuk menghantar dokumen tersebut.</p>
+        </div>
+      </section>
+      <section id="zs-admin-panel" class="portal-hidden"><div class="portal-card"><h3>Pengurusan pesanan (Admin)</h3><div id="zs-admin-list" class="portal-note">Memuatkan pesanan...</div></div></section>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+  <span id="toast-msg"></span>
+</div>
+
+<!-- Pinned version + Subresource Integrity: the browser refuses the file if the CDN copy changes. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js" integrity="sha384-BWcjm9OdFth9TbhCxZPdm+gAOUMAzQy9nmTs12ioXdCcbVnJaPMn+fMUoQCLt60R" crossorigin="anonymous"></script>
+<script>
+/* ============================================================
+   ZIMINSTORE CONFIG
+   Single source of truth for values the future portal will reuse.
+   Pricing is held in sen (integer) to avoid floating point errors.
+   ============================================================ */
+const CONFIG = {
+  pricePerDocSen: 350,          // RM3.50
+  currency: 'RM',
+  maxDocsPerOrder: 50,
+  acceptedTypes: ['application/pdf','application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+  // TODO before launch: e.g. '60123456789' (no + sign, no spaces)
+  whatsappNumber: '',
+  // Future: similarity provider is set server side only. 'manual' = admin uploads the real PDF report.
+  // An official provider integration stays disabled until licence and API access are confirmed.
+  similarityProvider: 'manual',
+  // Public values only. The publishable key is designed to be in browser code;
+  // all protection comes from RLS, storage policies and database triggers (see README).
+  // NEVER put the service_role / secret key in this file.
+  supabaseUrl: 'https://vletiqtwzzrktttzxyej.supabase.co',
+  supabasePublishableKey: 'sb_publishable_GWtli3n_KUlchwHtl0IB9g_Lxtny4zH',
+  // TODO before launch: URL of your verified DuitNow QR image (shown in the payment step).
+  paymentQrUrl: ''
+  // Note: prices shown here are display only. The database recalculates every total.
+};
+const formatRM = sen => CONFIG.currency + (sen/100).toFixed(2);
+const orderTotalSen = n => n * CONFIG.pricePerDocSen;
+
+/* ---------- i18n ---------- */
+const EN = {
+  'nav.price':'Pricing','nav.how':'How It Works','nav.features':'Features','nav.faq':'FAQ','nav.contact':'Contact',
+  'nav.login':'Log In','nav.start':'Start Order','nav.register':'Register',
+  'hero.chip':'Turnitin similarity checks for students',
+  'hero.title':'Check your assignment similarity <span class="hl">before you submit.</span>',
+  'hero.sub':'Upload PDF or DOCX files, pay, and download your PDF report through one portal you can track at every step. Built by students, for students.',
+  'price.per':'/ document','hero.pn1':'PDF report included','hero.pn2':'No extra charge per page',
+  'hero.cta1':'Upload Documents','hero.cta2':'See How It Works',
+  'con.order':'Order','con.sample':'Sample view','con.f1':'1.2 MB · uploaded','con.f2':'860 KB · uploaded',
+  'con.total':'2 documents × RM3.50','con.t1':'Order received','con.t2':'Payment verified','con.t3':'Processing','con.t4':'PDF report ready','con.now':'now','con.private':'Private files',
+  'tr.1a':'PDF &amp; DOCX','tr.1b':'Accepted file formats','tr.2a':'PDF report','tr.2b':'Downloaded from your account','tr.3a':'DuitNow QR','tr.3b':'eWallet or banking app','tr.4a':'Private documents','tr.4b':'Closed storage',
+  'pr.kicker':'Pricing','pr.title':'One price for every document.','pr.sub':'No extra charge based on page count. Your total is calculated automatically as you add documents to your order.',
+  'pr.label':'Main Service','pr.name':'Turnitin Similarity Check',
+  'pr.i1':'Similarity report in PDF format','pr.i2':'Accepts PDF and DOCX files','pr.i3':'An Order ID to track every order','pr.i4':'Download link inside your account only','pr.i5':'No extra charge per page',
+  'calc.title':'Work out your total','calc.sub':'Add the number of documents to see the amount to pay.','calc.qty':'Number of documents','calc.unit':'Unit price','calc.docs':'Documents','calc.report':'PDF reports','calc.total':'Amount to pay','calc.note':'The final total is recalculated in the portal from the files you upload.',
+  'how.kicker':'How It Works','how.title':'Five steps from upload to report.','how.sub':'Every stage has a clear status, so you always know where your order stands.',
+  'how.s1':'Upload','how.s1p':'Choose one or more PDF or DOCX files.','how.s2':'Order','how.s2p':'An Order ID is generated and the total is calculated automatically.','how.s3':'Payment','how.s3p':'Pay with DuitNow QR and upload your proof of payment.','how.s4':'Process','how.s4p':'An admin verifies your payment manually, then your documents are processed.','how.s5':'Report','how.s5p':'Your PDF report is ready to download in your account.',
+  'st.title':'Order statuses in your account','st.note':'A report only appears after the real PDF has been uploaded by an admin.','st.1':'Awaiting Payment','st.2':'Payment Verified','st.3':'Processing','st.4':'Report Ready','st.5':'Action Required','st.5s':'file issue',
+  'ft.kicker':'Service Features','ft.title':'Built so you know what is happening with every order.',
+  'ft.1':'Transparent pricing','ft.1p':'RM3.50 per document. The total is shown clearly before you pay.',
+  'ft.2':'Many documents, one order','ft.2p':'Upload several assignments at once and track them all under one Order ID.',
+  'ft.3':'Documents stay private','ft.3p':'Files are kept in closed storage. Only you and the admin handling your order can access them.',
+  'ft.4':'Clear status','ft.4p':'Every stage is shown in your account, from payment verification to the finished report.',
+  'ft.5':'Real PDF reports','ft.5p':'Reports are uploaded only after the check is complete. This site never generates results automatically.',
+  'ft.6':'Help on WhatsApp','ft.6p':'Problem with a file or payment? Message us directly on WhatsApp for help.',
+  'faq.kicker':'FAQ','faq.title':'Questions students often ask.','faq.side':'Can’t find your answer?','faq.sidep':'Send your question on WhatsApp and we will reply as soon as we can.','faq.ask':'Ask on WhatsApp',
+  'q1':'What do I receive after ordering?','a1':'You receive a <strong>similarity report in PDF format</strong> for each document. You can download it from your ZiminStore account once the order status changes to Report Ready.',
+  'q2':'How much does it cost?','a2':'<strong>RM3.50 per document</strong>, with no extra charge for page count. For example, three documents come to RM10.50.',
+  'q3':'Which file formats are accepted?','a3':'We accept <strong>PDF</strong> and <strong>DOCX</strong> files. Make sure your document opens properly and its text can be selected, not a scanned image.',
+  'q4':'Can I send several documents at once?','a4':'Yes. Upload all your documents in one order. The total is calculated automatically and each document gets its own PDF report.',
+  'q5':'How do I pay?','a5':'Scan the DuitNow QR shown in the portal with any banking or eWallet app, then upload your proof of payment. An admin <strong>verifies the payment manually</strong> before your documents are processed.',
+  'q6':'How do I track my order?','a6':'Every order has an <strong>Order ID</strong>. Log in to your account to see its latest status, from Awaiting Payment to Report Ready.',
+  'q7':'Are my documents safe?','a7':'Documents and reports are kept in closed storage with access control. Download links only open for the account owner. We never share your documents with other customers.',
+  'q8':'Is ZiminStore affiliated with Turnitin?','a8':'<strong>No.</strong> ZiminStore is an independent, student run service and is not affiliated with, sponsored by or endorsed by Turnitin, LLC.',
+  'ct.kicker':'Contact Us','ct.title':'Questions before you order?','ct.sub':'Ask about file formats, payment or order status. We are ready to help on WhatsApp.','ct.wa':'Chat on WhatsApp','ct.reg':'Create Account',
+  'fo.about':'A document similarity checking service for students. Transparent pricing, clear status and protected documents.','fo.bank':'Online banking','fo.links':'Links','fo.account':'Account','fo.track':'Track Order','fo.service':'Service',
+  'fo.s1':'Turnitin Similarity Check','fo.s2':'RM3.50 per document','fo.s3':'Report in PDF format',
+  'fo.disc':'ZiminStore is an independent service and is not affiliated with, sponsored by or endorsed by Turnitin, LLC. Turnitin is a trademark of Turnitin, LLC. Reports provided are the real reports uploaded after checking, never results generated by this site.',
+  'fo.rights':'All rights reserved.'
+};
+const UI = {
+  bm:{ toast:'Portal pelanggan sedang dibina dan akan dibuka dalam fasa seterusnya. Buat masa ini, hubungi kami di WhatsApp.', cta:n=>`Tempah ${n} dokumen`, wa:'Salam ZiminStore, saya ingin bertanya tentang semakan similarity.' },
+  en:{ toast:'The customer portal is being built and opens in the next phase. For now, contact us on WhatsApp.', cta:n=>`Order ${n} document${n>1?'s':''}`, wa:'Hi ZiminStore, I would like to ask about a similarity check.' }
+};
+const BM = {};
+document.querySelectorAll('[data-i18n]').forEach(el=>{ BM[el.dataset.i18n] ??= el.innerHTML; });
+let lang = 'bm';
+function setLang(l){
+  lang = l;
+  document.documentElement.lang = l === 'bm' ? 'ms' : 'en';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k = el.dataset.i18n, v = (l==='en'?EN:BM)[k];
+    if (v !== undefined) el.innerHTML = v;
+  });
+  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.lang===l));
+  updateCalc(); setWhatsApp();
+  try{ localStorage.setItem('zs-lang', l); }catch(e){}
+}
+document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+
+/* ---------- WhatsApp ---------- */
+function setWhatsApp(){
+  const text = encodeURIComponent(UI[lang].wa);
+  const href = CONFIG.whatsappNumber ? `https://wa.me/${CONFIG.whatsappNumber}?text=${text}` : `https://wa.me/?text=${text}`;
+  document.querySelectorAll('.wa-link').forEach(a=>a.href = href);
+}
+
+/* ---------- Price calculator ---------- */
+const qty = document.getElementById('qty');
+const minus = document.getElementById('minus'), plus = document.getElementById('plus');
+function clampQty(){ let n = parseInt(qty.value,10); if (isNaN(n)||n<1) n=1; if (n>CONFIG.maxDocsPerOrder) n=CONFIG.maxDocsPerOrder; return n; }
+function updateCalc(){
+  const n = clampQty();
+  document.getElementById('total').textContent = formatRM(orderTotalSen(n));
+  document.getElementById('qty-out').textContent = '× ' + n;
+  document.getElementById('rep-out').textContent = n;
+  document.getElementById('calc-cta').textContent = UI[lang].cta(n);
+  minus.disabled = n<=1; plus.disabled = n>=CONFIG.maxDocsPerOrder;
+}
+minus.addEventListener('click',()=>{ qty.value = clampQty()-1; updateCalc(); });
+plus.addEventListener('click',()=>{ qty.value = clampQty()+1; updateCalc(); });
+qty.addEventListener('input',updateCalc);
+qty.addEventListener('blur',()=>{ qty.value = clampQty(); updateCalc(); });
+
+
+/* ---------- Supabase customer/admin portal ---------- */
+const toast = document.getElementById('toast'); let tt;
+const portal = document.getElementById('zs-portal');
+const msgBox = document.getElementById('zs-message');
+const authView = document.getElementById('zs-auth-view');
+const dashView = document.getElementById('zs-dashboard');
+const loginForm = document.getElementById('zs-login-form');
+const registerForm = document.getElementById('zs-register-form');
+const resetForm = document.getElementById('zs-reset-form');
+const newPassForm = document.getElementById('zs-newpass-form');
+const sb = window.supabase?.createClient
+  ? window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabasePublishableKey)
+  : null;
+let currentProfile = null;
+const statusLabels = {
+  pending_payment:'Menunggu bayaran', payment_verified:'Bayaran disahkan',
+  processing:'Sedang diproses', report_ready:'Laporan tersedia',
+  action_required:'Perlu tindakan', cancelled:'Dibatalkan'
+};
+const money = sen => 'RM' + (Number(sen || 0)/100).toFixed(2);
+function portalMessage(text, kind='info'){
+  msgBox.textContent = text;
+  msgBox.className = 'portal-alert' + (kind==='error'?' error':kind==='success'?' success':'');
+}
+function clearPortalMessage(){ msgBox.textContent=''; msgBox.className='portal-alert portal-hidden'; }
+function openPortal(tab='login'){
+  portal.classList.add('open'); portal.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden'; clearPortalMessage();
+  showAuthTab(tab);
+  if(sb) restoreSession().catch(err=>portalMessage(err.message||'Tidak dapat memuatkan akaun.','error')); else portalMessage('Pustaka sambungan tidak dapat dimuatkan. Semak sambungan internet dan cuba semula.','error');
+}
+function closePortal(){
+  portal.classList.remove('open'); portal.setAttribute('aria-hidden','true');
+  document.body.style.overflow='';
+}
+document.getElementById('zs-close').addEventListener('click',closePortal);
+portal.addEventListener('click',e=>{if(e.target===portal)closePortal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&portal.classList.contains('open'))closePortal();});
+function showAuthTab(tab){
+  document.querySelectorAll('[data-auth-tab]').forEach(b=>b.classList.toggle('active',b.dataset.authTab===tab));
+  loginForm.classList.toggle('portal-hidden',tab!=='login');
+  registerForm.classList.toggle('portal-hidden',tab!=='register');
+  resetForm.classList.toggle('portal-hidden',tab!=='reset');
+  newPassForm.classList.toggle('portal-hidden',tab!=='newpass');
+  document.querySelector('#zs-auth-view .portal-tabs').classList.toggle('portal-hidden',tab==='newpass');
+}
+document.querySelectorAll('[data-auth-tab]').forEach(b=>b.addEventListener('click',()=>{clearPortalMessage();showAuthTab(b.dataset.authTab);}));
+document.querySelectorAll('[data-portal]').forEach(a=>a.addEventListener('click',e=>{
+  e.preventDefault();
+  const action=a.dataset.portal;
+  openPortal(action==='register'?'register':'login');
+  if(action==='order'||action==='track') setTimeout(()=>{ if(dashView.classList.contains('portal-hidden')) return; showDashTab(action==='order'?'new-order':'orders'); },250);
+}));
+loginForm.addEventListener('submit',async e=>{
+  e.preventDefault(); if(!sb)return;
+  const btn=loginForm.querySelector('button[type=submit]'); btn.disabled=true;
+  try{
+    const {error}=await sb.auth.signInWithPassword({email:document.getElementById('zs-login-email').value.trim(),password:document.getElementById('zs-login-password').value});
+    if(error)throw error;
+    await restoreSession();
+  }catch(err){portalMessage(err.message||'Log masuk gagal.','error');}
+  finally{btn.disabled=false;}
+});
+registerForm.addEventListener('submit',async e=>{
+  e.preventDefault(); if(!sb)return;
+  const btn=registerForm.querySelector('button[type=submit]'); btn.disabled=true;
+  const name=document.getElementById('zs-reg-name').value.trim();
+  const email=document.getElementById('zs-reg-email').value.trim();
+  const phone=document.getElementById('zs-reg-phone').value.trim();
+  try{
+    const {data,error}=await sb.auth.signUp({email,password:document.getElementById('zs-reg-password').value,options:{data:{full_name:name,phone}}});
+    if(error)throw error;
+    if(data.session){await restoreSession();}
+    else portalMessage('Pendaftaran diterima. Semak e-mel untuk mengesahkan akaun sebelum log masuk.','success');
+  }catch(err){portalMessage(err.message||'Pendaftaran gagal.','error');}
+  finally{btn.disabled=false;}
+});
+resetForm.addEventListener('submit',async e=>{
+  e.preventDefault(); if(!sb)return;
+  try{
+    const email=document.getElementById('zs-reset-email').value.trim();
+    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+    if(error)throw error;
+    portalMessage('Pautan reset dihantar jika alamat e-mel tersebut berdaftar.','success');
+  }catch(err){portalMessage(err.message||'Tidak dapat menghantar pautan reset.','error');}
+});
+/* Password recovery: the e-mail link returns here with a recovery session.
+   Previously nothing handled it, so users could never set the new password. */
+let recovering=false;
+newPassForm.addEventListener('submit',async e=>{
+  e.preventDefault(); if(!sb)return;
+  const p1=document.getElementById('zs-newpass').value,p2=document.getElementById('zs-newpass2').value;
+  if(p1.length<8){portalMessage('Kata laluan mesti sekurang-kurangnya 8 aksara.','error');return;}
+  if(p1!==p2){portalMessage('Kata laluan tidak sepadan.','error');return;}
+  const btn=newPassForm.querySelector('button[type=submit]'); btn.disabled=true;
+  try{
+    const {error}=await sb.auth.updateUser({password:p1});
+    if(error)throw error;
+    recovering=false; newPassForm.reset();
+    history.replaceState(null,'',location.pathname);
+    portalMessage('Kata laluan berjaya dikemas kini.','success');
+    await restoreSession();
+  }catch(err){portalMessage(err.message||'Tidak dapat mengemas kini kata laluan.','error');}
+  finally{btn.disabled=false;}
+});
+document.getElementById('zs-logout').addEventListener('click',async()=>{
+  await sb.auth.signOut(); currentProfile=null; dashView.classList.add('portal-hidden');authView.classList.remove('portal-hidden');showAuthTab('login');portalMessage('Anda telah log keluar.','success');
+});
+async function restoreSession(){
+  if(!sb)return;
+  const {data:{session},error}=await sb.auth.getSession();
+  if(error)throw error;
+  if(!session||recovering){authView.classList.remove('portal-hidden');dashView.classList.add('portal-hidden');return;}
+  const {data:profile,error:profileError}=await sb.from('profiles').select('id,full_name,role').eq('id',session.user.id).maybeSingle();
+  if(profileError)throw profileError;
+  if(!profile)throw new Error('Profil akaun tidak dijumpai. Sila hubungi admin melalui WhatsApp.');
+  currentProfile=profile;
+  authView.classList.add('portal-hidden');dashView.classList.remove('portal-hidden');
+  document.getElementById('zs-welcome').textContent='Hai, '+(profile.full_name||session.user.email);
+  document.getElementById('zs-account-email').textContent=session.user.email;
+  const admin=profile.role==='admin';
+  document.getElementById('zs-admin-tab').classList.toggle('portal-hidden',!admin);
+  document.getElementById('zs-admin-tab').setAttribute('aria-hidden',String(!admin));
+  showDashTab('orders');
+  await loadCustomerOrders();
+}
+sb?.auth.onAuthStateChange((event,session)=>{
+  if(event==='SIGNED_OUT'){currentProfile=null;authView.classList.remove('portal-hidden');dashView.classList.add('portal-hidden');}
+  if(event==='PASSWORD_RECOVERY'){
+    recovering=true;
+    // Defer: Supabase advises against awaiting other calls inside this callback.
+    setTimeout(()=>{openPortal('newpass');portalMessage('Masukkan kata laluan baharu anda.','info');},0);
+  }
+});
+function showDashTab(tab){
+  document.querySelectorAll('[data-dash-tab]').forEach(b=>b.classList.toggle('active',b.dataset.dashTab===tab));
+  document.getElementById('zs-orders-panel').classList.toggle('portal-hidden',tab!=='orders');
+  document.getElementById('zs-new-order-panel').classList.toggle('portal-hidden',tab!=='new-order');
+  document.getElementById('zs-admin-panel').classList.toggle('portal-hidden',tab!=='admin');
+  if(tab==='orders')loadCustomerOrders();
+  if(tab==='admin'&&currentProfile?.role==='admin')loadAdminOrders();
+}
+document.querySelectorAll('[data-dash-tab]').forEach(b=>b.addEventListener('click',()=>showDashTab(b.dataset.dashTab)));
+const docInput=document.getElementById('zs-documents');
+docInput.addEventListener('change',()=>{
+  const files=[...docInput.files];
+  document.getElementById('zs-doc-count').textContent=files.length;
+  document.getElementById('zs-doc-total').textContent=money(orderTotalSen(files.length));
+});
+function safeFileName(name){return name.normalize('NFKD').replace(/[^\w.-]+/g,'_').slice(-100)||'document';}
+document.getElementById('zs-create-order').addEventListener('click',async()=>{
+  if(!sb||!currentProfile)return;
+  const files=[...docInput.files],button=document.getElementById('zs-create-order');
+  if(!files.length){portalMessage('Pilih sekurang-kurangnya satu fail PDF atau DOCX.','error');return;}
+  if(files.length>CONFIG.maxDocsPerOrder){portalMessage('Maksimum 50 dokumen bagi satu pesanan.','error');return;}
+  const allowed=new Set(CONFIG.acceptedTypes);
+  for(const f of files){
+    const ext=f.name.toLowerCase().split('.').pop();
+    if(!['pdf','docx'].includes(ext)||f.size>20*1024*1024){portalMessage('Fail '+f.name+' tidak sah. Hanya PDF/DOCX sehingga 20 MB setiap satu.','error');return;}
+    if(f.type&&!allowed.has(f.type)&&!(ext==='pdf'&&f.type==='application/octet-stream')){portalMessage('Jenis fail '+f.name+' tidak disokong.','error');return;}
+  }
+  button.disabled=true;button.textContent='Memuat naik...';
+  let createdOrder=null;
+  try{
+    // SECURITY: the browser value is not trusted. The zs_orders_prepare trigger recalculates
+    // total_sen and status, and the zs_orders_insert policy rejects any other price.
+    const {data:order,error:orderError}=await sb.from('orders').insert({
+      customer_id:currentProfile.id,document_count:files.length,
+      total_sen:orderTotalSen(files.length),status:'pending_payment'
+    }).select('id,order_number,total_sen,status').single();
+    if(orderError)throw orderError;
+    createdOrder=order;
+    for(const file of files){
+      const ext=file.name.toLowerCase().endsWith('.docx')?'docx':'pdf';
+      const path=`${currentProfile.id}/${order.id}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
+      // Always send an explicit type: with an empty file.type supabase-js would label it text/plain,
+      // which the bucket's allowed_mime_types list rejects.
+      const contentType=ext==='docx'?'application/vnd.openxmlformats-officedocument.wordprocessingml.document':'application/pdf';
+      const {error:uploadError}=await sb.storage.from('customer-documents').upload(path,file,{contentType,upsert:false});
+      if(uploadError)throw uploadError;
+      const {error:recordError}=await sb.from('documents').insert({
+        order_id:order.id,customer_id:currentProfile.id,original_filename:file.name,storage_path:path,file_type:ext
+      });
+      if(recordError)throw recordError;
+    }
+    portalMessage(`Pesanan ${order.order_number} berjaya dicipta. Jumlah ${money(order.total_sen)}. Seterusnya, buat bayaran DuitNow dan muat naik bukti bayaran dalam “Pesanan saya”.`,'success');
+    docInput.value='';document.getElementById('zs-doc-count').textContent='0';document.getElementById('zs-doc-total').textContent='RM0.00';
+    await loadCustomerOrders();showDashTab('orders');
+  }catch(err){
+    portalMessage((createdOrder?`Pesanan ${createdOrder.order_number} telah dicipta tetapi muat naik belum lengkap. Hubungi admin dengan Order ID ini. `:'')+(err.message||'Tidak dapat mencipta pesanan.'),'error');
+  }finally{button.disabled=false;button.textContent='Cipta pesanan';}
+});
+async function signedDownload(bucket,path,filename){
+  const {data,error}=await sb.storage.from(bucket).createSignedUrl(path,60);
+  if(error)throw error;
+  const a=document.createElement('a');a.href=data.signedUrl;a.target='_blank';a.rel='noopener';a.download=filename||'';a.click();
+}
+async function loadCustomerOrders(){
+  if(!sb||!currentProfile)return;
+  const host=document.getElementById('zs-orders-list');host.textContent='Memuatkan pesanan...';
+  try{
+    const {data:orders,error}=await sb.from('orders').select('id,order_number,document_count,total_sen,status,created_at,documents(id,original_filename,storage_path),payments(id,status,proof_path,amount_sen,created_at),reports(id,document_id,report_path)').eq('customer_id',currentProfile.id).order('created_at',{ascending:false});
+    if(error)throw error;
+    if(!orders?.length){host.textContent='Belum ada pesanan. Tekan “Tempahan baharu” untuk bermula.';return;}
+    host.innerHTML='';
+    for(const o of orders){
+      const card=document.createElement('article');card.className='portal-order';
+      const top=document.createElement('div');top.className='portal-order-top';
+      const title=document.createElement('strong');title.textContent=o.order_number;
+      const badge=document.createElement('span');badge.className='portal-status '+(o.status==='report_ready'?'ready':o.status==='pending_payment'?'pending':'');badge.textContent=statusLabels[o.status]||o.status;
+      top.append(title,badge);card.append(top);
+      const meta=document.createElement('small');meta.textContent=`${o.document_count} dokumen · ${money(o.total_sen)} · ${new Date(o.created_at).toLocaleString('ms-MY')}`;card.append(meta);
+      const docs=document.createElement('div');docs.className='portal-note';docs.style.marginTop='8px';docs.textContent='Dokumen: '+(o.documents||[]).map(d=>d.original_filename).join(', ');card.append(docs);
+      // Embedded rows have no guaranteed order, so sort before taking the latest payment.
+      const payments=[...(o.payments||[])].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+      const latestPayment=payments.slice(-1)[0];
+      const awaitingReview=payments.some(p=>p.status==='pending'||p.status==='verified');
+      if(latestPayment){
+        const pstatus=document.createElement('div');pstatus.className='portal-note';pstatus.style.marginTop='8px';pstatus.textContent='Status pembayaran: '+(latestPayment.status==='verified'?'Disahkan':latestPayment.status==='rejected'?'Ditolak, sila hantar bukti baharu':'Menunggu semakan admin');card.append(pstatus);
+      }
+      // Proof upload only while awaiting payment and no proof is already under review.
+      if(o.status==='pending_payment'&&!awaitingReview){
+        const payWrap=document.createElement('div');payWrap.style.marginTop='10px';
+        const payInfo=document.createElement('p');payInfo.className='portal-note';
+        payInfo.textContent=`Bayar ${money(o.total_sen)} melalui DuitNow QR. Tulis ${o.order_number} sebagai rujukan bayaran.`;
+        payWrap.append(payInfo);
+        if(CONFIG.paymentQrUrl){const qr=document.createElement('img');qr.className='portal-qr';qr.src=CONFIG.paymentQrUrl;qr.alt='DuitNow QR ZiminStore';qr.loading='lazy';payWrap.append(qr);}
+        else{const noQr=document.createElement('p');noQr.className='portal-note';noQr.textContent='Kod QR belum dipaparkan. Hubungi kami di WhatsApp untuk butiran bayaran.';payWrap.append(noQr);}
+        const payLabel=document.createElement('label');payLabel.className='portal-note';payLabel.textContent='Bukti pembayaran (JPG, PNG atau PDF, maksimum 5 MB)';
+        const payInput=document.createElement('input');payInput.type='file';payInput.accept='image/jpeg,image/png,application/pdf';payInput.style.display='block';payInput.style.margin='7px 0';
+        const payButton=document.createElement('button');payButton.className='portal-btn primary';payButton.textContent='Hantar bukti bayaran';
+        payButton.addEventListener('click',async()=>{
+          const file=payInput.files?.[0];if(!file){portalMessage('Pilih bukti pembayaran dahulu.','error');return;}
+          if(!['image/jpeg','image/png','application/pdf'].includes(file.type)||file.size>5*1024*1024){portalMessage('Bukti mestilah JPG, PNG atau PDF dan maksimum 5 MB.','error');return;}
+          payButton.disabled=true;
+          try{
+            const path=`${currentProfile.id}/${o.id}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
+            const {error:uploadError}=await sb.storage.from('payment-proofs').upload(path,file,{contentType:file.type});
+            if(uploadError)throw uploadError;
+            // SECURITY: the zs_payments_prepare trigger and zs_payments_insert policy decide
+            // amount_sen/status server side; only 'pending' is accepted from customers.
+            const {error:paymentError}=await sb.from('payments').insert({order_id:o.id,customer_id:currentProfile.id,amount_sen:o.total_sen,proof_path:path,status:'pending'});
+            if(paymentError)throw paymentError;
+            portalMessage('Bukti pembayaran berjaya dihantar. Admin akan menyemaknya.','success');await loadCustomerOrders();
+          }catch(err){portalMessage(err.message||'Tidak dapat menghantar bukti pembayaran.','error');}
+          finally{payButton.disabled=false;}
+        });
+        payWrap.append(payLabel,payInput,payButton);card.append(payWrap);
+      }
+      const docNames=new Map((o.documents||[]).map(d=>[d.id,d.original_filename]));
+      for(const report of (o.reports||[])){
+        const src=docNames.get(report.document_id)||'dokumen';
+        const b=document.createElement('button');b.className='portal-btn';b.style.margin='8px 6px 0 0';b.textContent='Laporan PDF: '+src;
+        b.addEventListener('click',()=>signedDownload('similarity-reports',report.report_path,'ZiminStore-report-'+safeFileName(src.replace(/\.(pdf|docx)$/i,''))+'.pdf').catch(e=>portalMessage(e.message,'error')));
+        card.append(b);
+      }
+      host.append(card);
+    }
+  }catch(err){host.textContent='Tidak dapat memuatkan pesanan: '+(err.message||'Ralat');}
+}
+async function loadAdminOrders(){
+  const host=document.getElementById('zs-admin-list');host.textContent='Memuatkan semua pesanan...';
+  try{
+    const {data:orders,error}=await sb.from('orders').select('id,order_number,customer_id,document_count,total_sen,status,created_at,documents(id,original_filename,storage_path),payments(id,proof_path,status,amount_sen,created_at)').order('created_at',{ascending:false}).limit(100);
+    if(error)throw error;
+    if(!orders?.length){host.textContent='Belum ada pesanan.';return;}
+    const customerIds=[...new Set(orders.map(o=>o.customer_id))];
+    const {data:customers,error:customerError}=await sb.from('profiles').select('id,full_name').in('id',customerIds);
+    if(customerError)throw customerError;
+    const customerNames=new Map((customers||[]).map(c=>[c.id,c.full_name]));
+    const wrap=document.createElement('div');wrap.className='portal-table-wrap';
+    const table=document.createElement('table');table.className='portal-table';
+    table.innerHTML='<thead><tr><th>Pesanan / pelanggan</th><th>Dokumen</th><th>Jumlah</th><th>Status</th><th>Tindakan</th></tr></thead>';
+    const body=document.createElement('tbody');
+    for(const o of orders){
+      const tr=document.createElement('tr');
+      const c1=document.createElement('td');c1.textContent=o.order_number+' · '+(customerNames.get(o.customer_id)||o.customer_id.slice(0,8));
+      const c2=document.createElement('td');
+      for(const d of (o.documents||[])){const b=document.createElement('button');b.className='portal-btn';b.textContent='Lihat '+d.original_filename;b.addEventListener('click',()=>signedDownload('customer-documents',d.storage_path,d.original_filename).catch(e=>portalMessage(e.message,'error')));c2.append(b,document.createElement('br'));}
+      const c3=document.createElement('td');c3.textContent=money(o.total_sen);
+      const c4=document.createElement('td');const select=document.createElement('select');select.className='portal-field';select.style.padding='7px';select.style.background='#050d20';select.style.color='white';
+      Object.entries(statusLabels).forEach(([v,label])=>{const op=document.createElement('option');op.value=v;op.textContent=label;op.selected=o.status===v;select.append(op);});
+      select.addEventListener('change',async()=>{const {error}=await sb.from('orders').update({status:select.value,updated_at:new Date().toISOString()}).eq('id',o.id);if(error){portalMessage(error.message,'error');select.value=o.status;}else{portalMessage('Status '+o.order_number+' dikemas kini.','success');o.status=select.value;}});
+      c4.append(select);
+      const c5=document.createElement('td');const actions=document.createElement('div');actions.className='portal-actions';
+      const pays=[...(o.payments||[])].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+      const proof=pays.find(p=>p.proof_path);
+      if(proof){const pb=document.createElement('button');pb.className='portal-btn';pb.textContent='Bukti bayaran ('+(proof.status==='verified'?'disahkan':proof.status==='rejected'?'ditolak':'baharu')+')';pb.addEventListener('click',()=>signedDownload('payment-proofs',proof.proof_path,'payment-proof').catch(e=>portalMessage(e.message,'error')));actions.append(pb);}
+      const pendingPayment=pays.find(p=>p.status==='pending'&&p.proof_path);
+      if(pendingPayment){
+        // Admin only (RLS + zs_payments_update_guard). The database has no trigger that moves
+        // the order after verification, so the order status is updated here as a second step.
+        const review=async(status,btn)=>{
+          btn.disabled=true;
+          try{
+            const change=status==='verified'?{status,verified_at:new Date().toISOString()}:{status};
+            const {error}=await sb.from('payments').update(change).eq('id',pendingPayment.id);
+            if(error)throw error;
+            if(status==='verified'){
+              const {error:orderErr}=await sb.from('orders').update({status:'payment_verified',updated_at:new Date().toISOString()}).eq('id',o.id).eq('status','pending_payment');
+              if(orderErr)throw new Error('Bayaran disahkan tetapi status pesanan gagal dikemas kini: '+orderErr.message);
+            }
+            portalMessage('Bayaran '+o.order_number+(status==='verified'?' disahkan.':' ditolak. Pelanggan boleh menghantar bukti baharu.'),'success');await loadAdminOrders();
+          }catch(err){portalMessage(err.message||'Tidak dapat mengemas kini bayaran.','error');}
+          finally{btn.disabled=false;}
+        };
+        const verify=document.createElement('button');verify.className='portal-btn primary';verify.textContent='Sahkan bayaran';verify.addEventListener('click',()=>review('verified',verify));
+        const reject=document.createElement('button');reject.className='portal-btn';reject.textContent='Tolak bayaran';reject.addEventListener('click',()=>{if(confirm('Tolak bukti bayaran untuk '+o.order_number+'?'))review('rejected',reject);});
+        actions.append(verify,reject);
+      }
+      const docSelect=document.createElement('select');docSelect.style.maxWidth='145px';docSelect.style.padding='7px';docSelect.style.background='#050d20';docSelect.style.color='white';
+      (o.documents||[]).forEach(d=>{const op=document.createElement('option');op.value=d.id;op.textContent=d.original_filename;docSelect.append(op);});
+      const upload=document.createElement('input');upload.type='file';upload.accept='application/pdf';upload.style.maxWidth='145px';upload.setAttribute('aria-label','Muat naik laporan PDF');
+      const up=document.createElement('button');up.className='portal-btn primary';up.textContent='Upload laporan';up.addEventListener('click',async()=>{
+        const file=upload.files?.[0];if(!file){portalMessage('Pilih fail PDF laporan dahulu.','error');return;}
+        if(file.type!=='application/pdf'||file.size>20*1024*1024){portalMessage('Laporan mestilah PDF dan tidak melebihi 20 MB.','error');return;}
+        up.disabled=true;
+        try{
+          const doc=(o.documents||[]).find(d=>d.id===docSelect.value);if(!doc)throw new Error('Pilih dokumen untuk laporan ini.');
+          const path=`${o.customer_id}/${o.id}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
+          const {error:storageError}=await sb.storage.from('similarity-reports').upload(path,file,{contentType:'application/pdf'});
+          if(storageError)throw storageError;
+          const {error:reportError}=await sb.from('reports').insert({order_id:o.id,document_id:doc.id,customer_id:o.customer_id,report_path:path});
+          if(reportError){await sb.storage.from('similarity-reports').remove([path]);throw reportError;}
+          // Count DISTINCT documents with a report, so re-uploading a report for the same
+          // document can't mark the order complete early. The database has no trigger for this,
+          // so the admin's browser sets processing / report_ready (admin-only RLS).
+          const {data:repRows,error:countError}=await sb.from('reports').select('document_id').eq('order_id',o.id);
+          if(countError)throw countError;
+          const done=new Set((repRows||[]).map(r=>r.document_id)).size;
+          const nextStatus=done>=o.document_count?'report_ready':'processing';
+          const {error:statusError}=await sb.from('orders').update({status:nextStatus,updated_at:new Date().toISOString()}).eq('id',o.id);
+          if(statusError)throw statusError;
+          portalMessage(nextStatus==='report_ready'?'Semua laporan telah dimuat naik. Pesanan kini sedia untuk pelanggan.':'Laporan dokumen dimuat naik. Muat naik laporan bagi dokumen lain untuk melengkapkan pesanan.','success');await loadAdminOrders();
+        }catch(err){portalMessage(err.message||'Muat naik gagal.','error');}
+        finally{up.disabled=false;}
+      });
+      actions.append(docSelect,upload,up);c5.append(actions);tr.append(c1,c2,c3,c4,c5);body.append(tr);
+    }
+    table.append(body);wrap.append(table);host.innerHTML='';host.append(wrap);
+  }catch(err){host.textContent='Tidak dapat memuatkan dashboard admin: '+(err.message||'Ralat');}
+}
+
+
+/* ---------- Nav ---------- */
+const nav = document.getElementById('nav'), burger = document.getElementById('burger');
+const onScroll = ()=>nav.classList.toggle('scrolled', scrollY>12);
+addEventListener('scroll',onScroll,{passive:true}); onScroll();
+burger.addEventListener('click',()=>{ const o = nav.classList.toggle('open'); burger.setAttribute('aria-expanded',o); });
+document.querySelectorAll('#mobile-menu a[href^="#"]').forEach(a=>a.addEventListener('click',()=>{ nav.classList.remove('open'); burger.setAttribute('aria-expanded',false); }));
+
+/* ---------- Circuit background ---------- */
+(function(){
+  const cv = document.getElementById('circuit'), ctx = cv.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W,H,dpr,traces=[],pulses=[],raf;
+  const G = 26;
+  function rnd(a,b){return a+Math.random()*(b-a)}
+  function build(){
+    dpr = Math.min(devicePixelRatio||1,2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    traces = [];
+    const count = Math.round((W*H)/16000);
+    const dirs = [[1,0],[0,1],[1,1],[1,-1],[-1,0],[0,-1]];
+    for(let i=0;i<count;i++){
+      // bias traces toward the right half where the console sits
+      let x = Math.round((Math.random()<.65 ? rnd(W*.4,W) : rnd(0,W))/G)*G;
+      let y = Math.round(rnd(0,H)/G)*G;
+      const pts=[[x,y]]; let d = dirs[Math.floor(Math.random()*4)];
+      const segs = Math.floor(rnd(2,5));
+      for(let s=0;s<segs;s++){
+        const len = Math.floor(rnd(2,8))*G;
+        x += d[0]*len; y += d[1]*len; pts.push([x,y]);
+        d = d[0]&&d[1] ? (Math.random()<.5?[d[0],0]:[0,d[1]]) : (Math.random()<.5?[d[0]||1,d[1]||1]:[d[1],d[0]]);
+      }
+      let L=0; const seg=[]; for(let k=1;k<pts.length;k++){const l=Math.hypot(pts[k][0]-pts[k-1][0],pts[k][1]-pts[k-1][1]); seg.push(l); L+=l;}
+      traces.push({pts,seg,L,gold:Math.random()<.08});
+    }
+    pulses = traces.filter(()=>Math.random()<.35).map(t=>({t,p:Math.random(),v:rnd(.0015,.004)}));
+  }
+  function at(t,f){
+    let d=f*t.L;
+    for(let k=0;k<t.seg.length;k++){ if(d<=t.seg[k]){const a=t.pts[k],b=t.pts[k+1],r=d/t.seg[k];return [a[0]+(b[0]-a[0])*r,a[1]+(b[1]-a[1])*r];} d-=t.seg[k]; }
+    return t.pts[t.pts.length-1];
+  }
+  function drawStatic(){
+    ctx.clearRect(0,0,W,H);
+    ctx.lineWidth=1;
+    for(const t of traces){
+      ctx.strokeStyle = t.gold ? 'rgba(242,184,75,.22)' : 'rgba(77,133,255,.17)';
+      ctx.beginPath(); t.pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.stroke();
+      const e=t.pts[t.pts.length-1];
+      ctx.fillStyle = t.gold ? 'rgba(242,184,75,.5)' : 'rgba(34,211,238,.35)';
+      ctx.beginPath(); ctx.arc(e[0],e[1],2.2,0,7); ctx.fill();
+      ctx.strokeStyle='rgba(77,133,255,.3)'; ctx.beginPath(); ctx.arc(t.pts[0][0],t.pts[0][1],2.6,0,7); ctx.stroke();
+    }
+  }
+  function frame(){
+    drawStatic();
+    for(const p of pulses){
+      p.p += p.v; if(p.p>1) p.p=0;
+      const [x,y]=at(p.t,p.p);
+      const g=ctx.createRadialGradient(x,y,0,x,y,14);
+      const c = p.t.gold ? '242,184,75' : '34,211,238';
+      g.addColorStop(0,`rgba(${c},.9)`); g.addColorStop(1,`rgba(${c},0)`);
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,14,0,7); ctx.fill();
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x,y,1.4,0,7); ctx.fill();
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  function start(){ cancelAnimationFrame(raf); build(); reduce ? drawStatic() : frame(); }
+  let rt; addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(start,180);});
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden) cancelAnimationFrame(raf); else if(!reduce) frame(); });
+  start();
+})();
+
+/* ---------- Init ---------- */
+let saved='bm'; try{ saved = localStorage.getItem('zs-lang') || 'bm'; }catch(e){}
+setLang(saved==='en'?'en':'bm');
+</script>
+
+</body>
+</html>

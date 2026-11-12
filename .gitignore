@@ -1,0 +1,21 @@
+# Secrets: never commit Supabase service_role / secret keys
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+supabase/.temp/
+supabase/.branches/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Tooling
+node_modules/
+dist/
+.netlify/
+.vercel/
