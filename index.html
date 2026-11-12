@@ -863,8 +863,8 @@ const CONFIG = {
   currency: 'RM',
   maxDocsPerOrder: 50,
   acceptedTypes: ['application/pdf','application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
-  // TODO before launch: e.g. '60123456789' (no + sign, no spaces)
-  whatsappNumber: '',
+  // WhatsApp number with country code, no + sign or spaces.
+  whatsappNumber: '601114533195',
   // Future: similarity provider is set server side only. 'manual' = admin uploads the real PDF report.
   // An official provider integration stays disabled until licence and API access are confirmed.
   similarityProvider: 'manual',
@@ -873,8 +873,10 @@ const CONFIG = {
   // NEVER put the service_role / secret key in this file.
   supabaseUrl: 'https://vletiqtwzzrktttzxyej.supabase.co',
   supabasePublishableKey: 'sb_publishable_GWtli3n_KUlchwHtl0IB9g_Lxtny4zH',
-  // TODO before launch: URL of your verified DuitNow QR image (shown in the payment step).
-  paymentQrUrl: ''
+  // DuitNow QR (static, MYR, MOHAMADAZIMANBINHASSIM). Regenerated from the decoded
+  // payload of the owner's QR; checksum verified. Shown in the payment step.
+  paymentQrUrl: 'assets/duitnow-qr.png',
+  paymentName: 'MOHAMAD AZIMAN BIN HASSIM'
   // Note: prices shown here are display only. The database recalculates every total.
 };
 const formatRM = sen => CONFIG.currency + (sen/100).toFixed(2);
@@ -1192,7 +1194,7 @@ async function loadCustomerOrders(){
         const payInfo=document.createElement('p');payInfo.className='portal-note';
         payInfo.textContent=`Bayar ${money(o.total_sen)} melalui DuitNow QR. Tulis ${o.order_number} sebagai rujukan bayaran.`;
         payWrap.append(payInfo);
-        if(CONFIG.paymentQrUrl){const qr=document.createElement('img');qr.className='portal-qr';qr.src=CONFIG.paymentQrUrl;qr.alt='DuitNow QR ZiminStore';qr.loading='lazy';payWrap.append(qr);}
+        if(CONFIG.paymentQrUrl){const qr=document.createElement('img');qr.className='portal-qr';qr.src=CONFIG.paymentQrUrl;qr.alt='DuitNow QR ZiminStore';qr.loading='lazy';payWrap.append(qr);if(CONFIG.paymentName){const nm=document.createElement('p');nm.className='portal-note';nm.textContent='Nama penerima: '+CONFIG.paymentName;payWrap.append(nm);}}
         else{const noQr=document.createElement('p');noQr.className='portal-note';noQr.textContent='Kod QR belum dipaparkan. Hubungi kami di WhatsApp untuk butiran bayaran.';payWrap.append(noQr);}
         const payLabel=document.createElement('label');payLabel.className='portal-note';payLabel.textContent='Bukti pembayaran (JPG, PNG atau PDF, maksimum 5 MB)';
         const payInput=document.createElement('input');payInput.type='file';payInput.accept='image/jpeg,image/png,application/pdf';payInput.style.display='block';payInput.style.margin='7px 0';
