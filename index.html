@@ -1038,7 +1038,7 @@ registerForm.addEventListener('submit',async e=>{
   const email=document.getElementById('zs-reg-email').value.trim();
   const phone=document.getElementById('zs-reg-phone').value.trim();
   try{
-    const {data,error}=await sb.auth.signUp({email,password:document.getElementById('zs-reg-password').value,options:{data:{full_name:name,phone}}});
+    const {data,error}=await sb.auth.signUp({email,password:document.getElementById('zs-reg-password').value,options:{data:{full_name:name,phone},emailRedirectTo:location.origin+location.pathname}});
     if(error)throw error;
     if(data.session){await restoreSession();}
     else portalMessage('Pendaftaran diterima. Semak e-mel untuk mengesahkan akaun sebelum log masuk.','success');
