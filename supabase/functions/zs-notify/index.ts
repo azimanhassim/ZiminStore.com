@@ -136,4 +136,4 @@ export async function handle(req: Request, env: Env, fetchFn: typeof fetch = fet
   return json(400, { error: "bad_request" });
 }
 
-if (import.meta.main) Deno.serve((req) => handle(req, (k) => Deno.env.get(k)));
+Deno.serve((req) => handle(req, (k) => Deno.env.get(k)));
