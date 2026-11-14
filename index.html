@@ -1325,6 +1325,49 @@ async function loadCustomerOrders(){
     }
   }catch(err){host.textContent='Tidak dapat memuatkan pesanan: '+(err.message||'Ralat');}
 }
+/* ---------- Admin: download all documents of an order as one ZIP ----------
+   JSZip is loaded only when an admin presses the button (pinned + SRI).
+   One ZIP download also works on iPad Safari, which blocks multiple downloads. */
+let zsJSZipLoading=null;
+function zsLoadJSZip(){
+  if(window.JSZip) return Promise.resolve(window.JSZip);
+  if(!zsJSZipLoading) zsJSZipLoading=new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';
+    s.integrity='sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG';
+    s.crossOrigin='anonymous';
+    s.onload=()=>resolve(window.JSZip);
+    s.onerror=()=>{zsJSZipLoading=null;reject(new Error('Alat ZIP tidak dapat dimuatkan. Semak sambungan internet.'));};
+    document.head.append(s);
+  });
+  return zsJSZipLoading;
+}
+async function zsDownloadAllDocs(order,btn){
+  const docs=order.documents||[];
+  if(!docs.length) return;
+  const label=btn.textContent; btn.disabled=true;
+  try{
+    btn.textContent='Menyediakan…';
+    const JSZip=await zsLoadJSZip();
+    const zip=new JSZip(); const used=new Set();
+    for(let i=0;i<docs.length;i++){
+      btn.textContent=`Memuat turun ${i+1}/${docs.length}…`;
+      const {data,error}=await sb.storage.from('customer-documents').download(docs[i].storage_path);
+      if(error) throw new Error((docs[i].original_filename||'dokumen')+': '+error.message);
+      let name=safeFileName(docs[i].original_filename||('dokumen-'+(i+1)));
+      while(used.has(name.toLowerCase())) name=(i+1)+'-'+name;
+      used.add(name.toLowerCase()); zip.file(name,data);
+    }
+    btn.textContent='Membina ZIP…';
+    const blob=await zip.generateAsync({type:'blob'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download=`${order.order_number||'pesanan'}-dokumen.zip`;
+    document.body.append(a); a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},10000);
+    portalMessage(`${docs.length} dokumen ${order.order_number} dimuat turun sebagai ZIP.`,'success');
+  }catch(err){portalMessage('Tidak dapat memuat turun semua dokumen: '+(err.message||'Ralat'),'error');}
+  finally{btn.disabled=false;btn.textContent=label;}
+}
 async function loadAdminOrders(){
   const host=document.getElementById('zs-admin-list');host.textContent='Memuatkan semua pesanan...';
   try{
@@ -1344,6 +1387,7 @@ async function loadAdminOrders(){
       const c1=document.createElement('td');c1.textContent=o.order_number+' · '+(customerNames.get(o.customer_id)||o.customer_id.slice(0,8));
       const c2=document.createElement('td');
       for(const d of (o.documents||[])){const b=document.createElement('button');b.className='portal-btn';b.textContent='Lihat '+d.original_filename;b.addEventListener('click',()=>signedDownload('customer-documents',d.storage_path,d.original_filename).catch(e=>portalMessage(e.message,'error')));c2.append(b,document.createElement('br'));}
+      if((o.documents||[]).length>1){const all=document.createElement('button');all.className='portal-btn primary';all.style.marginTop='6px';all.textContent=`Muat turun semua (${o.documents.length}) · ZIP`;all.addEventListener('click',()=>zsDownloadAllDocs(o,all));c2.append(all);}
       const c3=document.createElement('td');c3.textContent=money(o.total_sen);
       const c4=document.createElement('td');const select=document.createElement('select');select.className='portal-field';select.style.padding='7px';select.style.background='#050d20';select.style.color='white';
       Object.entries(statusLabels).forEach(([v,label])=>{const op=document.createElement('option');op.value=v;op.textContent=label;op.selected=o.status===v;select.append(op);});
