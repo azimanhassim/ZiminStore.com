@@ -106,6 +106,21 @@ markup and `<script id="zs-music-script">`. It never autoplays, keeps one audio 
 pauses other tabs, follows the BM/EN switch and sits underneath the customer/admin portal.
 Change or disable the track in the `ZS_MUSIC` config (see `assets/music/README.md`).
 
+## Notifications (Supabase Edge Function `zs-notify`)
+
+* **Admin:** Telegram message when a customer submits a payment proof.
+* **Customer:** e-mail (Brevo) when an order becomes `report_ready`, with a link to log in
+  and download the report (the PDF itself is never attached).
+
+Database triggers (`supabase/migrations/20261114_telegram_payment_notify.sql`) call the
+function through `pg_net`; the function re-reads the row and logs each event once in
+`zs_notification_log`, so nothing is sent twice and fake calls do nothing.
+
+Secrets live only in **Supabase → Edge Functions → Secrets** (never in `index.html`,
+GitHub or chat): `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `BREVO_API_KEY`,
+`BREVO_SENDER_EMAIL`, `BREVO_SENDER_NAME` (optional). Deploy with **verify JWT off**:
+the database calls it without a user token and the function validates every request itself.
+
 ## Local preview
 
 Open `index.html` directly in a browser, or serve the folder:
