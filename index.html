@@ -1515,51 +1515,101 @@ async function loadAdminOrders(){
       (o.documents||[]).forEach(d=>{const op=document.createElement('option');op.value=d.id;op.textContent=(hasRep.has(d.id)?'✓ ':'○ ')+d.original_filename;docSelect.append(op);});
       // Default to the first document that has no report yet.
       const firstOpen=(o.documents||[]).find(d=>!hasRep.has(d.id)); if(firstOpen) docSelect.value=firstOpen.id;
-      const upload=document.createElement('input');upload.type='file';upload.accept='application/pdf';upload.style.maxWidth='145px';upload.setAttribute('aria-label','Muat naik laporan PDF');
+      const upload=document.createElement('input');upload.type='file';upload.accept='application/pdf';upload.style.maxWidth='170px';upload.setAttribute('aria-label','Muat naik laporan PDF');
+      if((o.documents||[]).length>1) upload.multiple=true;   // several reports at once for multi-document orders
       const up=document.createElement('button');up.className='portal-btn primary';
-      const setUpLabel=()=>{up.textContent=hasRep.has(docSelect.value)?'Ganti laporan':'Upload laporan';}; setUpLabel(); docSelect.addEventListener('change',setUpLabel);
+      const mapBox=document.createElement('div');mapBox.className='portal-note';mapBox.style.width='100%';mapBox.hidden=true;
+      const files=()=>[...(upload.files||[])];
+      const setUpLabel=()=>{const n=files().length; up.textContent=n>1?`Upload ${n} laporan`:(hasRep.has(docSelect.value)?'Ganti laporan':'Upload laporan');};
+      setUpLabel(); docSelect.addEventListener('change',setUpLabel);
+      // Multi-file: suggest a document for each PDF from the file names; the admin checks and can change it.
+      const tokens=n=>new Set(String(n).toLowerCase().replace(/(\.(pdf|docx))+$/,'').split(/[^a-z0-9]+/).filter(t=>t.length>1&&!['pdf','docx','report','laporan','similarity','turnitin','final'].includes(t)));
+      upload.addEventListener('change',()=>{
+        const fs=files(); setUpLabel(); mapBox.innerHTML=''; mapBox.hidden=fs.length<2; docSelect.hidden=fs.length>1;
+        if(fs.length<2) return;
+        const docs=o.documents||[], taken=new Set();
+        const head=document.createElement('div');head.style.margin='4px 0 6px';head.innerHTML='<strong>Padankan setiap laporan dengan dokumen:</strong>';mapBox.append(head);
+        fs.forEach((f,idx)=>{
+          const ft=tokens(f.name); let best=null,score=0;
+          for(const d of docs){ if(taken.has(d.id)) continue; const dt=tokens(d.original_filename); const sc=[...ft].filter(t=>dt.has(t)).length; if(sc>score){score=sc;best=d;} }
+          if(!best) best=docs.find(d=>!taken.has(d.id)&&!hasRep.has(d.id))||docs.find(d=>!taken.has(d.id));
+          if(best) taken.add(best.id);
+          const row=document.createElement('div');row.style.cssText='display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0';
+          const lab=document.createElement('span');lab.textContent=f.name+' →';lab.style.wordBreak='break-all';
+          const sel=document.createElement('select');sel.dataset.mapIdx=String(idx);sel.setAttribute('aria-label','Dokumen untuk '+f.name);sel.style.cssText='max-width:200px;padding:6px;background:#050d20;color:white';
+          docs.forEach(d=>{const op=document.createElement('option');op.value=d.id;op.textContent=(hasRep.has(d.id)?'✓ ':'○ ')+d.original_filename;sel.append(op);});
+          if(best) sel.value=best.id;
+          row.append(lab,sel);mapBox.append(row);
+        });
+      });
+      const baseOf=n=>String(n).split('/').pop().replace(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-(h[0-9a-f]{12}-)?/i,'').replace(/(\.pdf)+$/i,'').toLowerCase();
+      // Upload one report for one document; replace older report(s) of that document after the new one is saved.
+      async function uploadOne(doc,file,hash){
+        const old=reps.filter(r=>r.document_id===doc.id);
+        const path=`${o.customer_id}/${o.id}/${crypto.randomUUID()}-${hash?'h'+hash+'-':''}${safeFileName(file.name)}`;
+        const {error:storageError}=await sb.storage.from('similarity-reports').upload(path,file,{contentType:'application/pdf'});
+        if(storageError)throw new Error(file.name+': '+storageError.message);
+        const {error:reportError}=await sb.from('reports').insert({order_id:o.id,document_id:doc.id,customer_id:o.customer_id,report_path:path});
+        if(reportError){await sb.storage.from('similarity-reports').remove([path]);throw new Error(file.name+': '+reportError.message);}
+        if(old.length){
+          const {error:delErr}=await sb.from('reports').delete().in('id',old.map(r=>r.id));
+          if(delErr) return ' (Laporan lama "'+doc.original_filename+'" tidak dapat dipadam; pelanggan hanya nampak yang terbaru.)';
+          const {error:rmErr}=await sb.storage.from('similarity-reports').remove(old.map(r=>r.report_path));
+          if(rmErr) return ' (Fail lama kekal dalam storan.)';
+        }
+        return '';
+      }
+      async function finishStatus(){
+        // Count DISTINCT documents with a report, so a duplicate can't mark the order complete early.
+        const {data:repRows,error:countError}=await sb.from('reports').select('document_id').eq('order_id',o.id);
+        if(countError)throw countError;
+        const done=new Set((repRows||[]).map(r=>r.document_id)).size;
+        const nextStatus=done>=o.document_count?'report_ready':'processing';
+        const {error:statusError}=await sb.from('orders').update({status:nextStatus,updated_at:new Date().toISOString()}).eq('id',o.id);
+        if(statusError)throw statusError;
+        return nextStatus;
+      }
       up.addEventListener('click',async()=>{
-        const file=upload.files?.[0];if(!file){portalMessage('Pilih fail PDF laporan dahulu.','error');return;}
-        if(file.type!=='application/pdf'||file.size>20*1024*1024){portalMessage('Laporan mestilah PDF dan tidak melebihi 20 MB.','error');return;}
-        const doc=(o.documents||[]).find(d=>d.id===docSelect.value);if(!doc){portalMessage('Pilih dokumen untuk laporan ini.','error');return;}
+        const fs=files(); if(!fs.length){portalMessage('Pilih fail PDF laporan dahulu.','error');return;}
+        const bad=fs.find(f=>f.type!=='application/pdf'||f.size>20*1024*1024);
+        if(bad){portalMessage(`"${bad.name}": laporan mestilah PDF dan tidak melebihi 20 MB.`,'error');return;}
+        // Build file -> document pairs.
+        const pairs=fs.length===1
+          ? [{file:fs[0],doc:(o.documents||[]).find(d=>d.id===docSelect.value)}]
+          : fs.map((f,idx)=>({file:f,doc:(o.documents||[]).find(d=>d.id===(mapBox.querySelector(`select[data-map-idx="${idx}"]`)||{}).value)}));
+        if(pairs.some(p=>!p.doc)){portalMessage('Pilih dokumen untuk setiap laporan.','error');return;}
+        const dupDoc=pairs.find((p,i)=>pairs.findIndex(q=>q.doc.id===p.doc.id)!==i);
+        if(dupDoc){portalMessage(`Dua laporan dipadankan dengan dokumen yang sama ("${dupDoc.doc.original_filename}"). Setiap dokumen hanya satu laporan.`,'error');return;}
         up.disabled=true;
         try{
-          const hash=await zsFileHash(file), safe=safeFileName(file.name);
-          // Compare file names without the storage prefix and ignoring repeated ".pdf" (e.g. "x.pdf.pdf").
-          const baseOf=n=>String(n).split('/').pop().replace(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-(h[0-9a-f]{12}-)?/i,'').replace(/(\.pdf)+$/i,'').toLowerCase();
-          const myBase=baseOf(safe);
-          // Same PDF already used for ANOTHER document of this order? (content hash, or same file name for older uploads)
-          const clash=reps.find(r=>r.document_id!==doc.id&&((hash&&r.report_path.includes('-h'+hash+'-'))||baseOf(r.report_path)===myBase));
-          if(clash&&!confirm(`AMARAN: Fail "${file.name}" nampaknya SAMA dengan laporan untuk dokumen "${docName(clash.document_id)}".\n\nAnda sedang memuat naik untuk "${doc.original_filename}". Pasti ini laporan yang betul?`)) return;
-          const old=reps.filter(r=>r.document_id===doc.id);
-          if(old.length&&!confirm(`Dokumen "${doc.original_filename}" sudah ada laporan. Gantikan laporan lama dengan "${file.name}"?`)) return;
-          const path=`${o.customer_id}/${o.id}/${crypto.randomUUID()}-${hash?'h'+hash+'-':''}${safe}`;
-          const {error:storageError}=await sb.storage.from('similarity-reports').upload(path,file,{contentType:'application/pdf'});
-          if(storageError)throw storageError;
-          const {error:reportError}=await sb.from('reports').insert({order_id:o.id,document_id:doc.id,customer_id:o.customer_id,report_path:path});
-          if(reportError){await sb.storage.from('similarity-reports').remove([path]);throw reportError;}
-          // Replace: remove the previous report(s) for this document only after the new one is saved.
-          let replaceNote='';
-          if(old.length){
-            const {error:delErr}=await sb.from('reports').delete().in('id',old.map(r=>r.id));
-            if(delErr) replaceNote=' (Laporan lama tidak dapat dipadam: '+delErr.message+'. Pelanggan hanya akan nampak laporan terbaru.)';
-            else { const {error:rmErr}=await sb.storage.from('similarity-reports').remove(old.map(r=>r.report_path)); if(rmErr) replaceNote=' (Fail lama kekal dalam storan.)'; }
+          for(const p of pairs) p.hash=await zsFileHash(p.file);
+          // Same PDF chosen twice in this batch?
+          const twin=pairs.find((p,i)=>p.hash&&pairs.findIndex(q=>q.hash===p.hash)!==i);
+          if(twin){const first=pairs.find(q=>q.hash===twin.hash);portalMessage(`Fail "${first.file.name}" dan "${twin.file.name}" mempunyai kandungan SAMA. Setiap dokumen perlukan laporannya sendiri.`,'error');return;}
+          // Same PDF as an existing report of a document that is NOT being replaced now?
+          const replacing=new Set(pairs.map(p=>p.doc.id));
+          for(const p of pairs){
+            const clash=reps.find(r=>!replacing.has(r.document_id)&&r.document_id!==p.doc.id&&((p.hash&&r.report_path.includes('-h'+p.hash+'-'))||baseOf(r.report_path)===baseOf(safeFileName(p.file.name))));
+            if(clash&&!confirm(`AMARAN: Fail "${p.file.name}" nampaknya SAMA dengan laporan untuk dokumen "${docName(clash.document_id)}".\n\nAnda sedang memuat naik untuk "${p.doc.original_filename}". Pasti ini laporan yang betul?`)) return;
           }
-          // Count DISTINCT documents with a report, so a duplicate can't mark the order complete early.
-          const {data:repRows,error:countError}=await sb.from('reports').select('document_id').eq('order_id',o.id);
-          if(countError)throw countError;
-          const done=new Set((repRows||[]).map(r=>r.document_id)).size;
-          const nextStatus=done>=o.document_count?'report_ready':'processing';
-          const {error:statusError}=await sb.from('orders').update({status:nextStatus,updated_at:new Date().toISOString()}).eq('id',o.id);
-          if(statusError)throw statusError;
-          portalMessage((old.length?`Laporan untuk "${doc.original_filename}" telah diganti.`:(nextStatus==='report_ready'?'Semua laporan telah dimuat naik. Pesanan kini sedia untuk pelanggan.':'Laporan dokumen dimuat naik. Muat naik laporan bagi dokumen lain untuk melengkapkan pesanan.'))+replaceNote,'success');await loadAdminOrders();
-        }catch(err){portalMessage(err.message||'Muat naik gagal.','error');}
-        finally{up.disabled=false;}
+          const repl=pairs.filter(p=>hasRep.has(p.doc.id));
+          if(repl.length&&!confirm(repl.length===1&&pairs.length===1
+              ? `Dokumen "${repl[0].doc.original_filename}" sudah ada laporan. Gantikan laporan lama dengan "${repl[0].file.name}"?`
+              : `Laporan lama akan DIGANTI untuk:\n${repl.map(p=>'• '+p.doc.original_filename+'  ←  '+p.file.name).join('\n')}\n\nTeruskan?`)) return;
+          let notes='', doneCount=0;
+          for(const p of pairs){ up.textContent=`Memuat naik ${doneCount+1}/${pairs.length}…`; notes+=await uploadOne(p.doc,p.file,p.hash); doneCount++; }
+          const nextStatus=await finishStatus();
+          const msg=pairs.length>1
+            ? `${pairs.length} laporan dimuat naik: ${pairs.map(p=>p.doc.original_filename).join(', ')}.`+(nextStatus==='report_ready'?' Pesanan kini sedia untuk pelanggan.':' Masih ada dokumen tanpa laporan.')
+            : (repl.length?`Laporan untuk "${pairs[0].doc.original_filename}" telah diganti.`:(nextStatus==='report_ready'?'Semua laporan telah dimuat naik. Pesanan kini sedia untuk pelanggan.':'Laporan dokumen dimuat naik. Muat naik laporan bagi dokumen lain untuk melengkapkan pesanan.'));
+          portalMessage(msg+notes,'success');await loadAdminOrders();
+        }catch(err){portalMessage((err.message||'Muat naik gagal.')+' Muat semula senarai untuk lihat laporan yang sudah berjaya.','error');}
+        finally{up.disabled=false;setUpLabel();}
       });
       // Show which report is attached to which document, so the admin can check it.
       const repList=document.createElement('div');repList.className='portal-note';repList.style.width='100%';
       for(const r of zsLatestReports(reps)){const rb=document.createElement('button');rb.className='portal-btn';rb.style.margin='4px 6px 0 0';rb.textContent='Lihat laporan: '+docName(r.document_id);rb.addEventListener('click',()=>signedDownload('similarity-reports',r.report_path,'laporan.pdf').catch(e=>portalMessage(e.message,'error')));repList.append(rb);}
-      actions.append(docSelect,upload,up);if(reps.length)actions.append(repList);c5.append(actions);tr.append(c1,c2,c3,c4,c5);body.append(tr);
+      actions.append(docSelect,upload,up,mapBox);if(reps.length)actions.append(repList);c5.append(actions);tr.append(c1,c2,c3,c4,c5);body.append(tr);
     }
     table.append(body);wrap.append(table);host.innerHTML='';host.append(wrap);
   }catch(err){host.textContent='Tidak dapat memuatkan dashboard admin: '+(err.message||'Ralat');}
