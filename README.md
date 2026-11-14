@@ -14,6 +14,8 @@ accounts, orders, file storage and the admin dashboard.
 | `index.html` | The whole site: landing page, customer portal, admin dashboard. |
 | `supabase/introspect.sql` | Read-only queries to inspect the live database. Changes nothing. |
 | `supabase/audit-final.sql` | Read-only, **one** query: PASS / FAIL / SEMAK table for RLS, role, price, payment, storage and admin access, plus the full policy/trigger/function inventory. Run this first. |
+| `assets/music/` | Background track for the ZiminStore Music player (original composition) and its README. |
+| `tools/compose-study-night.py` | Script that generated the original track (proof of origin; re-run to regenerate). |
 | `supabase/optional-cleanup.sql` | Optional tidy-ups from the audit. **Not applied.** Nothing in it is required for security. |
 
 ## Configuration
@@ -95,6 +97,14 @@ update public.profiles set role = 'admin' where id = '<your auth user id>';
   reset links will not return to the site.
 * **Authentication → Providers → Email:** keep "Confirm email" on.
 * **Authentication → Rate limits / CAPTCHA:** consider enabling CAPTCHA for sign-up.
+
+## ZiminStore Music player
+
+A small floating player (bottom-right, above the WhatsApp button; a round button on phones).
+It is a separate component in `index.html`: `<style id="zs-music-style">`, the `#zs-music`
+markup and `<script id="zs-music-script">`. It never autoplays, keeps one audio instance,
+pauses other tabs, follows the BM/EN switch and sits underneath the customer/admin portal.
+Change or disable the track in the `ZS_MUSIC` config (see `assets/music/README.md`).
 
 ## Local preview
 
