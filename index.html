@@ -1338,7 +1338,7 @@ async function loadCustomerOrders(){
   if(!sb||!currentProfile)return;
   const host=document.getElementById('zs-orders-list');host.textContent='Memuatkan pesanan...';
   try{
-    const {data:orders,error}=await sb.from('orders').select('id,order_number,document_count,total_sen,status,created_at,documents(id,original_filename,storage_path),payments(id,status,proof_path,amount_sen,created_at),reports(id,document_id,report_path)').eq('customer_id',currentProfile.id).order('created_at',{ascending:false});
+    const {data:orders,error}=await sb.from('orders').select('id,order_number,document_count,total_sen,status,created_at,documents(id,original_filename,storage_path),payments(id,status,proof_path,amount_sen,created_at),reports(id,document_id,report_path,uploaded_at)').eq('customer_id',currentProfile.id).order('created_at',{ascending:false});
     if(error)throw error;
     if(!orders?.length){host.textContent='Belum ada pesanan. Tekan “Tempahan baharu” untuk bermula.';return;}
     host.innerHTML='';
@@ -1387,7 +1387,7 @@ async function loadCustomerOrders(){
         payWrap.append(payLabel,payInput,payButton);card.append(payWrap);
       }
       const docNames=new Map((o.documents||[]).map(d=>[d.id,d.original_filename]));
-      for(const report of (o.reports||[])){
+      for(const report of zsLatestReports(o.reports)){
         const src=docNames.get(report.document_id)||'dokumen';
         const b=document.createElement('button');b.className='portal-btn';b.style.margin='8px 6px 0 0';b.textContent='Laporan PDF: '+src;
         b.addEventListener('click',()=>signedDownload('similarity-reports',report.report_path,'ZiminStore-report-'+safeFileName(src.replace(/\.(pdf|docx)$/i,''))+'.pdf').catch(e=>portalMessage(e.message,'error')));
@@ -1440,10 +1440,27 @@ async function zsDownloadAllDocs(order,btn){
   }catch(err){portalMessage('Tidak dapat memuat turun semua dokumen: '+(err.message||'Ralat'),'error');}
   finally{btn.disabled=false;btn.textContent=label;}
 }
+/* ---------- Reports: one current report per document ----------
+   Keep only the newest report for each document (older duplicates are hidden from
+   customers and replaced by the admin upload below). */
+function zsLatestReports(reports){
+  const by=new Map();
+  for(const r of (reports||[])){
+    const k=r.document_id||r.id, cur=by.get(k);
+    if(!cur||new Date(r.uploaded_at||0)>=new Date(cur.uploaded_at||0)) by.set(k,r);
+  }
+  return [...by.values()];
+}
+async function zsFileHash(file){
+  try{
+    const buf=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());
+    return [...new Uint8Array(buf)].slice(0,6).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }catch(e){return '';}
+}
 async function loadAdminOrders(){
   const host=document.getElementById('zs-admin-list');host.textContent='Memuatkan semua pesanan...';
   try{
-    const {data:orders,error}=await sb.from('orders').select('id,order_number,customer_id,document_count,total_sen,status,created_at,documents(id,original_filename,storage_path),payments(id,proof_path,status,amount_sen,created_at)').order('created_at',{ascending:false}).limit(100);
+    const {data:orders,error}=await sb.from('orders').select('id,order_number,customer_id,document_count,total_sen,status,created_at,documents(id,original_filename,storage_path),payments(id,proof_path,status,amount_sen,created_at),reports(id,document_id,report_path,uploaded_at)').order('created_at',{ascending:false}).limit(100);
     if(error)throw error;
     if(!orders?.length){host.textContent='Belum ada pesanan.';return;}
     const customerIds=[...new Set(orders.map(o=>o.customer_id))];
@@ -1491,34 +1508,58 @@ async function loadAdminOrders(){
         const reject=document.createElement('button');reject.className='portal-btn';reject.textContent='Tolak bayaran';reject.addEventListener('click',()=>{if(confirm('Tolak bukti bayaran untuk '+o.order_number+'?'))review('rejected',reject);});
         actions.append(verify,reject);
       }
-      const docSelect=document.createElement('select');docSelect.style.maxWidth='145px';docSelect.style.padding='7px';docSelect.style.background='#050d20';docSelect.style.color='white';
-      (o.documents||[]).forEach(d=>{const op=document.createElement('option');op.value=d.id;op.textContent=d.original_filename;docSelect.append(op);});
+      const reps=o.reports||[];
+      const docName=id=>((o.documents||[]).find(d=>d.id===id)||{}).original_filename||'dokumen';
+      const hasRep=new Set(reps.map(r=>r.document_id));
+      const docSelect=document.createElement('select');docSelect.style.maxWidth='170px';docSelect.style.padding='7px';docSelect.style.background='#050d20';docSelect.style.color='white';docSelect.setAttribute('aria-label','Dokumen untuk laporan');
+      (o.documents||[]).forEach(d=>{const op=document.createElement('option');op.value=d.id;op.textContent=(hasRep.has(d.id)?'✓ ':'○ ')+d.original_filename;docSelect.append(op);});
+      // Default to the first document that has no report yet.
+      const firstOpen=(o.documents||[]).find(d=>!hasRep.has(d.id)); if(firstOpen) docSelect.value=firstOpen.id;
       const upload=document.createElement('input');upload.type='file';upload.accept='application/pdf';upload.style.maxWidth='145px';upload.setAttribute('aria-label','Muat naik laporan PDF');
-      const up=document.createElement('button');up.className='portal-btn primary';up.textContent='Upload laporan';up.addEventListener('click',async()=>{
+      const up=document.createElement('button');up.className='portal-btn primary';
+      const setUpLabel=()=>{up.textContent=hasRep.has(docSelect.value)?'Ganti laporan':'Upload laporan';}; setUpLabel(); docSelect.addEventListener('change',setUpLabel);
+      up.addEventListener('click',async()=>{
         const file=upload.files?.[0];if(!file){portalMessage('Pilih fail PDF laporan dahulu.','error');return;}
         if(file.type!=='application/pdf'||file.size>20*1024*1024){portalMessage('Laporan mestilah PDF dan tidak melebihi 20 MB.','error');return;}
+        const doc=(o.documents||[]).find(d=>d.id===docSelect.value);if(!doc){portalMessage('Pilih dokumen untuk laporan ini.','error');return;}
         up.disabled=true;
         try{
-          const doc=(o.documents||[]).find(d=>d.id===docSelect.value);if(!doc)throw new Error('Pilih dokumen untuk laporan ini.');
-          const path=`${o.customer_id}/${o.id}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
+          const hash=await zsFileHash(file), safe=safeFileName(file.name);
+          // Compare file names without the storage prefix and ignoring repeated ".pdf" (e.g. "x.pdf.pdf").
+          const baseOf=n=>String(n).split('/').pop().replace(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-(h[0-9a-f]{12}-)?/i,'').replace(/(\.pdf)+$/i,'').toLowerCase();
+          const myBase=baseOf(safe);
+          // Same PDF already used for ANOTHER document of this order? (content hash, or same file name for older uploads)
+          const clash=reps.find(r=>r.document_id!==doc.id&&((hash&&r.report_path.includes('-h'+hash+'-'))||baseOf(r.report_path)===myBase));
+          if(clash&&!confirm(`AMARAN: Fail "${file.name}" nampaknya SAMA dengan laporan untuk dokumen "${docName(clash.document_id)}".\n\nAnda sedang memuat naik untuk "${doc.original_filename}". Pasti ini laporan yang betul?`)) return;
+          const old=reps.filter(r=>r.document_id===doc.id);
+          if(old.length&&!confirm(`Dokumen "${doc.original_filename}" sudah ada laporan. Gantikan laporan lama dengan "${file.name}"?`)) return;
+          const path=`${o.customer_id}/${o.id}/${crypto.randomUUID()}-${hash?'h'+hash+'-':''}${safe}`;
           const {error:storageError}=await sb.storage.from('similarity-reports').upload(path,file,{contentType:'application/pdf'});
           if(storageError)throw storageError;
           const {error:reportError}=await sb.from('reports').insert({order_id:o.id,document_id:doc.id,customer_id:o.customer_id,report_path:path});
           if(reportError){await sb.storage.from('similarity-reports').remove([path]);throw reportError;}
-          // Count DISTINCT documents with a report, so re-uploading a report for the same
-          // document can't mark the order complete early. The database has no trigger for this,
-          // so the admin's browser sets processing / report_ready (admin-only RLS).
+          // Replace: remove the previous report(s) for this document only after the new one is saved.
+          let replaceNote='';
+          if(old.length){
+            const {error:delErr}=await sb.from('reports').delete().in('id',old.map(r=>r.id));
+            if(delErr) replaceNote=' (Laporan lama tidak dapat dipadam: '+delErr.message+'. Pelanggan hanya akan nampak laporan terbaru.)';
+            else { const {error:rmErr}=await sb.storage.from('similarity-reports').remove(old.map(r=>r.report_path)); if(rmErr) replaceNote=' (Fail lama kekal dalam storan.)'; }
+          }
+          // Count DISTINCT documents with a report, so a duplicate can't mark the order complete early.
           const {data:repRows,error:countError}=await sb.from('reports').select('document_id').eq('order_id',o.id);
           if(countError)throw countError;
           const done=new Set((repRows||[]).map(r=>r.document_id)).size;
           const nextStatus=done>=o.document_count?'report_ready':'processing';
           const {error:statusError}=await sb.from('orders').update({status:nextStatus,updated_at:new Date().toISOString()}).eq('id',o.id);
           if(statusError)throw statusError;
-          portalMessage(nextStatus==='report_ready'?'Semua laporan telah dimuat naik. Pesanan kini sedia untuk pelanggan.':'Laporan dokumen dimuat naik. Muat naik laporan bagi dokumen lain untuk melengkapkan pesanan.','success');await loadAdminOrders();
+          portalMessage((old.length?`Laporan untuk "${doc.original_filename}" telah diganti.`:(nextStatus==='report_ready'?'Semua laporan telah dimuat naik. Pesanan kini sedia untuk pelanggan.':'Laporan dokumen dimuat naik. Muat naik laporan bagi dokumen lain untuk melengkapkan pesanan.'))+replaceNote,'success');await loadAdminOrders();
         }catch(err){portalMessage(err.message||'Muat naik gagal.','error');}
         finally{up.disabled=false;}
       });
-      actions.append(docSelect,upload,up);c5.append(actions);tr.append(c1,c2,c3,c4,c5);body.append(tr);
+      // Show which report is attached to which document, so the admin can check it.
+      const repList=document.createElement('div');repList.className='portal-note';repList.style.width='100%';
+      for(const r of zsLatestReports(reps)){const rb=document.createElement('button');rb.className='portal-btn';rb.style.margin='4px 6px 0 0';rb.textContent='Lihat laporan: '+docName(r.document_id);rb.addEventListener('click',()=>signedDownload('similarity-reports',r.report_path,'laporan.pdf').catch(e=>portalMessage(e.message,'error')));repList.append(rb);}
+      actions.append(docSelect,upload,up);if(reps.length)actions.append(repList);c5.append(actions);tr.append(c1,c2,c3,c4,c5);body.append(tr);
     }
     table.append(body);wrap.append(table);host.innerHTML='';host.append(wrap);
   }catch(err){host.textContent='Tidak dapat memuatkan dashboard admin: '+(err.message||'Ralat');}
