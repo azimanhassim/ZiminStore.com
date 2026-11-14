@@ -913,6 +913,13 @@ html{overflow-x:clip}
         <div class="portal-field"><label for="zs-reset-email">E-mel akaun</label><input id="zs-reset-email" type="email" required></div>
         <button class="portal-btn primary" type="submit">Hantar pautan reset</button>
       </form>
+      <form id="zs-resend-form" class="portal-card portal-hidden">
+        <h3>Sahkan e-mel anda</h3>
+        <p class="portal-note" id="zs-resend-note" style="margin-bottom:12px">Masukkan e-mel akaun anda untuk menerima pautan pengesahan baharu.</p>
+        <div class="portal-field"><label for="zs-resend-email">E-mel akaun</label><input id="zs-resend-email" type="email" autocomplete="email" required></div>
+        <button class="portal-btn primary" type="submit">Hantar semula e-mel pengesahan</button>
+        <p class="portal-note" style="margin-top:10px">Gunakan pautan dalam e-mel yang <strong>paling baru</strong> sahaja. Pautan lama tidak lagi sah. Semak juga folder Spam atau Promotions.</p>
+      </form>
       <form id="zs-newpass-form" class="portal-card portal-hidden">
         <h3>Tetapkan kata laluan baharu</h3>
         <div class="portal-field"><label for="zs-newpass">Kata laluan baharu (minimum 8 aksara)</label><input id="zs-newpass" type="password" autocomplete="new-password" required minlength="8"></div>
@@ -1075,6 +1082,13 @@ const loginForm = document.getElementById('zs-login-form');
 const registerForm = document.getElementById('zs-register-form');
 const resetForm = document.getElementById('zs-reset-form');
 const newPassForm = document.getElementById('zs-newpass-form');
+const resendForm = document.getElementById('zs-resend-form');
+// Read the e-mail link result BEFORE supabase-js consumes and clears the URL.
+const zsAuthReturn = (()=>{
+  const p = new URLSearchParams((location.hash||'').replace(/^#/,'')), q = new URLSearchParams(location.search);
+  const get = k => p.get(k) || q.get(k);
+  return { error: get('error'), code: get('error_code'), type: get('type') };
+})();
 const sb = window.supabase?.createClient
   ? window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabasePublishableKey)
   : null;
@@ -1108,6 +1122,7 @@ function showAuthTab(tab){
   loginForm.classList.toggle('portal-hidden',tab!=='login');
   registerForm.classList.toggle('portal-hidden',tab!=='register');
   resetForm.classList.toggle('portal-hidden',tab!=='reset');
+  resendForm.classList.toggle('portal-hidden',tab!=='resend');
   newPassForm.classList.toggle('portal-hidden',tab!=='newpass');
   document.querySelector('#zs-auth-view .portal-tabs').classList.toggle('portal-hidden',tab==='newpass');
 }
@@ -1118,29 +1133,86 @@ document.querySelectorAll('[data-portal]').forEach(a=>a.addEventListener('click'
   openPortal(action==='register'?'register':'login');
   if(action==='order'||action==='track') setTimeout(()=>{ if(dashView.classList.contains('portal-hidden')) return; showDashTab(action==='order'?'new-order':'orders'); },250);
 }));
+/* ---------- Auth messages in BM + e-mail confirmation help ---------- */
+function zsAuthError(err, fallback){
+  const code=err?.code||'', msg=(err?.message||'').toLowerCase();
+  if(code==='over_email_send_rate_limit'||err?.status===429||msg.includes('rate limit')||msg.includes('security purposes'))
+    return 'Terlalu banyak cubaan dalam masa singkat. Tunggu sebentar dan cuba lagi. Jika anda sudah mendaftar, JANGAN daftar semula: semak e-mel anda atau hantar semula e-mel pengesahan.';
+  if(code==='invalid_credentials'||msg.includes('invalid login credentials')) return 'E-mel atau kata laluan salah.';
+  if(code==='user_already_exists'||msg.includes('already registered')) return 'E-mel ini sudah berdaftar. Sila log masuk.';
+  if(code==='weak_password') return 'Kata laluan terlalu lemah. Guna sekurang-kurangnya 8 aksara.';
+  if(code==='email_address_invalid'||msg.includes('invalid email')) return 'Alamat e-mel tidak sah.';
+  return err?.message||fallback;
+}
+function showResend(email, note, kind='info'){
+  clearPortalMessage(); showAuthTab('resend');
+  document.querySelectorAll('[data-auth-tab]').forEach(b=>b.classList.remove('active'));
+  if(email) document.getElementById('zs-resend-email').value=email;
+  // Long explanation goes in the alert; the card keeps a short instruction (no repeated text).
+  document.getElementById('zs-resend-note').textContent=kind==='info'?note:'Masukkan e-mel akaun anda dan tekan butang di bawah untuk menerima pautan pengesahan baharu.';
+  if(kind!=='info') portalMessage(note,kind);
+}
 loginForm.addEventListener('submit',async e=>{
   e.preventDefault(); if(!sb)return;
   const btn=loginForm.querySelector('button[type=submit]'); btn.disabled=true;
+  const email=document.getElementById('zs-login-email').value.trim();
   try{
-    const {error}=await sb.auth.signInWithPassword({email:document.getElementById('zs-login-email').value.trim(),password:document.getElementById('zs-login-password').value});
+    const {error}=await sb.auth.signInWithPassword({email,password:document.getElementById('zs-login-password').value});
     if(error)throw error;
     await restoreSession();
-  }catch(err){portalMessage(err.message||'Log masuk gagal.','error');}
+  }catch(err){
+    if(err?.code==='email_not_confirmed'||(err?.message||'').toLowerCase().includes('email not confirmed'))
+      showResend(email,'Akaun anda belum disahkan. Buka pautan dalam e-mel pengesahan ZiminStore yang paling baru, atau hantar semula e-mel pengesahan di bawah.','error');
+    else portalMessage(zsAuthError(err,'Log masuk gagal.'),'error');
+  }
   finally{btn.disabled=false;}
 });
+const regBtn=registerForm.querySelector('button[type=submit]');
+const regBtnLabel=regBtn.textContent;
+// After a successful sign-up the button stays locked: pressing Daftar again sends a new
+// e-mail and makes the earlier link invalid. It unlocks only if the e-mail is changed.
+document.getElementById('zs-reg-email').addEventListener('input',()=>{ if(regBtn.dataset.sent){ delete regBtn.dataset.sent; regBtn.disabled=false; regBtn.textContent=regBtnLabel; } });
 registerForm.addEventListener('submit',async e=>{
-  e.preventDefault(); if(!sb)return;
-  const btn=registerForm.querySelector('button[type=submit]'); btn.disabled=true;
+  e.preventDefault(); if(!sb||regBtn.dataset.sent)return;
+  regBtn.disabled=true;
   const name=document.getElementById('zs-reg-name').value.trim();
   const email=document.getElementById('zs-reg-email').value.trim();
   const phone=document.getElementById('zs-reg-phone').value.trim();
+  let sent=false;
   try{
     const {data,error}=await sb.auth.signUp({email,password:document.getElementById('zs-reg-password').value,options:{data:{full_name:name,phone},emailRedirectTo:location.origin+location.pathname}});
     if(error)throw error;
     if(data.session){await restoreSession();}
-    else portalMessage('Pendaftaran diterima. Semak e-mel untuk mengesahkan akaun sebelum log masuk.','success');
-  }catch(err){portalMessage(err.message||'Pendaftaran gagal.','error');}
-  finally{btn.disabled=false;}
+    else if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){
+      portalMessage('E-mel ini sudah berdaftar. Sila log masuk, atau guna "Lupa kata laluan" jika terlupa.','error');
+    } else {
+      sent=true; regBtn.dataset.sent='1'; regBtn.textContent='E-mel pengesahan telah dihantar';
+      portalMessage(`Pendaftaran berjaya! E-mel pengesahan dihantar ke ${email}. Buka e-mel itu, tekan pautan pengesahan, kemudian log masuk. Tidak perlu tekan Daftar lagi. Semak juga folder Spam/Promotions.`,'success');
+      document.getElementById('zs-resend-email').value=email;
+    }
+  }catch(err){portalMessage(zsAuthError(err,'Pendaftaran gagal.'),'error');}
+  finally{ if(!sent) regBtn.disabled=false; }
+});
+let zsResendTimer=null;
+resendForm.addEventListener('submit',async e=>{
+  e.preventDefault(); if(!sb)return;
+  const btn=resendForm.querySelector('button[type=submit]'); if(btn.disabled)return;
+  const email=document.getElementById('zs-resend-email').value.trim();
+  btn.disabled=true; let cooldown=false;
+  try{
+    const {error}=await sb.auth.resend({type:'signup',email,options:{emailRedirectTo:location.origin+location.pathname}});
+    if(error)throw error;
+    portalMessage(`E-mel pengesahan baharu dihantar ke ${email}. Gunakan pautan dalam e-mel TERBARU ini, kemudian log masuk.`,'success');
+    cooldown=true;
+  }catch(err){portalMessage(zsAuthError(err,'Tidak dapat menghantar e-mel pengesahan.'),'error'); cooldown=err?.status===429;}
+  finally{
+    if(!cooldown){btn.disabled=false;return;}
+    // wait 60 s before allowing another e-mail (Supabase rejects faster repeats anyway)
+    let s=60; const label='Hantar semula e-mel pengesahan';
+    clearInterval(zsResendTimer);
+    zsResendTimer=setInterval(()=>{ s--; btn.textContent=`${label} (${s}s)`; if(s<=0){clearInterval(zsResendTimer);btn.textContent=label;btn.disabled=false;} },1000);
+    btn.textContent=`${label} (${s}s)`;
+  }
 });
 resetForm.addEventListener('submit',async e=>{
   e.preventDefault(); if(!sb)return;
@@ -1529,6 +1601,20 @@ document.querySelectorAll('#mobile-menu a[href^="#"]').forEach(a=>a.addEventList
 /* ---------- Init ---------- */
 let saved='bm'; try{ saved = localStorage.getItem('zs-lang') || 'bm'; }catch(e){}
 setLang(saved==='en'?'en':'bm');
+
+/* Returning from an e-mail link: explain what happened instead of a silent page. */
+if(sb && (zsAuthReturn.error || zsAuthReturn.code)){
+  setTimeout(()=>{
+    openPortal('login');
+    showResend('', 'Pautan dalam e-mel ini tidak sah atau telah tamat tempoh. Ini biasanya berlaku jika pautan dari e-mel LAMA diklik selepas mendaftar semula. Masukkan e-mel anda untuk menerima pautan pengesahan baharu. (Jika ini pautan reset kata laluan, guna tab "Lupa kata laluan".)', 'error');
+    try{ history.replaceState(null,'',location.pathname); }catch(e){}
+  },300);
+} else if(sb && (zsAuthReturn.type==='signup' || zsAuthReturn.type==='email')){
+  setTimeout(()=>{
+    openPortal('login');
+    portalMessage('E-mel anda telah disahkan. Selamat datang ke ZiminStore!','success');
+  },600);
+}
 </script>
 
 <script id="zs-music-script">
