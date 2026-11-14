@@ -464,6 +464,64 @@ html{overflow-x:clip}
 }
 
 </style>
+<style id="zs-music-style">
+/* ---------- ZiminStore Music: isolated floating player (all classes prefixed zsm-) ----------
+   Sits bottom-right, stacked ABOVE the WhatsApp button; z-index below the portal (1000)
+   so it never covers login, upload or admin forms. Phones: collapses to a small round button. */
+.zsm{position:fixed;z-index:45;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));font-family:var(--f-body);color:var(--text);line-height:1.2}
+.zsm *{box-sizing:border-box}
+.zsm-card{width:288px;max-width:calc(100vw - 32px);border-radius:18px;background:linear-gradient(160deg,rgba(22,46,100,.94),rgba(8,19,48,.96));border:1px solid var(--line-2);box-shadow:0 18px 40px -16px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.03) inset,0 0 40px -22px rgba(47,107,255,.7);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);overflow:hidden}
+.zsm-bar{display:flex;align-items:center;gap:10px;padding:9px 9px 9px 10px}
+.zsm-ic{position:relative;flex:0 0 36px;width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(150deg,rgba(47,107,255,.32),rgba(34,211,238,.12));border:1px solid rgba(77,133,255,.38);color:var(--cyan)}
+.zsm-ic svg{width:17px;height:17px}
+.zsm-meta{min-width:0;flex:1}
+.zsm-meta strong{display:block;font-size:13px;font-weight:800;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zsm-status{display:block;margin-top:3px;font-size:11.5px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zsm[data-state="playing"] .zsm-status{color:var(--cyan)}
+.zsm[data-state="unavailable"] .zsm-status{color:var(--gold)}
+.zsm-btn{all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#CFE0FF;background:rgba(47,107,255,.14);border:1px solid rgba(77,133,255,.32);transition:background .2s,transform .15s,opacity .2s}
+.zsm-btn:hover{background:rgba(47,107,255,.3)}
+.zsm-btn:active{transform:scale(.94)}
+.zsm-btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.zsm-btn:disabled{opacity:.38;cursor:not-allowed;transform:none}
+.zsm-btn svg{width:15px;height:15px;pointer-events:none}
+.zsm-play{background:linear-gradient(180deg,#3B78FF,#2559E8);border-color:transparent;color:#fff;box-shadow:0 6px 16px -6px rgba(47,107,255,.85)}
+.zsm-play:hover{background:linear-gradient(180deg,#4D85FF,#2B62F0)}
+.zsm-play .zsm-i-pause,.zsm[data-state="playing"] .zsm-play .zsm-i-play,.zsm[data-state="loading"] .zsm-play .zsm-i-play{display:none}
+.zsm[data-state="playing"] .zsm-play .zsm-i-pause,.zsm[data-state="loading"] .zsm-play .zsm-i-pause{display:block}
+.zsm-mute .zsm-i-off,.zsm-mute[aria-pressed="true"] .zsm-i-on{display:none}
+.zsm-mute[aria-pressed="true"] .zsm-i-off{display:block}
+.zsm-mute[aria-pressed="true"]{color:var(--gold);border-color:rgba(242,184,75,.45);background:rgba(242,184,75,.1)}
+.zsm-chev{width:28px;background:transparent;border-color:transparent}
+.zsm-chev svg{transition:transform .25s var(--ease)}
+.zsm[data-open="true"] .zsm-chev svg{transform:rotate(180deg)}
+.zsm-more{display:none;align-items:center;gap:8px;padding:2px 10px 11px}
+.zsm[data-open="true"] .zsm-more{display:flex}
+.zsm-vol{flex:1;min-width:0;height:22px;margin:0;accent-color:var(--cyan);cursor:pointer;background:transparent}
+.zsm-vol:disabled{opacity:.4;cursor:not-allowed}
+.zsm-vol:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:6px}
+.zsm-volnum{flex:0 0 34px;text-align:right;font:600 11px var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+/* tiny equaliser on the icon while playing */
+.zsm-eq{position:absolute;right:4px;bottom:4px;display:none;gap:1.5px;align-items:flex-end;height:8px}
+.zsm-eq i{width:2px;height:3px;border-radius:1px;background:var(--cyan)}
+.zsm[data-state="playing"] .zsm-eq{display:flex}
+@media (prefers-reduced-motion:no-preference){
+  .zsm[data-state="playing"] .zsm-eq i{animation:zsm-eq .9s ease-in-out infinite}
+  .zsm-eq i:nth-child(2){animation-delay:-.3s!important}.zsm-eq i:nth-child(3){animation-delay:-.6s!important}
+}
+@keyframes zsm-eq{0%,100%{height:2px}50%{height:8px}}
+/* round launcher used on phones when the player is closed */
+.zsm-fab{display:none}
+@media (max-width:640px){
+  .zsm{right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  .zsm[data-open="false"] .zsm-card{display:none}
+  .zsm[data-open="false"] .zsm-fab{all:unset;box-sizing:border-box;position:relative;cursor:pointer;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:var(--cyan);background:linear-gradient(160deg,rgba(22,46,100,.95),rgba(8,19,48,.97));border:1px solid var(--line-2);box-shadow:0 14px 30px -12px rgba(0,0,0,.8),0 0 30px -16px rgba(47,107,255,.8)}
+  .zsm-fab svg{width:20px;height:20px}
+  .zsm-fab:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+  .zsm-fab .zsm-eq{right:12px;bottom:11px}
+  .zsm-card{width:min(288px,calc(100vw - 32px))}
+}
+</style>
 </head>
 <body>
 
@@ -780,6 +838,45 @@ html{overflow-x:clip}
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.8 9.8 0 0 0-8.4 14.9L2.2 21.8l4.8-1.3A9.8 9.8 0 1 0 12 2.2zm0 17.8a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.2.2-.6.2-1 .1-1.2l-.4-.2z"/></svg>
   <span>WhatsApp</span>
 </a>
+
+<!-- ================= ZiminStore Music (isolated component; see #zs-music-script) ================= -->
+<div class="zsm" id="zs-music" data-state="idle" data-open="false">
+  <button type="button" class="zsm-fab" id="zsm-fab" aria-label="Buka ZiminStore Music" aria-controls="zsm-card" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    <span class="zsm-eq" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+  <div class="zsm-card" id="zsm-card" role="region" aria-label="ZiminStore Music">
+    <div class="zsm-bar">
+      <span class="zsm-ic" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <span class="zsm-eq"><i></i><i></i><i></i></span>
+      </span>
+      <div class="zsm-meta">
+        <strong>ZiminStore Music</strong>
+        <span class="zsm-status" id="zsm-status" aria-live="polite">Sedia</span>
+      </div>
+      <button type="button" class="zsm-btn zsm-play" id="zsm-play" aria-label="Main muzik">
+        <svg class="zsm-i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg>
+        <svg class="zsm-i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4.2" height="16" rx="1.2"/><rect x="13.8" y="4" width="4.2" height="16" rx="1.2"/></svg>
+      </button>
+      <button type="button" class="zsm-btn zsm-chev" id="zsm-toggle" aria-label="Kawalan muzik" aria-controls="zsm-more" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+      </button>
+    </div>
+    <div class="zsm-more" id="zsm-more">
+      <button type="button" class="zsm-btn" id="zsm-stop" aria-label="Henti muzik">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+      </button>
+      <button type="button" class="zsm-btn zsm-mute" id="zsm-mute" aria-label="Senyapkan" aria-pressed="false">
+        <svg class="zsm-i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        <svg class="zsm-i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>
+      </button>
+      <input class="zsm-vol" id="zsm-vol" type="range" min="0" max="100" step="1" value="50" aria-label="Kelantangan">
+      <span class="zsm-volnum" id="zsm-volnum" aria-hidden="true">50%</span>
+    </div>
+  </div>
+</div>
+
 
 
 <!-- Connected ZiminStore portal -->
@@ -1388,6 +1485,183 @@ document.querySelectorAll('#mobile-menu a[href^="#"]').forEach(a=>a.addEventList
 /* ---------- Init ---------- */
 let saved='bm'; try{ saved = localStorage.getItem('zs-lang') || 'bm'; }catch(e){}
 setLang(saved==='en'?'en':'bm');
+</script>
+
+<script id="zs-music-script">
+/* ============================================================
+   ZiminStore Music: isolated background music player.
+   - Native HTML5 Audio, no dependencies, no Supabase access.
+   - NEVER autoplays: audio is only created and started when the visitor presses Play.
+   - One audio instance per page (guard below) and per browser (other tabs pause).
+   - To change the track, edit ZS_MUSIC.src. Empty src or a missing file shows
+     a disabled player with "Music coming soon".
+   ============================================================ */
+(function () {
+  'use strict';
+  if (window.__zsMusic) return;                       // never create a second player
+  var ZS_MUSIC = {
+    src: 'assets/music/ziminstore-study-night.mp3',  // original composition, owned by ZiminStore
+    title: 'Study Night',
+    defaultVolume: 0.5
+  };
+  var root = document.getElementById('zs-music');
+  if (!root) return;
+  var $ = function (id) { return document.getElementById(id); };
+  var playBtn = $('zsm-play'), stopBtn = $('zsm-stop'), muteBtn = $('zsm-mute'),
+      vol = $('zsm-vol'), volNum = $('zsm-volnum'), statusEl = $('zsm-status'),
+      toggleBtn = $('zsm-toggle'), fab = $('zsm-fab'), card = $('zsm-card');
+
+  var TEXT = {
+    ms: { idle: 'Sedia · tekan main', loading: 'Memuatkan…', playing: 'Sedang dimainkan', paused: 'Dijeda',
+          stopped: 'Dihentikan', blocked: 'Tekan main sekali lagi', unavailable: 'Music coming soon',
+          play: 'Main muzik', pause: 'Jeda muzik', stop: 'Henti muzik', mute: 'Senyapkan', unmute: 'Nyahsenyap',
+          volume: 'Kelantangan', controls: 'Kawalan muzik', open: 'Buka ZiminStore Music', muted: 'senyap' },
+    en: { idle: 'Ready · press play', loading: 'Loading…', playing: 'Now playing', paused: 'Paused',
+          stopped: 'Stopped', blocked: 'Press play again', unavailable: 'Music coming soon',
+          play: 'Play music', pause: 'Pause music', stop: 'Stop music', mute: 'Mute', unmute: 'Unmute',
+          volume: 'Volume', controls: 'Music controls', open: 'Open ZiminStore Music', muted: 'muted' }
+  };
+  var state = ZS_MUSIC.src ? 'idle' : 'unavailable';
+  var audio = null, ctx = null, gain = null, useGain = false;
+  var muted = false;                                   // muted only if the visitor chooses it
+  var volume = ZS_MUSIC.defaultVolume;
+  try { var saved = parseFloat(localStorage.getItem('zs-music-volume')); if (saved >= 0 && saved <= 1) volume = saved; } catch (e) {}
+  var tabId = Math.random().toString(36).slice(2);
+  var channel = null;
+  try { channel = new BroadcastChannel('zs-music'); } catch (e) {}
+
+  function t(k) { return TEXT[document.documentElement.lang === 'en' ? 'en' : 'ms'][k]; }
+
+  function render() {
+    root.setAttribute('data-state', state);
+    var label = t(state) || t('idle');
+    if (state === 'playing' && muted) label += ' (' + t('muted') + ')';
+    statusEl.textContent = state === 'playing' || state === 'paused' ? label + ' · ' + ZS_MUSIC.title : label;
+    var off = state === 'unavailable';
+    playBtn.disabled = off; stopBtn.disabled = off || state === 'idle' || state === 'stopped';
+    muteBtn.disabled = off; vol.disabled = off;
+    var playing = state === 'playing' || state === 'loading';
+    playBtn.setAttribute('aria-label', playing ? t('pause') : t('play'));
+    stopBtn.setAttribute('aria-label', t('stop'));
+    muteBtn.setAttribute('aria-pressed', String(muted));
+    muteBtn.setAttribute('aria-label', muted ? t('unmute') : t('mute'));
+    vol.setAttribute('aria-label', t('volume'));
+    toggleBtn.setAttribute('aria-label', t('controls'));
+    fab.setAttribute('aria-label', t('open'));
+    vol.value = String(Math.round(volume * 100));
+    volNum.textContent = muted ? '0%' : Math.round(volume * 100) + '%';
+  }
+
+  function setUnavailable() {
+    if (audio) { try { audio.pause(); audio.removeAttribute('src'); audio.load(); } catch (e) {} }
+    state = 'unavailable'; render();
+  }
+
+  function applyVolume() {
+    if (!audio) return;
+    var v = muted ? 0 : volume;
+    if (useGain && gain) { gain.gain.value = v; audio.muted = false; }
+    else { audio.volume = v; audio.muted = muted; }
+  }
+
+  function ensureAudio() {
+    if (audio) return audio;
+    audio = new Audio();
+    audio.loop = true;
+    audio.preload = 'auto';
+    audio.src = ZS_MUSIC.src;
+    // iPhone/iPad ignore audio.volume; route through a gain node there so the slider still works.
+    audio.volume = 0.5;
+    if (audio.volume !== 0.5) {
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        ctx = new AC();
+        gain = ctx.createGain();
+        ctx.createMediaElementSource(audio).connect(gain).connect(ctx.destination);
+        useGain = true;
+      } catch (e) { useGain = false; }
+    }
+    audio.addEventListener('playing', function () { state = 'playing'; render(); });
+    audio.addEventListener('waiting', function () { if (state === 'playing') { state = 'loading'; render(); } });
+    audio.addEventListener('pause', function () {
+      if (state === 'playing' || state === 'loading') { state = 'paused'; render(); }
+    });
+    audio.addEventListener('error', function () { if (state !== 'idle') setUnavailable(); });
+    applyVolume();
+    return audio;
+  }
+
+  function play() {
+    if (state === 'unavailable') return;
+    ensureAudio();
+    applyVolume();
+    state = 'loading'; render();
+    if (ctx && ctx.state === 'suspended') { try { ctx.resume(); } catch (e) {} }
+    var p = audio.play();
+    if (p && p.then) {
+      p.then(function () {
+        state = 'playing'; render();
+        if (channel) try { channel.postMessage({ type: 'play', from: tabId }); } catch (e) {}
+      }).catch(function (err) {
+        if (state === 'unavailable') return;
+        state = err && err.name === 'NotAllowedError' ? 'blocked' : (audio.error ? 'unavailable' : 'paused');
+        if (state === 'unavailable') setUnavailable(); else render();
+      });
+    }
+  }
+  function pause() { if (audio) { state = 'paused'; audio.pause(); } render(); }
+  function stop() {
+    state = 'stopped';
+    if (audio) { audio.pause(); try { audio.currentTime = 0; } catch (e) {} }
+    render();
+  }
+
+  playBtn.addEventListener('click', function () {
+    if (state === 'playing' || state === 'loading') pause(); else play();
+  });
+  stopBtn.addEventListener('click', stop);
+  muteBtn.addEventListener('click', function () { muted = !muted; applyVolume(); render(); });
+  vol.addEventListener('input', function () {
+    volume = Math.max(0, Math.min(1, Number(vol.value) / 100));
+    if (muted && volume > 0) muted = false;
+    applyVolume(); render();
+    try { localStorage.setItem('zs-music-volume', String(volume)); } catch (e) {}
+  });
+
+  function setOpen(open) {
+    root.setAttribute('data-open', String(open));
+    toggleBtn.setAttribute('aria-expanded', String(open));
+    fab.setAttribute('aria-expanded', String(open));
+  }
+  toggleBtn.addEventListener('click', function () { setOpen(root.getAttribute('data-open') !== 'true'); });
+  fab.addEventListener('click', function () { setOpen(true); setTimeout(function () { playBtn.focus(); }, 0); });
+  document.addEventListener('click', function (e) {
+    if (root.getAttribute('data-open') === 'true' && !root.contains(e.target) && window.matchMedia('(max-width:640px)').matches) setOpen(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && root.getAttribute('data-open') === 'true' && root.contains(document.activeElement)) {
+      setOpen(false); (window.matchMedia('(max-width:640px)').matches ? fab : toggleBtn).focus();
+    }
+  });
+
+  // Another tab started the music: pause here so two tabs never play at once.
+  if (channel) channel.onmessage = function (m) {
+    if (m && m.data && m.data.type === 'play' && m.data.from !== tabId && (state === 'playing' || state === 'loading')) pause();
+  };
+  // Follow the site's BM / EN switch without touching its code.
+  try { new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] }); } catch (e) {}
+
+  // Check that the file exists without downloading it (HEAD request); offline/file:// is left enabled.
+  if (state !== 'unavailable' && /^https?:$/.test(location.protocol) && window.fetch) {
+    fetch(ZS_MUSIC.src, { method: 'HEAD', cache: 'no-store' }).then(function (r) {
+      var type = (r.headers.get('content-type') || '').toLowerCase();
+      if (!r.ok || type.indexOf('text/html') === 0) setUnavailable();
+    }).catch(function () {});
+  }
+
+  window.__zsMusic = { play: play, pause: pause, stop: stop, get state() { return state; }, get audio() { return audio; } };
+  render();
+})();
 </script>
 
 </body>
