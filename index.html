@@ -903,7 +903,7 @@ html{overflow-x:clip}
         <h3>Cipta akaun pelanggan</h3>
         <div class="portal-field"><label for="zs-reg-name">Nama penuh</label><input id="zs-reg-name" type="text" autocomplete="name" required maxlength="100"></div>
         <div class="portal-field"><label for="zs-reg-email">E-mel</label><input id="zs-reg-email" type="email" autocomplete="email" required></div>
-        <div class="portal-field"><label for="zs-reg-phone">Nombor telefon (pilihan)</label><input id="zs-reg-phone" type="tel" autocomplete="tel"></div>
+        <div class="portal-field"><label for="zs-reg-phone">Nombor telefon (WhatsApp)</label><input id="zs-reg-phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="20" placeholder="Contoh: 012-345 6789"><small class="portal-note">Untuk kami hubungi jika ada masalah dengan fail atau bayaran anda.</small></div>
         <div class="portal-field"><label for="zs-reg-password">Kata laluan (minimum 8 aksara)</label><input id="zs-reg-password" type="password" autocomplete="new-password" required minlength="8"></div>
         <button class="portal-btn primary" type="submit">Daftar</button>
         <p class="portal-note">Jika pengesahan e-mel diaktifkan, semak peti masuk untuk mengesahkan akaun.</p>
@@ -933,6 +933,14 @@ html{overflow-x:clip}
         <button type="button" class="active" data-dash-tab="orders">Pesanan saya</button>
         <button type="button" data-dash-tab="new-order">Tempahan baharu</button>
         <button type="button" class="portal-hidden" id="zs-admin-tab" data-dash-tab="admin">Admin</button>
+      </div>
+      <div id="zs-phone-card" class="portal-card portal-hidden" style="border-color:rgba(242,184,75,.45)">
+        <h3>Tambah nombor telefon anda</h3>
+        <p class="portal-note" style="margin-bottom:10px">Kami perlukan nombor WhatsApp untuk menghubungi anda jika ada masalah dengan fail atau bayaran.</p>
+        <form id="zs-phone-form" style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+          <div class="portal-field" style="flex:1;min-width:180px;margin:0"><label for="zs-phone-input">Nombor telefon (WhatsApp)</label><input id="zs-phone-input" type="tel" autocomplete="tel" inputmode="tel" required maxlength="20" placeholder="Contoh: 012-345 6789"></div>
+          <button class="portal-btn primary" type="submit">Simpan</button>
+        </form>
       </div>
       <section id="zs-orders-panel"><div class="portal-card"><h3>Pesanan anda</h3><div id="zs-orders-list" class="portal-note">Memuatkan pesanan...</div></div></section>
       <section id="zs-new-order-panel" class="portal-hidden">
@@ -1178,6 +1186,7 @@ registerForm.addEventListener('submit',async e=>{
   const name=document.getElementById('zs-reg-name').value.trim();
   const email=document.getElementById('zs-reg-email').value.trim();
   const phone=document.getElementById('zs-reg-phone').value.trim();
+  if(!zsWaNumber(phone)){portalMessage('Sila masukkan nombor telefon yang sah (contoh: 012-345 6789). Nombor ini diperlukan untuk kami hubungi anda tentang pesanan.','error');regBtn.disabled=false;document.getElementById('zs-reg-phone').focus();return;}
   let sent=false;
   try{
     const {data,error}=await sb.auth.signUp({email,password:document.getElementById('zs-reg-password').value,options:{data:{full_name:name,phone},emailRedirectTo:location.origin+location.pathname}});
@@ -1245,12 +1254,27 @@ newPassForm.addEventListener('submit',async e=>{
 document.getElementById('zs-logout').addEventListener('click',async()=>{
   await sb.auth.signOut(); currentProfile=null; dashView.classList.add('portal-hidden');authView.classList.remove('portal-hidden');showAuthTab('login');portalMessage('Anda telah log keluar.','success');
 });
+document.getElementById('zs-phone-form').addEventListener('submit',async e=>{
+  e.preventDefault(); if(!sb||!currentProfile)return;
+  const input=document.getElementById('zs-phone-input'), phone=input.value.trim();
+  if(!zsWaNumber(phone)){portalMessage('Sila masukkan nombor telefon yang sah (contoh: 012-345 6789).','error');input.focus();return;}
+  const btn=e.target.querySelector('button[type=submit]'); btn.disabled=true;
+  try{
+    // RLS lets a customer update only their own profile, and only with role 'customer'.
+    const {error}=await sb.from('profiles').update({phone}).eq('id',currentProfile.id);
+    if(error)throw error;
+    currentProfile.phone=phone;
+    document.getElementById('zs-phone-card').classList.add('portal-hidden');
+    portalMessage('Terima kasih! Nombor telefon anda telah disimpan.','success');
+  }catch(err){portalMessage(err.message||'Tidak dapat menyimpan nombor telefon.','error');}
+  finally{btn.disabled=false;}
+});
 async function restoreSession(){
   if(!sb)return;
   const {data:{session},error}=await sb.auth.getSession();
   if(error)throw error;
   if(!session||recovering){authView.classList.remove('portal-hidden');dashView.classList.add('portal-hidden');return;}
-  const {data:profile,error:profileError}=await sb.from('profiles').select('id,full_name,role').eq('id',session.user.id).maybeSingle();
+  const {data:profile,error:profileError}=await sb.from('profiles').select('id,full_name,role,phone').eq('id',session.user.id).maybeSingle();
   if(profileError)throw profileError;
   if(!profile)throw new Error('Profil akaun tidak dijumpai. Sila hubungi admin melalui WhatsApp.');
   currentProfile=profile;
@@ -1258,6 +1282,8 @@ async function restoreSession(){
   document.getElementById('zs-welcome').textContent='Hai, '+(profile.full_name||session.user.email);
   document.getElementById('zs-account-email').textContent=session.user.email;
   const admin=profile.role==='admin';
+  // Existing customers registered before the phone became required: ask once.
+  document.getElementById('zs-phone-card').classList.toggle('portal-hidden',admin||!!zsWaNumber(profile.phone));
   document.getElementById('zs-admin-tab').classList.toggle('portal-hidden',!admin);
   document.getElementById('zs-admin-tab').setAttribute('aria-hidden',String(!admin));
   showDashTab('orders');
