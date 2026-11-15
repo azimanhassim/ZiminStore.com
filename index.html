@@ -1285,8 +1285,49 @@ docInput.addEventListener('change',()=>{
   const files=[...docInput.files];
   document.getElementById('zs-doc-count').textContent=files.length;
   document.getElementById('zs-doc-total').textContent=money(orderTotalSen(files.length));
+  zsFirstBadFile(files).then(bad=>{ if(bad) portalMessage(`Fail "${bad.file.name}" tidak boleh diproses: ${bad.why}. Sila Save As → PDF dan pilih semula.`,'error'); else clearPortalMessage(); });
 });
 function safeFileName(name){return name.normalize('NFKD').replace(/[^\w.-]+/g,'_').slice(-100)||'document';}
+/* ---------- File check: is this really a PDF / Word file that can be opened? ----------
+   Reads only the first and last bytes in the browser (nothing is uploaded). Catches
+   password-protected Word files and old .doc files renamed to .docx, empty files and
+   files with the wrong extension, before an order or payment is made. */
+async function zsInspectFile(file){
+  if(!file||!file.size) return 'fail kosong (0 bait)';
+  const ext=file.name.toLowerCase().split('.').pop();
+  const head=new Uint8Array(await file.slice(0,1024).arrayBuffer());
+  const has=sig=>sig.every((b,i)=>head[i]===b);
+  const text=bytes=>new TextDecoder('latin1').decode(bytes);
+  const isOLE=has([0xD0,0xCF,0x11,0xE0,0xA1,0xB1,0x1A,0xE1]);   // Word 97-2003 or encrypted Office file
+  const isZip=has([0x50,0x4B,0x03,0x04]);
+  const isPdf=text(head).includes('%PDF-');
+  if(ext==='pdf'){
+    if(isPdf) return null;
+    if(isOLE||isZip) return 'ini bukan PDF sebenar (fail Word yang dinamakan .pdf)';
+    return 'ini bukan PDF yang sah, atau fail rosak';
+  }
+  if(ext==='docx'){
+    if(isOLE) return 'fail Word ini dikunci dengan kata laluan atau dalam format Word lama (.doc)';
+    if(isPdf) return 'ini sebenarnya fail PDF yang dinamakan .docx';
+    if(!isZip) return 'ini bukan fail Word (.docx) yang sah, atau fail rosak';
+    // A real Word document always contains a "word/document.xml" part.
+    const parts=[file.slice(0,Math.min(file.size,262144)),file.slice(Math.max(0,file.size-65536))];
+    for(const part of parts){ if(text(new Uint8Array(await part.arrayBuffer())).includes('word/document')) return null; }
+    return 'fail ini bukan dokumen Word yang sah';
+  }
+  return null;
+}
+function zsWaNumber(p){
+  let d=String(p||'').replace(/\D/g,'');
+  if(!d) return '';
+  if(d.startsWith('0')) d='6'+d;          // 0199533360 -> 60199533360
+  else if(d.startsWith('1')) d='60'+d;    // 199533360  -> 60199533360
+  return d.length>=10&&d.length<=15?d:'';
+}
+async function zsFirstBadFile(files){
+  for(const f of files){ const why=await zsInspectFile(f); if(why) return {file:f,why}; }
+  return null;
+}
 document.getElementById('zs-create-order').addEventListener('click',async()=>{
   if(!sb||!currentProfile)return;
   const files=[...docInput.files],button=document.getElementById('zs-create-order');
@@ -1298,6 +1339,8 @@ document.getElementById('zs-create-order').addEventListener('click',async()=>{
     if(!['pdf','docx'].includes(ext)||f.size>20*1024*1024){portalMessage('Fail '+f.name+' tidak sah. Hanya PDF/DOCX sehingga 20 MB setiap satu.','error');return;}
     if(f.type&&!allowed.has(f.type)&&!(ext==='pdf'&&f.type==='application/octet-stream')){portalMessage('Jenis fail '+f.name+' tidak disokong.','error');return;}
   }
+  const unreadable=await zsFirstBadFile(files);
+  if(unreadable){portalMessage(`Fail "${unreadable.file.name}" tidak boleh diproses: ${unreadable.why}. Sila buka fail itu, pilih Save As → PDF, kemudian pilih semula. Tiada pesanan dibuat dan tiada bayaran diperlukan.`,'error');return;}
   button.disabled=true;button.textContent='Memuat naik...';
   let createdOrder=null;
   try{
@@ -1464,9 +1507,10 @@ async function loadAdminOrders(){
     if(error)throw error;
     if(!orders?.length){host.textContent='Belum ada pesanan.';return;}
     const customerIds=[...new Set(orders.map(o=>o.customer_id))];
-    const {data:customers,error:customerError}=await sb.from('profiles').select('id,full_name').in('id',customerIds);
+    const {data:customers,error:customerError}=await sb.from('profiles').select('id,full_name,phone').in('id',customerIds);
     if(customerError)throw customerError;
     const customerNames=new Map((customers||[]).map(c=>[c.id,c.full_name]));
+    const customerPhones=new Map((customers||[]).map(c=>[c.id,c.phone]));
     const wrap=document.createElement('div');wrap.className='portal-table-wrap';
     const table=document.createElement('table');table.className='portal-table';
     table.innerHTML='<thead><tr><th>Pesanan / pelanggan</th><th>Dokumen</th><th>Jumlah</th><th>Status</th><th>Tindakan</th></tr></thead>';
@@ -1474,6 +1518,18 @@ async function loadAdminOrders(){
     for(const o of orders){
       const tr=document.createElement('tr');
       const c1=document.createElement('td');c1.textContent=o.order_number+' · '+(customerNames.get(o.customer_id)||o.customer_id.slice(0,8));
+      { // WhatsApp the customer about this order (number from their registration)
+        const wa=zsWaNumber(customerPhones.get(o.customer_id));
+        const box=document.createElement('div');box.style.marginTop='6px';
+        if(wa){
+          const name=(customerNames.get(o.customer_id)||'').split(' ')[0];
+          const a=document.createElement('a');a.className='portal-btn';a.style.cssText='display:inline-block;text-decoration:none;font-size:11px;padding:6px 9px;color:#7ef0b8;border-color:rgba(61,220,151,.4)';
+          a.target='_blank';a.rel='noopener';a.textContent='WhatsApp pelanggan';
+          a.href=`https://wa.me/${wa}?text=${encodeURIComponent(`Salam${name?' '+name:''}, ini ZiminStore berkenaan pesanan ${o.order_number}. `)}`;
+          box.append(a);
+        } else { const n=document.createElement('small');n.style.color='var(--dim)';n.textContent='Tiada nombor telefon';box.append(n); }
+        c1.append(box);
+      }
       const c2=document.createElement('td');
       for(const d of (o.documents||[])){const b=document.createElement('button');b.className='portal-btn';b.textContent='Lihat '+d.original_filename;b.addEventListener('click',()=>signedDownload('customer-documents',d.storage_path,d.original_filename).catch(e=>portalMessage(e.message,'error')));c2.append(b,document.createElement('br'));}
       if((o.documents||[]).length>1){const all=document.createElement('button');all.className='portal-btn primary';all.style.marginTop='6px';all.textContent=`Muat turun semua (${o.documents.length}) · ZIP`;all.addEventListener('click',()=>zsDownloadAllDocs(o,all));c2.append(all);}
@@ -1573,6 +1629,8 @@ async function loadAdminOrders(){
         const fs=files(); if(!fs.length){portalMessage('Pilih fail PDF laporan dahulu.','error');return;}
         const bad=fs.find(f=>f.type!=='application/pdf'||f.size>20*1024*1024);
         if(bad){portalMessage(`"${bad.name}": laporan mestilah PDF dan tidak melebihi 20 MB.`,'error');return;}
+        const broken=await zsFirstBadFile(fs);
+        if(broken){portalMessage(`"${broken.file.name}": ${broken.why}. Laporan mestilah PDF yang boleh dibuka.`,'error');return;}
         // Build file -> document pairs.
         const pairs=fs.length===1
           ? [{file:fs[0],doc:(o.documents||[]).find(d=>d.id===docSelect.value)}]
