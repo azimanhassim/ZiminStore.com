@@ -827,6 +827,7 @@ html{overflow-x:clip}
         </ul>
       </div>
     </div>
+    <p class="legal" style="margin:0 0 10px;font-size:12px;opacity:.8">Privasi (PDPA 2010): nama, e-mel dan telefon anda hanya digunakan untuk pesanan anda. Dokumen yang dimuat naik dipadam secara automatik 30 hari selepas pesanan dibuat. Kami tidak menjual atau berkongsi data anda.</p>
     <div class="legal">
       <p data-i18n="fo.disc">ZiminStore ialah servis bebas dan tidak bergabung dengan, ditaja atau disahkan oleh Turnitin, LLC. Turnitin ialah tanda dagangan Turnitin, LLC. Laporan yang diberikan ialah laporan sebenar yang dimuat naik selepas semakan, bukan hasil yang dijana oleh laman ini.</p>
       <div class="row"><p>© 2026 ZiminStore. <span data-i18n="fo.rights">Hak cipta terpelihara.</span></p><p>Student Bantu Student</p></div>
@@ -903,8 +904,10 @@ html{overflow-x:clip}
         <h3>Cipta akaun pelanggan</h3>
         <div class="portal-field"><label for="zs-reg-name">Nama penuh</label><input id="zs-reg-name" type="text" autocomplete="name" required maxlength="100"></div>
         <div class="portal-field"><label for="zs-reg-email">E-mel</label><input id="zs-reg-email" type="email" autocomplete="email" required></div>
+        <div class="portal-field"><label for="zs-reg-email2">Ulang e-mel</label><input id="zs-reg-email2" type="email" autocomplete="off" required><small class="portal-note">Taip semula e-mel yang sama. Pautan pengesahan dihantar ke sini.</small></div>
         <div class="portal-field"><label for="zs-reg-phone">Nombor telefon (WhatsApp)</label><input id="zs-reg-phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="20" placeholder="Contoh: 012-345 6789"><small class="portal-note">Untuk kami hubungi jika ada masalah dengan fail atau bayaran anda.</small></div>
         <div class="portal-field"><label for="zs-reg-password">Kata laluan (minimum 8 aksara)</label><input id="zs-reg-password" type="password" autocomplete="new-password" required minlength="8"></div>
+        <label class="portal-note" style="display:flex;gap:8px;align-items:flex-start;margin:6px 0 12px"><input id="zs-reg-pdpa" type="checkbox" required style="margin-top:3px"><span>Saya bersetuju data peribadi saya (nama, e-mel, telefon) dan dokumen yang dimuat naik diproses untuk perkhidmatan ini. Dokumen pelanggan <strong>dipadam secara automatik 30 hari</strong> selepas pesanan dibuat. Data digunakan hanya untuk pesanan anda dan tidak dijual atau dikongsi, mengikut PDPA 2010. Untuk padam akaun atau data lebih awal, hubungi kami melalui WhatsApp.</span></label>
         <button class="portal-btn primary" type="submit">Daftar</button>
         <p class="portal-note">Jika pengesahan e-mel diaktifkan, semak peti masuk untuk mengesahkan akaun.</p>
       </form>
@@ -952,7 +955,14 @@ html{overflow-x:clip}
           <p class="portal-note">Pesanan disimpan selepas semua fail berjaya dimuat naik. Pastikan anda mempunyai hak untuk menghantar dokumen tersebut.</p>
         </div>
       </section>
-      <section id="zs-admin-panel" class="portal-hidden"><div class="portal-card"><h3>Pengurusan pesanan (Admin)</h3><div id="zs-admin-list" class="portal-note">Memuatkan pesanan...</div></div></section>
+      <section id="zs-admin-panel" class="portal-hidden"><div class="portal-card"><h3>Pengurusan pesanan (Admin)</h3>
+<form id="zs-admin-filter" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+  <input id="zs-admin-q" type="search" placeholder="Cari Order ID (cth ZS-0123)" aria-label="Cari Order ID" maxlength="40" style="flex:1 1 180px;padding:8px;background:#050d20;color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:8px">
+  <select id="zs-admin-status" aria-label="Tapis status" style="padding:8px;background:#050d20;color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:8px"><option value="">Semua status</option></select>
+  <button class="portal-btn primary" type="submit">Cari</button>
+  <button class="portal-btn" type="button" id="zs-admin-reset">Set semula</button>
+</form>
+<div id="zs-admin-list" class="portal-note">Memuatkan pesanan...</div></div></section>
     </div>
   </section>
 </div>
@@ -1180,11 +1190,29 @@ const regBtnLabel=regBtn.textContent;
 // After a successful sign-up the button stays locked: pressing Daftar again sends a new
 // e-mail and makes the earlier link invalid. It unlocks only if the e-mail is changed.
 document.getElementById('zs-reg-email').addEventListener('input',()=>{ if(regBtn.dataset.sent){ delete regBtn.dataset.sent; regBtn.disabled=false; regBtn.textContent=regBtnLabel; } });
+// Likely typos of common e-mail domains (gmial.com -> gmail.com).
+const ZS_MAIL_DOMAINS=['gmail.com','yahoo.com','yahoo.com.my','hotmail.com','outlook.com','live.com','icloud.com','moe-dl.edu.my','siswa.um.edu.my','student.usm.my','graduate.utm.my','siswa.ukm.edu.my','student.upm.edu.my'];
+function zsLev(a,b){const d=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length];}
+function zsEmailTypo(email){
+  const dom=email.toLowerCase().split('@')[1]||''; if(!dom||ZS_MAIL_DOMAINS.includes(dom)) return '';
+  let best='',score=3;
+  for(const d of ZS_MAIL_DOMAINS){const x=zsLev(dom,d); if(x<score&&x<=2&&Math.abs(dom.length-d.length)<=2){score=x;best=d;}}
+  return best;
+}
+document.getElementById('zs-reg-email').addEventListener('input',()=>{delete regBtn.dataset.typoOk;});
 registerForm.addEventListener('submit',async e=>{
   e.preventDefault(); if(!sb||regBtn.dataset.sent)return;
-  regBtn.disabled=true;
   const name=document.getElementById('zs-reg-name').value.trim();
   const email=document.getElementById('zs-reg-email').value.trim();
+  if(email.toLowerCase()!==document.getElementById('zs-reg-email2').value.trim().toLowerCase()){portalMessage('E-mel dan "Ulang e-mel" tidak sama. Sila semak semula supaya pautan pengesahan sampai kepada anda.','error');document.getElementById('zs-reg-email2').focus();return;}
+  const typo=zsEmailTypo(email);
+  if(typo&&regBtn.dataset.typoOk!==email.toLowerCase()){
+    regBtn.dataset.typoOk=email.toLowerCase();
+    portalMessage(`Adakah anda maksudkan @${typo}? Domain "${email.split('@')[1]}" nampak seperti salah taip. Betulkan e-mel jika perlu; jika e-mel sudah betul, tekan Daftar sekali lagi.`,'error');
+    document.getElementById('zs-reg-email').focus();return;
+  }
+  if(!document.getElementById('zs-reg-pdpa').checked){portalMessage('Sila tandakan persetujuan privasi (PDPA) untuk mendaftar.','error');return;}
+  regBtn.disabled=true;
   const phone=document.getElementById('zs-reg-phone').value.trim();
   if(!zsWaNumber(phone)){portalMessage('Sila masukkan nombor telefon yang sah (contoh: 012-345 6789). Nombor ini diperlukan untuk kami hubungi anda tentang pesanan.','error');regBtn.disabled=false;document.getElementById('zs-reg-phone').focus();return;}
   let sent=false;
@@ -1427,7 +1455,43 @@ async function loadCustomerOrders(){
         const pstatus=document.createElement('div');pstatus.className='portal-note';pstatus.style.marginTop='8px';pstatus.textContent='Status pembayaran: '+(latestPayment.status==='verified'?'Disahkan':latestPayment.status==='rejected'?'Ditolak, sila hantar bukti baharu':'Menunggu semakan admin');card.append(pstatus);
       }
       // Proof upload only while awaiting payment and no proof is already under review.
-      if(o.status==='pending_payment'&&!awaitingReview){
+      // Half-finished order (upload was interrupted): let the customer add the missing files.
+      const missing=o.document_count-(o.documents||[]).length;
+      if(missing>0&&['pending_payment','action_required'].includes(o.status)){
+        const box=document.createElement('div');box.className='portal-alert';box.style.marginTop='10px';
+        const t=document.createElement('p');t.style.margin='0 0 8px';t.textContent=`Pesanan ini belum lengkap: ${missing} dokumen belum dimuat naik (${(o.documents||[]).length} daripada ${o.document_count}). Pilih fail yang tertinggal di bawah. Bayaran boleh dibuat selepas semua dokumen lengkap.`;
+        const inp=document.createElement('input');inp.type='file';inp.multiple=true;inp.accept='.pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document';inp.style.display='block';inp.style.margin='6px 0';
+        const btn=document.createElement('button');btn.className='portal-btn primary';btn.textContent='Muat naik dokumen tertinggal';
+        btn.addEventListener('click',async()=>{
+          const fs=[...inp.files];
+          if(!fs.length){portalMessage('Pilih fail yang tertinggal dahulu.','error');return;}
+          if(fs.length>missing){portalMessage(`Hanya ${missing} dokumen lagi diperlukan untuk pesanan ini, tetapi anda memilih ${fs.length}.`,'error');return;}
+          const have=new Set((o.documents||[]).map(d=>d.original_filename.toLowerCase()));
+          const dup=fs.find(f=>have.has(f.name.toLowerCase()));
+          if(dup&&!confirm(`"${dup.name}" sudah ada dalam pesanan ini. Muat naik juga?`))return;
+          for(const f of fs){const ext=f.name.toLowerCase().split('.').pop();if(!['pdf','docx'].includes(ext)||f.size>20*1024*1024){portalMessage('Fail '+f.name+' tidak sah. Hanya PDF/DOCX sehingga 20 MB setiap satu.','error');return;}}
+          const bad=await zsFirstBadFile(fs);
+          if(bad){portalMessage(`Fail "${bad.file.name}" tidak boleh diproses: ${bad.why}. Sila betulkan fail itu dan pilih semula.`,'error');return;}
+          btn.disabled=true;btn.textContent='Memuat naik...';
+          let done=0;
+          try{
+            for(const file of fs){
+              const ext=file.name.toLowerCase().endsWith('.docx')?'docx':'pdf';
+              const path=`${currentProfile.id}/${o.id}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
+              const contentType=ext==='docx'?'application/vnd.openxmlformats-officedocument.wordprocessingml.document':'application/pdf';
+              const {error:upErr}=await sb.storage.from('customer-documents').upload(path,file,{contentType,upsert:false});
+              if(upErr)throw upErr;
+              const {error:recErr}=await sb.from('documents').insert({order_id:o.id,customer_id:currentProfile.id,original_filename:file.name,storage_path:path,file_type:ext});
+              if(recErr)throw recErr;
+              done++;
+            }
+            portalMessage(`${done} dokumen berjaya dimuat naik untuk ${o.order_number}.`,'success');
+          }catch(err){portalMessage(`Muat naik terhenti selepas ${done} fail: `+(err.message||'ralat'),'error');}
+          finally{await loadCustomerOrders();}
+        });
+        box.append(t,inp,btn);card.append(box);
+      }
+      if(o.status==='pending_payment'&&!awaitingReview&&missing<=0){
         const payWrap=document.createElement('div');payWrap.style.marginTop='10px';
         const payInfo=document.createElement('p');payInfo.className='portal-note';
         payInfo.textContent=`Bayar ${money(o.total_sen)} melalui DuitNow QR. Tulis ${o.order_number} sebagai rujukan bayaran.`;
@@ -1526,12 +1590,22 @@ async function zsFileHash(file){
     return [...new Uint8Array(buf)].slice(0,6).map(b=>b.toString(16).padStart(2,'0')).join('');
   }catch(e){return '';}
 }
+const zsAdminView={q:'',status:'',limit:100};
+(function(){
+  const sel=document.getElementById('zs-admin-status'),f=document.getElementById('zs-admin-filter');
+  Object.entries(statusLabels).forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;sel.append(o);});
+  f.addEventListener('submit',e=>{e.preventDefault();zsAdminView.q=document.getElementById('zs-admin-q').value.trim().replace(/[%_,()*]/g,'');zsAdminView.status=sel.value;zsAdminView.limit=100;loadAdminOrders();});
+  document.getElementById('zs-admin-reset').addEventListener('click',()=>{document.getElementById('zs-admin-q').value='';sel.value='';Object.assign(zsAdminView,{q:'',status:'',limit:100});loadAdminOrders();});
+})();
 async function loadAdminOrders(){
   const host=document.getElementById('zs-admin-list');host.textContent='Memuatkan semua pesanan...';
   try{
-    const {data:orders,error}=await sb.from('orders').select('id,order_number,customer_id,document_count,total_sen,status,created_at,documents(id,original_filename,storage_path),payments(id,proof_path,status,amount_sen,created_at),reports(id,document_id,report_path,uploaded_at)').order('created_at',{ascending:false}).limit(100);
+    let query=sb.from('orders').select('id,order_number,customer_id,document_count,total_sen,status,created_at,documents(id,original_filename,storage_path),payments(id,proof_path,status,amount_sen,created_at),reports(id,document_id,report_path,uploaded_at)').order('created_at',{ascending:false}).limit(zsAdminView.limit);
+    if(zsAdminView.status) query=query.eq('status',zsAdminView.status);
+    if(zsAdminView.q) query=query.ilike('order_number','%'+zsAdminView.q+'%');
+    const {data:orders,error}=await query;
     if(error)throw error;
-    if(!orders?.length){host.textContent='Belum ada pesanan.';return;}
+    if(!orders?.length){host.textContent=(zsAdminView.q||zsAdminView.status)?'Tiada pesanan sepadan dengan carian/penapis ini.':'Belum ada pesanan.';return;}
     const customerIds=[...new Set(orders.map(o=>o.customer_id))];
     const {data:customers,error:customerError}=await sb.from('profiles').select('id,full_name,phone').in('id',customerIds);
     if(customerError)throw customerError;
@@ -1695,7 +1769,9 @@ async function loadAdminOrders(){
       for(const r of zsLatestReports(reps)){const rb=document.createElement('button');rb.className='portal-btn';rb.style.margin='4px 6px 0 0';rb.textContent='Lihat laporan: '+docName(r.document_id);rb.addEventListener('click',()=>signedDownload('similarity-reports',r.report_path,'laporan.pdf').catch(e=>portalMessage(e.message,'error')));repList.append(rb);}
       actions.append(docSelect,upload,up,mapBox);if(reps.length)actions.append(repList);c5.append(actions);tr.append(c1,c2,c3,c4,c5);body.append(tr);
     }
-    table.append(body);wrap.append(table);host.innerHTML='';host.append(wrap);
+    table.append(body);wrap.append(table);host.innerHTML='';
+    const cnt=document.createElement('p');cnt.className='portal-note';cnt.style.margin='0 0 8px';cnt.textContent=`Memaparkan ${orders.length} pesanan terkini`+((zsAdminView.q||zsAdminView.status)?' (ditapis)':'')+'.';host.append(cnt,wrap);
+    if(orders.length>=zsAdminView.limit){const more=document.createElement('button');more.className='portal-btn';more.style.marginTop='10px';more.textContent='Muat lagi (100 seterusnya)';more.addEventListener('click',()=>{zsAdminView.limit+=100;loadAdminOrders();});host.append(more);}
   }catch(err){host.textContent='Tidak dapat memuatkan dashboard admin: '+(err.message||'Ralat');}
 }
 
