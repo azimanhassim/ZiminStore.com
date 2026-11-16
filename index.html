@@ -1325,6 +1325,10 @@ loginForm.addEventListener('submit',async e=>{
   }catch(err){
     if(err?.code==='email_not_confirmed'||(err?.message||'').toLowerCase().includes('email not confirmed'))
       showResend(email,'Akaun anda belum disahkan. Buka pautan dalam e-mel pengesahan ZiminStore yang paling baru, atau hantar semula e-mel pengesahan di bawah.','error');
+    else if(err?.code==='invalid_credentials'||(err?.message||'').toLowerCase().includes('invalid login credentials')){
+      document.getElementById('zs-reset-email').value=email;
+      portalMessage('E-mel atau kata laluan salah. Semak ejaan e-mel, atau tekan "Lupa kata laluan" untuk tetapkan kata laluan baharu. Belum ada akaun? Tekan "Daftar akaun".','error');
+    }
     else portalMessage(zsAuthError(err,'Log masuk gagal.'),'error');
   }
   finally{btn.disabled=false;}
@@ -1374,8 +1378,7 @@ registerForm.addEventListener('submit',async e=>{
       portalMessage('E-mel ini sudah berdaftar. Sila log masuk, atau guna "Lupa kata laluan" jika terlupa.','error');
     } else {
       sent=true; regBtn.dataset.sent='1'; regBtn.textContent='E-mel pengesahan telah dihantar';
-      portalMessage(`Berjaya! Tekan pautan dalam e-mel yang dihantar ke ${email}, kemudian log masuk. Semak juga Spam.`,'success');
-      document.getElementById('zs-resend-email').value=email;
+      showResend(email,`Akaun dicipta. Langkah terakhir: buka e-mel daripada ZiminStore di ${email} dan tekan pautan pengesahan, kemudian log masuk. Tiada e-mel dalam 2 minit? Semak Spam, atau tekan butang di bawah.`,'success');
     }
   }catch(err){portalMessage(zsAuthError(err,'Pendaftaran gagal.'),'error');}
   finally{ if(!sent) regBtn.disabled=false; }
