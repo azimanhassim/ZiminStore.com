@@ -16,6 +16,7 @@ accounts, orders, file storage and the admin dashboard.
 | `supabase/audit-final.sql` | Read-only, **one** query: PASS / FAIL / SEMAK table for RLS, role, price, payment, storage and admin access, plus the full policy/trigger/function inventory. Run this first. |
 | `assets/music/` | Background track for the ZiminStore Music player (original composition) and its README. |
 | `tools/compose-study-night.py` | Script that generated the original track (proof of origin; re-run to regenerate). |
+| `supabase/functions/zs-cleanup/` + `supabase/retention-30-days.sql` | 30-day retention (PDPA notice): a daily pg_cron job calls the `zs-cleanup` Edge Function, which deletes customer document files 30 days after the order was created and marks `documents.storage_path` as `deleted/<id>`. **Applied 16 Nov 2026.** |
 | `supabase/optional-cleanup.sql` | Optional tidy-ups from the audit. **Not applied.** Nothing in it is required for security. |
 
 ## Configuration
