@@ -450,7 +450,32 @@ footer{margin-top:110px;border-top:1px solid var(--line);background:linear-gradi
 .portal-table select,#zs-admin-q,#zs-admin-status{border:1px solid var(--line-2)!important;border-radius:9px;font:13px var(--f-body)}
 .portal-table tbody tr:hover{background:rgba(255,255,255,.025)}
 .portal-table th{position:sticky;top:0;background:#0a1733;z-index:1;text-transform:uppercase;letter-spacing:.06em;font-size:10.5px}
-@media(max-width:520px){.price-big,.pc-price{flex-wrap:wrap}.price-big .amt,.pc-price .amt{font-size:clamp(52px,19vw,84px)}}
+@media(max-width:520px){.pc-price{flex-wrap:wrap}.pc-price .amt{font-size:clamp(52px,19vw,84px)}}
+/* ---------- Layout polish: less scrolling on phones, balanced cards on desktop ---------- */
+.price-card{display:flex;flex-direction:column;justify-content:center}
+@media (max-width:640px){
+  section.block{padding-top:64px}
+  .hero-in{gap:48px}
+  .price-strip{gap:12px}
+  .hero-cta{gap:10px;margin-top:22px}
+  .hero-cta .btn{flex:1 1 100%;justify-content:center}
+  .trust-in{grid-template-columns:1fr 1fr}
+  .trust-item{padding:14px 12px;gap:10px}
+  .trust-item+.trust-item{border-top:0;border-left:0}
+  .trust-item:nth-child(even){border-left:1px solid var(--line)}
+  .trust-item:nth-child(n+3){border-top:1px solid var(--line)}
+  .trust-item strong{font-size:13px}.trust-item span{font-size:11.5px}
+  .steps{margin-top:36px}.step{padding-bottom:18px;gap:16px}
+  .statuses{margin-top:30px}
+  .st-row{gap:8px}.st-row>*{font-size:12px}
+  .features{grid-template-columns:1fr 1fr;gap:12px;margin-top:32px}
+  .feat{padding:16px}
+  .feat h3{font-size:15px;margin-top:14px;line-height:1.25}
+  .feat p{font-size:13px;margin-top:6px;line-height:1.5}
+  .f-grid{grid-template-columns:1fr 1fr;gap:26px 18px;padding-block:44px 28px}
+  .f-about{grid-column:1/-1}
+}
+@media (max-width:380px){.features{grid-template-columns:1fr}}
 .portal-qr{display:block;width:min(220px,100%);height:auto;margin:10px 0;border-radius:12px;background:#fff;padding:8px}
 
 /* ---------- Small phones (320px to 380px) ----------
