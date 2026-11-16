@@ -508,6 +508,21 @@ footer{margin-top:110px;border-top:1px solid var(--line);background:linear-gradi
   .zs-stat{flex-direction:column;align-items:flex-start;gap:8px;padding:11px}
   .zs-stat-ic{width:34px;height:34px}.zs-stat strong{font-size:21px}
 }
+
+/* ---------- Admin dashboard (phase 4) ---------- */
+.zs-stats-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.zs-stat.violet .zs-stat-ic{color:#B9A5FF;background:rgba(150,120,255,.14);border-color:rgba(150,120,255,.45)}
+.zs-side-sep{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);padding:12px 11px 4px;border-top:1px solid var(--line);margin-top:8px}
+.zs-badge{margin-left:auto;min-width:20px;padding:1px 6px;border-radius:999px;background:var(--gold);color:#1A1203;font:800 11px/18px var(--f-body);text-align:center}
+.zs-chart{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:190px;padding-top:6px}
+.zs-bar-col{display:grid;grid-template-rows:auto 1fr auto;gap:6px;height:100%;justify-items:center;min-width:0}
+.zs-bar-val{font:700 12px var(--f-body);color:var(--text)}
+.zs-bar-track{width:100%;max-width:34px;height:100%;display:flex;align-items:flex-end;border-bottom:1px solid var(--line-2)}
+.zs-bar{display:block;width:100%;min-height:2px;border-radius:4px 4px 0 0;background:var(--cyan);transition:opacity .15s}
+.zs-bar.zero{background:rgba(130,165,255,.3)}
+.zs-bar-col:hover .zs-bar{opacity:.75}
+.zs-bar-col small{font-size:10.5px;color:var(--muted);white-space:nowrap}
+@media (max-width:860px){.zs-side-sep{display:none}.zs-stats-4{grid-template-columns:1fr 1fr}}
 /* ---------- Layout polish: less scrolling on phones, balanced cards on desktop ---------- */
 .price-card{display:flex;flex-direction:column;justify-content:center}
 @media (max-width:640px){
@@ -1127,11 +1142,16 @@ html{overflow-x:clip}
       <aside class="zs-side">
         <div class="zs-side-user"><strong id="zs-welcome">Akaun</strong><div class="portal-note" id="zs-account-email"></div></div>
         <nav class="portal-tabs zs-side-nav" id="zs-dash-tabs" aria-label="Menu akaun">
-          <button type="button" class="active" data-dash-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/></svg><span>Dashboard</span></button>
+          <button type="button" class="active zs-cust-only" data-dash-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/></svg><span>Dashboard</span></button>
+          <button type="button" class="portal-hidden zs-admin-only" data-dash-tab="admin-home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/></svg><span>Dashboard</span></button>
+          <button type="button" class="portal-hidden zs-admin-only" id="zs-admin-tab" data-dash-tab="admin" data-quick=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span>Pesanan</span></button>
+          <button type="button" class="portal-hidden zs-admin-only" data-dash-tab="admin" data-quick="payments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg><span>Pembayaran</span><b class="zs-badge" id="zs-nav-pay" hidden></b></button>
+          <button type="button" class="portal-hidden zs-admin-only" data-dash-tab="admin" data-quick="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span>Laporan</span><b class="zs-badge" id="zs-nav-rep" hidden></b></button>
+          <button type="button" class="portal-hidden zs-admin-only" data-dash-tab="admin-customers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.300 2.700-6 6-6s6 2.700 6 6"/><path d="M16 5.200a3 3 0 0 1 0 5.600M18 14.500c1.800.800 3 2.700 3 5.500"/></svg><span>Pelanggan</span></button>
+          <div class="portal-hidden zs-admin-only zs-side-sep">Akaun saya</div>
           <button type="button" data-dash-tab="new-order"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span>Tempahan Baru</span></button>
           <button type="button" data-dash-tab="orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span>Senarai Tempahan</span></button>
           <button type="button" data-dash-tab="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.600 8 8"/></svg><span>Profil Saya</span></button>
-          <button type="button" class="portal-hidden" id="zs-admin-tab" data-dash-tab="admin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.500 8-8 9-4.500-1-8-4-8-9V6z"/></svg><span>Admin</span></button>
           <button type="button" class="zs-side-out" id="zs-logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span>Log Keluar</span></button>
         </nav>
       </aside>
@@ -1175,7 +1195,20 @@ html{overflow-x:clip}
           <button class="portal-btn primary" type="submit">Simpan</button>
         </form>
       </section>
-      <section id="zs-admin-panel" class="portal-hidden"><div class="portal-card"><h3>Pengurusan pesanan (Admin)</h3>
+      <section id="zs-admin-home-panel" class="portal-hidden">
+        <div class="zs-stats zs-stats-4">
+          <div class="zs-stat"><span class="zs-stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></span><div><small>Jumlah Pesanan</small><strong id="zs-as-total">–</strong></div></div>
+          <div class="zs-stat violet"><span class="zs-stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg></span><div><small>Menunggu Sahkan</small><strong id="zs-as-pay">–</strong></div></div>
+          <div class="zs-stat gold"><span class="zs-stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><small>Dalam Proses</small><strong id="zs-as-proc">–</strong></div></div>
+          <div class="zs-stat green"><span class="zs-stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span><div><small>Selesai</small><strong id="zs-as-done">–</strong></div></div>
+        </div>
+        <div class="zs-home-grid">
+          <div class="portal-card zs-recent"><div class="zs-recent-head"><h3>Pesanan 7 hari lepas</h3><span class="portal-note" id="zs-chart-sum"></span></div><div id="zs-chart" class="zs-chart"></div></div>
+          <div class="portal-card zs-recent"><div class="zs-recent-head"><h3>Pesanan Terbaharu</h3><button type="button" class="zs-link" id="zs-admin-all">Lihat semua →</button></div><div id="zs-admin-recent" class="portal-note">Memuatkan...</div></div>
+        </div>
+      </section>
+      <section id="zs-admin-customers-panel" class="portal-hidden"><div class="portal-card"><h3>Pelanggan</h3><div id="zs-cust-list" class="portal-note">Memuatkan...</div></div></section>
+      <section id="zs-admin-panel" class="portal-hidden"><div class="portal-card"><h3 id="zs-admin-title">Pesanan</h3>
 <form id="zs-admin-filter" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
   <input id="zs-admin-q" type="search" placeholder="Cari Order ID (cth ZS-0123)" aria-label="Cari Order ID" maxlength="40" style="flex:1 1 180px;padding:8px;background:#050d20;color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:8px">
   <select id="zs-admin-status" aria-label="Tapis status" style="padding:8px;background:#050d20;color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:8px"><option value="">Semua status</option></select>
@@ -1552,24 +1585,29 @@ async function restoreSession(){
   const admin=profile.role==='admin';
   // Existing customers registered before the phone became required: ask once.
   document.getElementById('zs-phone-card').classList.toggle('portal-hidden',admin||!!zsWaNumber(profile.phone));
-  document.getElementById('zs-admin-tab').classList.toggle('portal-hidden',!admin);
-  document.getElementById('zs-admin-tab').setAttribute('aria-hidden',String(!admin));
+  document.getElementById('zs-portal-title').textContent=admin?'Dashboard Admin':'Dashboard Pelanggan';
+  document.querySelectorAll('.zs-admin-only').forEach(el=>el.classList.toggle('portal-hidden',!admin));
+  document.querySelectorAll('.zs-cust-only').forEach(el=>el.classList.toggle('portal-hidden',admin));
   document.getElementById('zs-pf-name').value=profile.full_name||'';
   document.getElementById('zs-pf-email').value=session.user.email;
   document.getElementById('zs-pf-phone').value=profile.phone||'';
-  showDashTab(admin?'admin':'home');
+  showDashTab(admin?'admin-home':'home');
   if(admin) await loadCustomerOrders();
 }
 sb?.auth.onAuthStateChange((event,session)=>{
-  if(event==='SIGNED_OUT'){currentProfile=null;authView.classList.remove('portal-hidden');dashView.classList.add('portal-hidden');}
+  if(event==='SIGNED_OUT'){currentProfile=null;document.getElementById('zs-portal-title').textContent='Portal pelanggan';authView.classList.remove('portal-hidden');dashView.classList.add('portal-hidden');}
   if(event==='PASSWORD_RECOVERY'){
     recovering=true;
     // Defer: Supabase advises against awaiting other calls inside this callback.
     setTimeout(()=>{openPortal('newpass');portalMessage('Masukkan kata laluan baharu anda.','info');},0);
   }
 });
-function showDashTab(tab){
-  document.querySelectorAll('[data-dash-tab]').forEach(b=>b.classList.toggle('active',b.dataset.dashTab===tab));
+function showDashTab(tab,quick){
+  if(tab==='admin'){ zsAdminView.quick=quick||''; document.getElementById('zs-admin-title').textContent=quick==='payments'?'Pembayaran menunggu pengesahan':quick==='reports'?'Menunggu laporan':'Pesanan'; }
+  document.querySelectorAll('[data-dash-tab]').forEach(b=>b.classList.toggle('active',b.dataset.dashTab===tab&&(tab!=='admin'||(b.dataset.quick||'')===(quick||''))));
+  document.getElementById('zs-admin-home-panel').classList.toggle('portal-hidden',tab!=='admin-home');
+  document.getElementById('zs-admin-customers-panel').classList.toggle('portal-hidden',tab!=='admin-customers');
+  if(currentProfile?.role==='admin'){ if(tab==='admin-home')loadAdminHome(); if(tab==='admin-customers')loadAdminCustomers(); }
   document.getElementById('zs-home-panel').classList.toggle('portal-hidden',tab!=='home');
   document.getElementById('zs-profile-panel').classList.toggle('portal-hidden',tab!=='profile');
   document.getElementById('zs-orders-panel').classList.toggle('portal-hidden',tab!=='orders');
@@ -1578,7 +1616,7 @@ function showDashTab(tab){
   if(tab==='orders'||tab==='home')loadCustomerOrders();
   if(tab==='admin'&&currentProfile?.role==='admin')loadAdminOrders();
 }
-document.querySelectorAll('[data-dash-tab]').forEach(b=>b.addEventListener('click',()=>showDashTab(b.dataset.dashTab)));
+document.querySelectorAll('[data-dash-tab]').forEach(b=>b.addEventListener('click',()=>showDashTab(b.dataset.dashTab,b.dataset.quick)));
 document.getElementById('zs-home-upload').addEventListener('click',()=>showDashTab('new-order'));
 document.getElementById('zs-home-all').addEventListener('click',()=>showDashTab('orders'));
 document.getElementById('zs-profile-form').addEventListener('submit',async e=>{
@@ -1902,7 +1940,7 @@ async function zsFileHash(file){
     return [...new Uint8Array(buf)].slice(0,6).map(b=>b.toString(16).padStart(2,'0')).join('');
   }catch(e){return '';}
 }
-const zsAdminView={q:'',status:'',limit:100};
+const zsAdminView={q:'',status:'',limit:100,quick:''};
 (function(){
   const sel=document.getElementById('zs-admin-status'),f=document.getElementById('zs-admin-filter');
   Object.entries(statusLabels).forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;sel.append(o);});
@@ -1911,15 +1949,95 @@ const zsAdminView={q:'',status:'',limit:100};
 })();
 // Files removed by the 30-day retention job (Edge Function zs-cleanup) keep their row.
 const zsDocGone=d=>String(d.storage_path||'').startsWith('deleted/');
+document.getElementById('zs-admin-all').addEventListener('click',()=>showDashTab('admin',''));
+/* Admin overview: every number is counted from the orders table (admin-only via RLS). No revenue, no estimates. */
+async function loadAdminHome(){
+  const recent=document.getElementById('zs-admin-recent');
+  try{
+    const {data:orders,error,count}=await sb.from('orders').select('id,order_number,status,total_sen,created_at,payments(status,proof_path)',{count:'exact'}).order('created_at',{ascending:false}).limit(1000);
+    if(error)throw error;
+    const all=orders||[];
+    const waitPay=all.filter(o=>o.status==='pending_payment'&&(o.payments||[]).some(p=>p.status==='pending'&&p.proof_path)).length;
+    const proc=all.filter(o=>['payment_verified','processing'].includes(o.status)).length;
+    const done=all.filter(o=>o.status==='report_ready').length;
+    document.getElementById('zs-as-total').textContent=count??all.length;
+    document.getElementById('zs-as-pay').textContent=waitPay;
+    document.getElementById('zs-as-proc').textContent=proc;
+    document.getElementById('zs-as-done').textContent=done;
+    for(const [id,n] of [['zs-nav-pay',waitPay],['zs-nav-rep',proc]]){const b=document.getElementById(id);b.textContent=n;b.hidden=!n;}
+    // last 7 days, by the admin's local date
+    const key=d=>d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-(6-i));return d;});
+    const per=new Map(days.map(d=>[key(d),0]));
+    all.forEach(o=>{const k=key(new Date(o.created_at));if(per.has(k))per.set(k,per.get(k)+1);});
+    const vals=days.map(d=>per.get(key(d))), max=Math.max(1,...vals), sum=vals.reduce((a,b)=>a+b,0);
+    document.getElementById('zs-chart-sum').textContent=sum+' pesanan';
+    const chart=document.getElementById('zs-chart');chart.innerHTML='';
+    chart.setAttribute('role','img');chart.setAttribute('aria-label','Bilangan pesanan sehari, 7 hari lepas: '+days.map((d,i)=>d.toLocaleDateString('ms-MY',{day:'numeric',month:'short'})+' '+vals[i]).join(', '));
+    days.forEach((d,i)=>{
+      const col=document.createElement('div');col.className='zs-bar-col';col.title=d.toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'short'})+': '+vals[i]+' pesanan';
+      const v=document.createElement('span');v.className='zs-bar-val';v.textContent=vals[i];
+      const bar=document.createElement('i');bar.className='zs-bar';bar.style.height=(vals[i]/max*100)+'%';if(!vals[i])bar.classList.add('zero');
+      const track=document.createElement('div');track.className='zs-bar-track';track.append(bar);
+      const lab=document.createElement('small');lab.textContent=d.toLocaleDateString('ms-MY',{day:'numeric',month:'short'});
+      col.append(v,track,lab);chart.append(col);
+    });
+    recent.innerHTML='';
+    if(!all.length){recent.textContent='Belum ada pesanan.';return;}
+    for(const o of all.slice(0,5)){
+      const row=document.createElement('button');row.type='button';row.className='zs-recent-row';
+      const l=document.createElement('span');l.className='zs-recent-main';
+      const id=document.createElement('strong');id.textContent=o.order_number;
+      const sm=document.createElement('small');sm.textContent=money(o.total_sen)+' · '+new Date(o.created_at).toLocaleDateString('ms-MY',{day:'numeric',month:'short'});
+      l.append(id,sm);
+      const badge=document.createElement('span');badge.className='portal-status s-'+o.status+' '+(o.status==='report_ready'?'ready':o.status==='pending_payment'?'pending':'');badge.textContent=statusLabels[o.status]||o.status;
+      row.append(l,badge);
+      row.addEventListener('click',()=>{document.getElementById('zs-admin-q').value=o.order_number;zsAdminView.q=o.order_number;zsAdminView.status='';document.getElementById('zs-admin-status').value='';showDashTab('admin','');});
+      recent.append(row);
+    }
+  }catch(err){recent.textContent='Tidak dapat memuatkan ringkasan: '+(err.message||'Ralat');}
+}
+async function loadAdminCustomers(){
+  const host=document.getElementById('zs-cust-list');host.textContent='Memuatkan pelanggan...';
+  try{
+    const [{data:people,error},{data:orders,error:oErr}]=await Promise.all([
+      sb.from('profiles').select('id,full_name,phone,role').order('full_name',{ascending:true}).limit(1000),
+      sb.from('orders').select('customer_id').limit(5000)]);
+    if(error)throw error; if(oErr)throw oErr;
+    const n=new Map();(orders||[]).forEach(o=>n.set(o.customer_id,(n.get(o.customer_id)||0)+1));
+    const list=(people||[]).filter(c=>c.role!=='admin');
+    if(!list.length){host.textContent='Belum ada pelanggan.';return;}
+    const wrap=document.createElement('div');wrap.className='portal-table-wrap';
+    const table=document.createElement('table');table.className='portal-table';table.style.minWidth='420px';
+    table.innerHTML='<thead><tr><th>Nama</th><th>Telefon</th><th>Pesanan</th><th></th></tr></thead>';
+    const body=document.createElement('tbody');
+    for(const c of list){
+      const tr=document.createElement('tr');
+      const a=document.createElement('td');a.textContent=c.full_name||'(tiada nama)';
+      const b=document.createElement('td');b.textContent=c.phone||'–';
+      const d=document.createElement('td');d.textContent=n.get(c.id)||0;
+      const e=document.createElement('td');const wa=zsWaNumber(c.phone);
+      if(wa){const l=document.createElement('a');l.className='portal-btn';l.style.cssText='display:inline-block;text-decoration:none;font-size:11px;padding:6px 9px;color:#7ef0b8;border-color:rgba(61,220,151,.4)';l.target='_blank';l.rel='noopener';l.textContent='WhatsApp';l.href='https://wa.me/'+wa;e.append(l);}
+      tr.append(a,b,d,e);body.append(tr);
+    }
+    table.append(body);wrap.append(table);host.innerHTML='';
+    const cnt=document.createElement('p');cnt.className='portal-note';cnt.style.margin='0 0 8px';cnt.textContent=list.length+' pelanggan berdaftar.';host.append(cnt,wrap);
+  }catch(err){host.textContent='Tidak dapat memuatkan pelanggan: '+(err.message||'Ralat');}
+}
 async function loadAdminOrders(){
   const host=document.getElementById('zs-admin-list');host.textContent='Memuatkan semua pesanan...';
   try{
     let query=sb.from('orders').select('id,order_number,customer_id,document_count,total_sen,status,created_at,documents(id,original_filename,storage_path),payments(id,proof_path,status,amount_sen,created_at),reports(id,document_id,report_path,uploaded_at)').order('created_at',{ascending:false}).limit(zsAdminView.limit);
-    if(zsAdminView.status) query=query.eq('status',zsAdminView.status);
+    // Sidebar shortcuts: "Pembayaran" = proof waiting for review, "Laporan" = paid, report not ready yet.
+    if(zsAdminView.quick==='payments') query=query.eq('status','pending_payment');
+    else if(zsAdminView.quick==='reports') query=query.in('status',['payment_verified','processing']);
+    else if(zsAdminView.status) query=query.eq('status',zsAdminView.status);
     if(zsAdminView.q) query=query.ilike('order_number','%'+zsAdminView.q+'%');
-    const {data:orders,error}=await query;
+    let {data:orders,error}=await query;
     if(error)throw error;
-    if(!orders?.length){host.textContent=(zsAdminView.q||zsAdminView.status)?'Tiada pesanan sepadan dengan carian/penapis ini.':'Belum ada pesanan.';return;}
+    if(zsAdminView.quick==='payments') orders=(orders||[]).filter(o=>(o.payments||[]).some(p=>p.status==='pending'&&p.proof_path));
+    document.getElementById('zs-admin-status').hidden=!!zsAdminView.quick;
+    if(!orders?.length){host.textContent=zsAdminView.quick==='payments'?'Tiada bukti bayaran menunggu pengesahan.':zsAdminView.quick==='reports'?'Tiada pesanan menunggu laporan.':(zsAdminView.q||zsAdminView.status)?'Tiada pesanan sepadan dengan carian/penapis ini.':'Belum ada pesanan.';return;}
     const customerIds=[...new Set(orders.map(o=>o.customer_id))];
     const {data:customers,error:customerError}=await sb.from('profiles').select('id,full_name,phone').in('id',customerIds);
     if(customerError)throw customerError;
@@ -2084,7 +2202,7 @@ async function loadAdminOrders(){
       actions.append(docSelect,upload,up,mapBox);if(reps.length)actions.append(repList);c5.append(actions);tr.append(c1,c2,c3,c4,c5);body.append(tr);
     }
     table.append(body);wrap.append(table);host.innerHTML='';
-    const cnt=document.createElement('p');cnt.className='portal-note';cnt.style.margin='0 0 8px';cnt.textContent=`Memaparkan ${orders.length} pesanan terkini`+((zsAdminView.q||zsAdminView.status)?' (ditapis)':'')+'.';host.append(cnt,wrap);
+    const cnt=document.createElement('p');cnt.className='portal-note';cnt.style.margin='0 0 8px';cnt.textContent=`Memaparkan ${orders.length} pesanan terkini`+((zsAdminView.q||zsAdminView.status||zsAdminView.quick)?' (ditapis)':'')+'.';host.append(cnt,wrap);
     if(orders.length>=zsAdminView.limit){const more=document.createElement('button');more.className='portal-btn';more.style.marginTop='10px';more.textContent='Muat lagi (100 seterusnya)';more.addEventListener('click',()=>{zsAdminView.limit+=100;loadAdminOrders();});host.append(more);}
   }catch(err){host.textContent='Tidak dapat memuatkan dashboard admin: '+(err.message||'Ralat');}
 }
