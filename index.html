@@ -523,6 +523,55 @@ footer{margin-top:110px;border-top:1px solid var(--line);background:linear-gradi
 .zs-bar-col:hover .zs-bar{opacity:.75}
 .zs-bar-col small{font-size:10.5px;color:var(--muted);white-space:nowrap}
 @media (max-width:860px){.zs-side-sep{display:none}.zs-stats-4{grid-template-columns:1fr 1fr}}
+
+/* ---------- Phase 5: phones & tablets ---------- */
+.zs-side-toggle{display:none}
+.zs-side-user{display:flex;align-items:center;justify-content:space-between;gap:10px}
+@media (max-width:860px){
+  /* collapsible menu instead of a sideways-scrolling row */
+  .zs-side-user{border-bottom:0;margin:0;padding:2px 4px}
+  .zs-side-toggle{display:inline-flex;align-items:center;gap:8px;flex:none;white-space:nowrap}
+  .zs-side-toggle svg{width:18px;height:18px}
+  .zs-side-nav{display:none}
+  .zs-side.open .zs-side-nav{display:flex;flex-direction:column;overflow:visible;gap:4px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+  .zs-side.open .zs-side-nav button{width:100%;border-color:transparent;padding:12px 11px}
+  .zs-side.open .zs-side-nav .zs-side-out{border-top:1px solid var(--line);border-radius:0 0 11px 11px;margin-top:6px}
+  .zs-side.open .zs-side-sep{display:block}
+  /* comfortable touch targets */
+  .portal-shell .portal-btn,.portal-shell .portal-tabs button,.portal-shell select,.portal-shell .zs-link{min-height:44px}
+  #zs-close{min-width:44px;min-height:44px}
+  .portal-shell a.portal-btn{display:inline-flex!important;align-items:center;padding:10px 12px!important;font-size:12.5px!important}
+  .portal-field input,.portal-field select,#zs-admin-q,#zs-admin-status{min-height:46px;font-size:16px!important}
+  #zs-admin-filter>*{flex:1 1 140px}
+  #zs-admin-q{flex-basis:100%!important}
+}
+@media (max-width:760px){
+  /* admin orders: one card per order instead of a sideways-scrolling table */
+  #zs-admin-list .portal-table{min-width:0;display:block}
+  #zs-admin-list .portal-table thead{display:none}
+  #zs-admin-list .portal-table tbody{display:grid;gap:12px}
+  #zs-admin-list .portal-table tr{display:block;border:1px solid var(--line);border-radius:13px;padding:12px;background:rgba(255,255,255,.025)}
+  #zs-admin-list .portal-table td{display:block;border:0;padding:6px 0}
+  #zs-admin-list .portal-table td:first-child{font-size:14px;font-weight:700;color:var(--text)}
+  #zs-admin-list .portal-table td:nth-child(n+2)::before{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+  #zs-admin-list .portal-table td:nth-child(2)::before{content:"Dokumen"}
+  #zs-admin-list .portal-table td:nth-child(3)::before{content:"Jumlah"}
+  #zs-admin-list .portal-table td:nth-child(4)::before{content:"Status"}
+  #zs-admin-list .portal-table td:nth-child(5)::before{content:"Tindakan"}
+  #zs-admin-list .portal-table td select{width:100%;max-width:none!important}
+  #zs-admin-list .portal-table td input[type=file]{max-width:100%!important}
+  #zs-admin-list .portal-table td br{display:none}
+  #zs-admin-list .portal-table td:nth-child(2) .portal-btn{margin:0 6px 6px 0}
+}
+@media (max-width:640px){
+  /* the portal fills the screen on phones */
+  .portal-backdrop{padding:0;align-items:stretch}
+  .portal-shell{width:100%;max-height:none;height:100dvh;border-radius:0;border:0;padding:14px 14px calc(18px + env(safe-area-inset-bottom,0px))}
+  .portal-head{margin-bottom:14px}
+  .portal-head h2{font-size:20px}
+  .portal-card{padding:14px}
+  .portal-order-top{align-items:flex-start}
+}
 /* ---------- Layout polish: less scrolling on phones, balanced cards on desktop ---------- */
 .price-card{display:flex;flex-direction:column;justify-content:center}
 @media (max-width:640px){
@@ -1140,7 +1189,7 @@ html{overflow-x:clip}
     <div id="zs-dashboard" class="portal-hidden">
      <div class="zs-dash">
       <aside class="zs-side">
-        <div class="zs-side-user"><strong id="zs-welcome">Akaun</strong><div class="portal-note" id="zs-account-email"></div></div>
+        <div class="zs-side-user"><div><strong id="zs-welcome">Akaun</strong><div class="portal-note" id="zs-account-email"></div></div><button type="button" class="portal-btn zs-side-toggle" id="zs-side-toggle" aria-expanded="false" aria-controls="zs-dash-tabs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span id="zs-side-current">Menu</span></button></div>
         <nav class="portal-tabs zs-side-nav" id="zs-dash-tabs" aria-label="Menu akaun">
           <button type="button" class="active zs-cust-only" data-dash-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/></svg><span>Dashboard</span></button>
           <button type="button" class="portal-hidden zs-admin-only" data-dash-tab="admin-home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/></svg><span>Dashboard</span></button>
@@ -1605,6 +1654,11 @@ sb?.auth.onAuthStateChange((event,session)=>{
 function showDashTab(tab,quick){
   if(tab==='admin'){ zsAdminView.quick=quick||''; document.getElementById('zs-admin-title').textContent=quick==='payments'?'Pembayaran menunggu pengesahan':quick==='reports'?'Menunggu laporan':'Pesanan'; }
   document.querySelectorAll('[data-dash-tab]').forEach(b=>b.classList.toggle('active',b.dataset.dashTab===tab&&(tab!=='admin'||(b.dataset.quick||'')===(quick||''))));
+  { // phones: close the menu and show the current page name on its button
+    const side=document.querySelector('.zs-side'), act=document.querySelector('#zs-dash-tabs button.active span');
+    side.classList.remove('open'); document.getElementById('zs-side-toggle').setAttribute('aria-expanded','false');
+    document.getElementById('zs-side-current').textContent=act?act.textContent:'Menu';
+  }
   document.getElementById('zs-admin-home-panel').classList.toggle('portal-hidden',tab!=='admin-home');
   document.getElementById('zs-admin-customers-panel').classList.toggle('portal-hidden',tab!=='admin-customers');
   if(currentProfile?.role==='admin'){ if(tab==='admin-home')loadAdminHome(); if(tab==='admin-customers')loadAdminCustomers(); }
@@ -1617,6 +1671,7 @@ function showDashTab(tab,quick){
   if(tab==='admin'&&currentProfile?.role==='admin')loadAdminOrders();
 }
 document.querySelectorAll('[data-dash-tab]').forEach(b=>b.addEventListener('click',()=>showDashTab(b.dataset.dashTab,b.dataset.quick)));
+document.getElementById('zs-side-toggle').addEventListener('click',e=>{const open=document.querySelector('.zs-side').classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',String(open));});
 document.getElementById('zs-home-upload').addEventListener('click',()=>showDashTab('new-order'));
 document.getElementById('zs-home-all').addEventListener('click',()=>showDashTab('orders'));
 document.getElementById('zs-profile-form').addEventListener('submit',async e=>{
