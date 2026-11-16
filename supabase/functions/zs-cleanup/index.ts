@@ -1,24 +1,31 @@
-// DRAF, BELUM DIPASANG. Padam fail dokumen pelanggan yang lebih 30 hari.
-// Guna SERVICE_ROLE_KEY dari Edge Function Secrets sahaja (jangan letak dalam repo/index.html).
-// Dicetus oleh pg_cron (lihat supabase/retention-30-days.sql) dengan header x-cleanup-secret.
+// ZiminStore: padam fail dokumen pelanggan 30 hari selepas pesanan dibuat (janji notis PDPA).
+// Dicetus setiap hari oleh pg_cron (supabase/retention-30-days.sql).
+// Tiada secret dan tiada input: fungsi ini hanya boleh buat satu perkara (padam fail yang
+// sudah melepasi 30 hari), jadi panggilan luar tidak boleh memadam apa-apa yang lain.
+// SUPABASE_SERVICE_ROLE_KEY dibekalkan automatik oleh Supabase; ia tidak ada dalam repo.
+// Baris `documents` dikekalkan (nama fail untuk rekod); storage_path ditanda 'deleted/<id>'.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+const DAYS = 30;
+
 Deno.serve(async (req) => {
-  if (req.headers.get("x-cleanup-secret") !== Deno.env.get("CLEANUP_SECRET"))
-    return new Response("forbidden", { status: 403 });
+  if (req.method !== "POST") return new Response("method not allowed", { status: 405 });
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-  const cutoff = new Date(Date.now() - 30 * 86400_000).toISOString();
-  const { data: orders, error } = await sb.from("orders").select("id").lt("created_at", cutoff).limit(500);
-  if (error) return new Response(error.message, { status: 500 });
-  let deleted = 0;
-  for (const o of orders ?? []) {
-    const { data: docs } = await sb.from("documents").select("id,storage_path").eq("order_id", o.id);
-    const paths = (docs ?? []).map((d) => d.storage_path).filter(Boolean);
-    if (!paths.length) continue;
-    const { error: rmErr } = await sb.storage.from("customer-documents").remove(paths); // fail sebenar
-    if (rmErr) continue;
-    await sb.from("documents").update({ storage_path: "deleted" }).eq("order_id", o.id);
-    deleted += paths.length;
+  const cutoff = new Date(Date.now() - DAYS * 86400_000).toISOString();
+  const { data: docs, error } = await sb
+    .from("documents")
+    .select("id,storage_path,orders!inner(created_at)")
+    .lt("orders.created_at", cutoff)
+    .not("storage_path", "like", "deleted/%")
+    .limit(500);
+  if (error) return Response.json({ error: error.message }, { status: 500 });
+
+  let deleted = 0, failed = 0;
+  for (const d of docs ?? []) {
+    const { error: rmErr } = await sb.storage.from("customer-documents").remove([d.storage_path]);
+    if (rmErr) { failed++; continue; }
+    const { error: upErr } = await sb.from("documents").update({ storage_path: `deleted/${d.id}` }).eq("id", d.id);
+    if (upErr) failed++; else deleted++;
   }
-  return Response.json({ orders: orders?.length ?? 0, deleted });
+  return Response.json({ found: docs?.length ?? 0, deleted, failed });
 });

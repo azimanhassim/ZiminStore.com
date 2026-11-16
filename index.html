@@ -1594,7 +1594,7 @@ function zsLoadJSZip(){
   return zsJSZipLoading;
 }
 async function zsDownloadAllDocs(order,btn){
-  const docs=order.documents||[];
+  const docs=(order.documents||[]).filter(d=>!String(d.storage_path||'').startsWith('deleted/'));
   if(!docs.length) return;
   const label=btn.textContent; btn.disabled=true;
   try{
@@ -1643,6 +1643,8 @@ const zsAdminView={q:'',status:'',limit:100};
   f.addEventListener('submit',e=>{e.preventDefault();zsAdminView.q=document.getElementById('zs-admin-q').value.trim().replace(/[%_,()*]/g,'');zsAdminView.status=sel.value;zsAdminView.limit=100;loadAdminOrders();});
   document.getElementById('zs-admin-reset').addEventListener('click',()=>{document.getElementById('zs-admin-q').value='';sel.value='';Object.assign(zsAdminView,{q:'',status:'',limit:100});loadAdminOrders();});
 })();
+// Files removed by the 30-day retention job (Edge Function zs-cleanup) keep their row.
+const zsDocGone=d=>String(d.storage_path||'').startsWith('deleted/');
 async function loadAdminOrders(){
   const host=document.getElementById('zs-admin-list');host.textContent='Memuatkan semua pesanan...';
   try{
@@ -1677,8 +1679,8 @@ async function loadAdminOrders(){
         c1.append(box);
       }
       const c2=document.createElement('td');
-      for(const d of (o.documents||[])){const b=document.createElement('button');b.className='portal-btn';b.textContent='Lihat '+d.original_filename;b.addEventListener('click',()=>signedDownload('customer-documents',d.storage_path,d.original_filename).catch(e=>portalMessage(e.message,'error')));c2.append(b,document.createElement('br'));}
-      if((o.documents||[]).length>1){const all=document.createElement('button');all.className='portal-btn primary';all.style.marginTop='6px';all.textContent=`Muat turun semua (${o.documents.length}) · ZIP`;all.addEventListener('click',()=>zsDownloadAllDocs(o,all));c2.append(all);}
+      for(const d of (o.documents||[])){if(zsDocGone(d)){const g=document.createElement('small');g.style.color='var(--dim)';g.textContent=d.original_filename+' (dipadam selepas 30 hari)';c2.append(g,document.createElement('br'));continue;}const b=document.createElement('button');b.className='portal-btn';b.textContent='Lihat '+d.original_filename;b.addEventListener('click',()=>signedDownload('customer-documents',d.storage_path,d.original_filename).catch(e=>portalMessage(e.message,'error')));c2.append(b,document.createElement('br'));}
+      if((o.documents||[]).filter(d=>!zsDocGone(d)).length>1){const all=document.createElement('button');all.className='portal-btn primary';all.style.marginTop='6px';all.textContent=`Muat turun semua (${o.documents.length}) · ZIP`;all.addEventListener('click',()=>zsDownloadAllDocs(o,all));c2.append(all);}
       const c3=document.createElement('td');c3.textContent=money(o.total_sen);
       const c4=document.createElement('td');const select=document.createElement('select');select.className='portal-field';select.style.padding='7px';select.style.background='#050d20';select.style.color='white';
       Object.entries(statusLabels).forEach(([v,label])=>{const op=document.createElement('option');op.value=v;op.textContent=label;op.selected=o.status===v;select.append(op);});
