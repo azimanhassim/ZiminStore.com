@@ -7,18 +7,18 @@
 <meta name="description" content="ZiminStore: semakan similarity Turnitin untuk pelajar. RM3.50 setiap dokumen, laporan PDF.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&family=JetBrains+Mono:wght@500;600&display=swap">
 <style>
 /* Layout: circuit-board hero with a glass order console, then pricing calculator, five-step flow, features, FAQ, contact band, footer. Single dark theme by design. */
 :root{
   color-scheme: dark;
-  --bg:#050B1A;
-  --bg-2:#081330;
+  --bg:#07142E;
+  --bg-2:#0A1C40;
   --navy:#0D1D42;
   --blue:#2F6BFF;
   --blue-2:#4D85FF;
-  --cyan:#22D3EE;
-  --gold:#F2B84B;
+  --cyan:#18C9E8;
+  --gold:#F5B942;
   --gold-2:#FFD98A;
   --text:#EAF1FF;
   --muted:#97A8CC;
@@ -30,7 +30,7 @@
   --ok:#3DDC97;
   --warn:#FF7A7A;
 
-  --f-display:"Unbounded","Manrope",system-ui,sans-serif;
+  --f-display:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
 
@@ -450,7 +450,119 @@ footer{margin-top:110px;border-top:1px solid var(--line);background:linear-gradi
 .portal-table select,#zs-admin-q,#zs-admin-status{border:1px solid var(--line-2)!important;border-radius:9px;font:13px var(--f-body)}
 .portal-table tbody tr:hover{background:rgba(255,255,255,.025)}
 .portal-table th{position:sticky;top:0;background:#0a1733;z-index:1;text-transform:uppercase;letter-spacing:.06em;font-size:10.5px}
-@media(max-width:520px){.price-big,.pc-price{flex-wrap:wrap}.price-big .amt,.pc-price .amt{font-size:clamp(52px,19vw,84px)}}
+@media(max-width:520px){.pc-price{flex-wrap:wrap}.pc-price .amt{font-size:clamp(52px,19vw,84px)}}
+/* ---------- Layout polish: less scrolling on phones, balanced cards on desktop ---------- */
+.price-card{display:flex;flex-direction:column;justify-content:center}
+@media (max-width:640px){
+  section.block{padding-top:64px}
+  .hero-in{gap:48px}
+  .price-strip{gap:12px}
+  .hero-cta{gap:10px;margin-top:22px}
+  .hero-cta .btn{flex:1 1 100%;justify-content:center}
+  .trust-in{grid-template-columns:1fr 1fr}
+  .trust-item{padding:14px 12px;gap:10px}
+  .trust-item+.trust-item{border-top:0;border-left:0}
+  .trust-item:nth-child(even){border-left:1px solid var(--line)}
+  .trust-item:nth-child(n+3){border-top:1px solid var(--line)}
+  .trust-item strong{font-size:13px}.trust-item span{font-size:11.5px}
+  .steps{margin-top:36px}.step{padding-bottom:18px;gap:16px}
+  .statuses{margin-top:30px}
+  .st-row{gap:8px}.st-row>*{font-size:12px}
+  .features{grid-template-columns:1fr 1fr;gap:12px;margin-top:32px}
+  .feat{padding:16px}
+  .feat h3{font-size:15px;margin-top:14px;line-height:1.25}
+  .feat p{font-size:13px;margin-top:6px;line-height:1.5}
+  .f-grid{grid-template-columns:1fr 1fr;gap:26px 18px;padding-block:44px 28px}
+  .f-about{grid-column:1/-1}
+}
+@media (max-width:380px){.features{grid-template-columns:1fr}}
+
+/* ---------- Redesign 2026-11: navy / cyan / gold, report hero, price strip, step cards ---------- */
+body{background:radial-gradient(1200px 700px at 80% -10%,#0E2A63 0,transparent 60%),var(--bg)}
+.wordmark{font-style:italic;transform:none;font-size:19px;letter-spacing:.01em}
+.wordmark b{background:linear-gradient(90deg,#18C9E8,#5FE3F7);-webkit-background-clip:text;background-clip:text}
+.brand svg{width:44px;height:44px;overflow:visible}
+.nav-links a:hover,.nav-links a:first-child{color:#fff}
+.nav-links a:first-child{box-shadow:inset 0 -2px 0 var(--cyan);border-radius:0}
+.btn-cyan{background:linear-gradient(180deg,#45DDF6,#18C9E8);color:#04202B;box-shadow:0 8px 24px -10px rgba(24,201,232,.8)}
+.btn-cyan:hover{transform:translateY(-2px)}
+.hero h1{font-style:italic;font-weight:800;letter-spacing:-.025em;font-size:clamp(36px,5.4vw,64px);line-height:1.06}
+.hero h1 .hl{background:linear-gradient(92deg,#18C9E8,#6BE6FA);-webkit-background-clip:text;background-clip:text;color:transparent;display:block}
+.hero-sub{max-width:46ch}
+.sec-head h2,.band h2{font-weight:800;letter-spacing:-.02em}
+.hero-cta .btn-gold{font-weight:800}
+.hero-badges{list-style:none;display:flex;flex-wrap:wrap;gap:12px 26px;padding:0;margin:30px 0 0}
+.hero-badges li{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700;color:#DCE8FF}
+.hero-badges svg{width:22px;height:22px;color:var(--cyan)}
+.hero-badges li:first-child svg{color:var(--gold)}
+/* report illustration */
+.rep-wrap{position:relative;width:min(100%,430px);aspect-ratio:1/1.050;margin:0 auto}
+.rep-ring{position:absolute;left:4%;right:4%;bottom:2%;height:34%;border-radius:50%;border:3px solid rgba(24,201,232,.85);box-shadow:0 0 34px rgba(24,201,232,.55),inset 0 0 40px rgba(24,201,232,.25);background:radial-gradient(closest-side,rgba(24,201,232,.18),transparent)}
+.rep-sheet{position:absolute;left:21%;top:13%;width:56%;height:70%;border-radius:18px;background:linear-gradient(165deg,#F7FAFF,#D6E3FA);box-shadow:0 30px 60px -20px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.6) inset;transform:rotate(7deg);padding:9% 7% 0;color:#12233F}
+.rep-sheet.back{transform:rotate(-6deg) translate(-9%,3%);background:linear-gradient(165deg,#B9CCF0,#8FA9DC);opacity:.75;box-shadow:none}
+.rep-title{font:800 italic clamp(13px,1.5vw,17px) var(--f-body);text-align:center}
+.rep-donut{position:relative;width:62%;margin:9% auto 0}
+.rep-donut svg{display:block;width:100%}
+.rep-donut strong{position:absolute;inset:0;display:grid;place-items:center;font:800 italic clamp(22px,2.8vw,34px) var(--f-body);color:#12233F}
+.rep-lines{display:grid;gap:8px;margin-top:11%}
+.rep-lines i{display:block;height:7px;border-radius:6px;background:#B8C8E6;width:78%}
+.rep-lines i:first-child{background:linear-gradient(90deg,#5B5BE6,#7C8CF8);width:52%}
+.rep-lines i:nth-child(3){width:64%}.rep-lines i:nth-child(4){width:44%}
+.rep-check{position:absolute;right:-9%;bottom:14%;width:27%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:linear-gradient(160deg,#4BE08A,#1FAE5B);box-shadow:0 12px 26px -8px rgba(31,174,91,.8),0 0 0 5px rgba(255,255,255,.85)}
+.rep-check svg{width:56%}
+.rep-cap{position:absolute;right:6%;top:0;width:36%;filter:drop-shadow(0 12px 16px rgba(0,0,0,.45));transform:rotate(9deg)}
+.rep-sample{position:absolute;left:50%;bottom:-5%;transform:translateX(-50%);white-space:nowrap}
+@media (prefers-reduced-motion:no-preference){.rep-sheet:not(.back){animation:repfloat 6s ease-in-out infinite}@keyframes repfloat{50%{transform:rotate(7deg) translateY(-8px)}}}
+/* price strip */
+.pstrip{display:grid;grid-template-columns:1.3fr repeat(4,1fr);align-items:stretch;border:1px solid rgba(24,201,232,.4);border-radius:26px;background:linear-gradient(180deg,rgba(14,36,84,.85),rgba(8,22,54,.85));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 0 0 1px rgba(24,201,232,.08),0 24px 60px -30px rgba(24,201,232,.5);overflow:hidden}
+.ps-price{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 16px;border-right:1px solid rgba(24,201,232,.35);background:rgba(7,20,46,.55);border-radius:26px;text-align:center}
+.ps-price small{font-size:17px;font-weight:700;color:#fff}
+.ps-price strong{font:800 italic clamp(34px,4.2vw,52px)/1 var(--f-body);background:linear-gradient(180deg,#FFE29A,var(--gold) 70%,#D8962A);-webkit-background-clip:text;background-clip:text;color:transparent;padding:2px 6px}
+.ps-price span{font-size:16px;font-weight:700;color:#fff}
+.ps-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px 10px;text-align:center;font-size:14.5px;font-weight:700;line-height:1.3;min-width:0}
+.ps-item+.ps-item{border-left:1px dashed rgba(130,165,255,.22)}
+.ps-item svg{width:34px;height:34px;color:#fff}
+.ps-item.ps-pdf svg{color:#FF6B6B}.ps-item.ps-wa svg{color:#3DDC97}
+.ps-item span{max-width:12ch}
+/* why-choose: four cards */
+.features{grid-template-columns:repeat(4,1fr)}
+.feat{display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:start;padding:22px}
+.feat .f-ic{grid-row:1/3}
+.feat h3{margin-top:0;font-size:16px}.feat p{font-size:13.5px;margin-top:5px}
+@media (min-width:1061px){
+  .steps{gap:34px}
+  .steps::before{display:none}
+  .step{padding:22px 10px 18px;border:1px solid var(--line-2);border-radius:18px;background:linear-gradient(170deg,rgba(20,42,92,.5),rgba(8,19,48,.55))}
+  .step+.step::before{content:"→";position:absolute;left:-17px;top:50%;transform:translate(-50%,-50%);color:var(--cyan);font-size:20px;font-weight:800}
+  .s-ic{background:none;border:0;box-shadow:none;width:56px;height:56px;color:#fff}
+  .s-ic svg{width:38px;height:38px}
+  .s-num{top:auto;bottom:-14px;right:50%;transform:translateX(50%);box-shadow:none;width:22px;height:22px}
+  .step h3{text-transform:none;letter-spacing:0;font-size:15px;margin-top:26px}
+  .step p{font-size:12.5px;margin-top:5px}
+}
+@media (max-width:1060px){
+  .features{grid-template-columns:1fr 1fr}
+  .rep-wrap{width:min(100%,360px)}
+  .pstrip{grid-template-columns:repeat(4,1fr)}
+  .ps-price{grid-column:1/-1;flex-direction:row;gap:10px;align-items:baseline;border-right:0;border-bottom:1px solid rgba(24,201,232,.35);border-radius:0;padding:16px}
+}
+@media (max-width:640px){
+  .hero h1{font-size:clamp(34px,10.5vw,44px)}
+  .nav-actions .btn-cyan{display:none}
+  .ps-price{flex-wrap:wrap;justify-content:center}.ps-price span,.ps-price small{white-space:nowrap}
+  .rep-wrap{margin-bottom:26px}
+  .hero-badges{gap:10px 18px;margin-top:22px}.hero-badges li{font-size:12.5px}
+  .rep-wrap{width:min(86%,320px)}
+  .pstrip{grid-template-columns:1fr 1fr;border-radius:20px}
+  .ps-item{padding:16px 8px;font-size:13px}.ps-item svg{width:28px;height:28px}
+  .ps-item+.ps-item{border-left:0}
+  .ps-item:nth-child(odd){border-left:1px dashed rgba(130,165,255,.22)}
+  .ps-item:nth-child(n+4){border-top:1px dashed rgba(130,165,255,.22)}
+  .ps-price small,.ps-price span{font-size:15px}
+  .feat{grid-template-columns:1fr;row-gap:10px}.feat .f-ic{grid-row:auto}
+  .step h3{text-transform:none;letter-spacing:0}
+}
+
 .portal-qr{display:block;width:min(220px,100%);height:auto;margin:10px 0;border-radius:12px;background:#fff;padding:8px}
 
 /* ---------- Small phones (320px to 380px) ----------
@@ -563,20 +675,22 @@ html{overflow-x:clip}
     <a class="brand" href="#top" aria-label="ZiminStore, laman utama">
       <svg viewBox="0 0 48 48" aria-hidden="true">
         <defs>
-          <linearGradient id="lgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4D85FF"/><stop offset="1" stop-color="#22D3EE"/></linearGradient>
-          <linearGradient id="lgG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFD98A"/><stop offset="1" stop-color="#F2B84B"/></linearGradient>
+          <linearGradient id="lgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4D85FF"/><stop offset="1" stop-color="#18C9E8"/></linearGradient>
+          <linearGradient id="lgG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFD98A"/><stop offset="1" stop-color="#F5B942"/></linearGradient>
         </defs>
-        <rect x="2" y="2" width="44" height="44" rx="13" fill="#0D1D42" stroke="url(#lgA)" stroke-width="1.5"/>
-        <path d="M14 14h20l-14.5 17H34" fill="none" stroke="url(#lgA)" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M13 37c6-2.6 14-2.8 22-1" fill="none" stroke="url(#lgG)" stroke-width="2.4" stroke-linecap="round"/>
+        <rect x="4" y="11" width="40" height="35" rx="11" fill="#0B1F47" stroke="url(#lgA)" stroke-width="1.5"/>
+        <path d="M16 23h17L16 38h18" fill="none" stroke="#fff" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M13 12.5v4.2c5.5 3 16.500 3 22 0v-4.2" fill="#BFD9FF"/>
+        <path d="M24 2l19 7-19 7L5 9z" fill="#F4F9FF" stroke="#07142E" stroke-width="1" stroke-linejoin="round"/>
+        <path d="M39.500 10.300v7.500" stroke="url(#lgG)" stroke-width="1.8" stroke-linecap="round"/><circle cx="39.500" cy="19.500" r="1.900" fill="#F5B942"/>
       </svg>
       <span class="brand-txt"><span class="wordmark">ZIMIN<b>STORE</b></span><span class="brand-tag">STUDENT BANTU STUDENT</span></span>
     </a>
     <nav class="nav-links" aria-label="Utama">
-      <a href="#harga" data-i18n="nav.price">Harga</a>
+      <a href="#top" data-i18n="nav.home">Utama</a>
+      <a href="#harga" data-i18n="nav.price">Servis</a>
       <a href="#cara" data-i18n="nav.how">Cara Tempahan</a>
-      <a href="#ciri" data-i18n="nav.features">Ciri</a>
-      <a href="#soalan" data-i18n="nav.faq">Soalan Lazim</a>
+      <a href="#soalan" data-i18n="nav.faq">FAQ</a>
       <a href="#hubungi" data-i18n="nav.contact">Hubungi</a>
     </nav>
     <div class="nav-actions">
@@ -585,20 +699,20 @@ html{overflow-x:clip}
         <button type="button" id="lang-en" data-lang="en" aria-pressed="false">EN</button>
       </div>
       <a href="#" class="btn btn-ghost btn-sm" data-portal="login" data-i18n="nav.login">Log Masuk</a>
-      <a href="#" class="btn btn-primary btn-sm" data-portal="order" data-i18n="nav.start">Mula Tempahan</a>
+      <a href="#" class="btn btn-cyan btn-sm" data-portal="register" data-i18n="nav.register">Daftar</a>
       <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span></button>
     </div>
   </div>
   <div class="mobile-menu" id="mobile-menu">
     <div class="wrap">
-      <a href="#harga" data-i18n="nav.price">Harga</a>
+      <a href="#top" data-i18n="nav.home">Utama</a>
+      <a href="#harga" data-i18n="nav.price">Servis</a>
       <a href="#cara" data-i18n="nav.how">Cara Tempahan</a>
-      <a href="#ciri" data-i18n="nav.features">Ciri</a>
-      <a href="#soalan" data-i18n="nav.faq">Soalan Lazim</a>
+      <a href="#soalan" data-i18n="nav.faq">FAQ</a>
       <a href="#hubungi" data-i18n="nav.contact">Hubungi</a>
       <div class="m-acts">
-        <a href="#" class="btn btn-ghost" data-portal="register" data-i18n="nav.register">Daftar</a>
-        <a href="#" class="btn btn-primary" data-portal="order" data-i18n="nav.start">Mula Tempahan</a>
+        <a href="#" class="btn btn-ghost" data-portal="login" data-i18n="nav.login">Log Masuk</a>
+        <a href="#" class="btn btn-cyan" data-portal="register" data-i18n="nav.register">Daftar</a>
       </div>
     </div>
   </div>
@@ -611,53 +725,37 @@ html{overflow-x:clip}
   <div class="glow g1"></div><div class="glow g2"></div>
   <div class="wrap hero-in">
     <div class="hero-copy">
-      <span class="chip rise"><i></i><span data-i18n="hero.chip">Semakan Similarity Turnitin untuk pelajar</span></span>
-      <h1 class="rise d1" data-i18n="hero.title">Semak similarity tugasan anda <span class="hl">sebelum dihantar.</span></h1>
-      <p class="hero-sub rise d2" data-i18n="hero.sub">Muat naik PDF atau DOCX, bayar, dan muat turun laporan. Semuanya dalam satu portal.</p>
-      <div class="price-strip rise d3">
-        <div class="price-big"><span class="rm">RM</span><span class="amt">3.50</span><span class="per" data-i18n="price.per">/ dokumen</span></div>
-        <p class="price-note"><strong data-i18n="hero.pn1">Laporan PDF disertakan</strong><span data-i18n="hero.pn2">Tiada caj tambahan mengikut halaman</span></p>
-      </div>
-      <div class="hero-cta rise d4">
-        <a href="#" class="btn btn-primary" data-portal="order">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
-          <span data-i18n="hero.cta1">Muat Naik Dokumen</span>
+      <span class="chip rise"><i></i><span data-i18n="hero.chip">Platform Semakan Tugasan Untuk Pelajar</span></span>
+      <h1 class="rise d1" data-i18n="hero.title">Semak Similarity Tugasan Anda <span class="hl">Sebelum Dihantar.</span></h1>
+      <p class="hero-sub rise d2" data-i18n="hero.sub">Perkhidmatan semakan similarity yang mudah, pantas dan berpatutan untuk membantu pelajar menyemak tugasan mereka.</p>
+      <div class="hero-cta rise d3">
+        <a href="#" class="btn btn-gold" data-portal="order">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+          <span data-i18n="hero.cta1">Tempah Sekarang</span>
         </a>
         <a href="#cara" class="btn btn-ghost" data-i18n="hero.cta2">Lihat Cara Tempahan</a>
       </div>
+      <ul class="hero-badges rise d4">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span data-i18n="hero.b1">Mudah digunakan</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.500 8-8 9-4.500-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n="hero.b2">Dokumen peribadi</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.200"/><path d="M3 20c0-3.300 2.700-6 6-6s6 2.700 6 6"/><path d="M16 5.200a3 3 0 0 1 0 5.600M18 14.500c1.800.800 3 2.700 3 5.500"/></svg><span>Student Bantu Student</span></li>
+      </ul>
     </div>
 
-    <div class="console-wrap rise d5" aria-label="Contoh paparan pesanan">
-      <div class="console">
-        <div class="c-head">
-          <div>
-            <div class="c-title" data-i18n="con.order">Pesanan</div>
-            <div class="c-id">ZS-10042</div>
-          </div>
-          <span class="sample" data-i18n="con.sample">Contoh paparan</span>
+    <div class="rep-wrap rise d5" role="img" aria-label="Ilustrasi contoh laporan similarity">
+      <div class="rep-ring"></div>
+      <div class="rep-sheet back" aria-hidden="true"></div>
+      <div class="rep-sheet" aria-hidden="true">
+        <div class="rep-title">Similarity Report</div>
+        <div class="rep-donut">
+          <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="#D9E4F7" stroke-width="13"/><circle cx="60" cy="60" r="46" fill="none" stroke="#35C46A" stroke-width="13" stroke-linecap="round" stroke-dasharray="52 289" transform="rotate(-90 60 60)"/></svg>
+          <strong>18%</strong>
         </div>
-        <div class="files">
-          <div class="file">
-            <span class="ficon doc">DOCX</span>
-            <div class="fmeta"><div class="fname">Tugasan1_Penulisan.docx</div><div class="fsub" data-i18n="con.f1">1.2 MB · dimuat naik</div></div>
-            <span class="fprice">RM3.50</span>
-          </div>
-          <div class="file">
-            <span class="ficon pdf">PDF</span>
-            <div class="fmeta"><div class="fname">Laporan_Refleksi.pdf</div><div class="fsub" data-i18n="con.f2">860 KB · dimuat naik</div></div>
-            <span class="fprice">RM3.50</span>
-          </div>
-        </div>
-        <div class="c-total"><span data-i18n="con.total">2 dokumen × RM3.50</span><strong>RM7.00</strong></div>
-        <ol class="track">
-          <li class="done"><span class="dot"></span><span class="lbl" data-i18n="con.t1">Pesanan diterima</span><span class="t">10:42</span></li>
-          <li class="done"><span class="dot"></span><span class="lbl" data-i18n="con.t2">Bayaran disahkan</span><span class="t">10:51</span></li>
-          <li class="active"><span class="dot"></span><span class="lbl" data-i18n="con.t3">Sedang diproses</span><span class="t" data-i18n="con.now">kini</span></li>
-          <li><span class="dot"></span><span class="lbl" data-i18n="con.t4">Laporan PDF tersedia</span><span class="t"></span></li>
-        </ol>
+        <div class="rep-lines"><i></i><i></i><i></i><i></i></div>
+        <span class="rep-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.400" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.500 4.500 4.500L19 7.500"/></svg></span>
       </div>
-      <div class="badge-float bf-1">RM3.50</div>
-      <div class="badge-float bf-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span data-i18n="con.private">Fail peribadi</span></div>
+      <svg class="rep-cap" viewBox="0 0 120 90" aria-hidden="true"><path d="M30 44v20c14 12 46 12 60 0V44" fill="#12306B"/><path d="M60 8 114 32 60 56 6 32z" fill="#1B3F8A" stroke="#3E6FD0" stroke-width="2" stroke-linejoin="round"/><path d="M101 37v26" stroke="#F5B942" stroke-width="4" stroke-linecap="round"/><path d="M96 62h10l2 16H94z" fill="#F5B942"/></svg>
+      <span class="sample rep-sample" data-i18n="con.sample">Contoh ilustrasi</span>
     </div>
   </div>
 </section>
@@ -665,11 +763,12 @@ html{overflow-x:clip}
 <!-- trust -->
 <div class="trust">
   <div class="wrap">
-    <div class="trust-in">
-      <div class="trust-item"><span class="ti-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span><div><strong data-i18n="tr.1a">PDF &amp; DOCX</strong><span data-i18n="tr.1b">Format fail diterima</span></div></div>
-      <div class="trust-item"><span class="ti-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg></span><div><strong data-i18n="tr.2a">Laporan PDF</strong><span data-i18n="tr.2b">Dimuat turun dari akaun</span></div></div>
-      <div class="trust-item"><span class="ti-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg></span><div><strong data-i18n="tr.3a">DuitNow QR</strong><span data-i18n="tr.3b">eWallet atau aplikasi bank</span></div></div>
-      <div class="trust-item"><span class="ti-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><div><strong data-i18n="tr.4a">Dokumen peribadi</strong><span data-i18n="tr.4b">Storan tertutup</span></div></div>
+    <div class="pstrip">
+      <div class="ps-price"><small data-i18n="ps.only">Hanya</small><strong>RM3.50</strong><span data-i18n="ps.per">setiap dokumen</span></div>
+      <div class="ps-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.500-3.500"/></svg><span data-i18n="ps.1">Semakan Similarity</span></div>
+      <div class="ps-item ps-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6M9 17h4"/></svg><span data-i18n="ps.2">Laporan dalam PDF</span></div>
+      <div class="ps-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v0M17 20h4M20 17v4"/></svg><span data-i18n="ps.3">Pembayaran DuitNow QR</span></div>
+      <div class="ps-item ps-wa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.500a8.400 8.400 0 0 1-12.400 7.400L3 21l2.100-5.400A8.400 8.400 0 1 1 21 11.500z"/></svg><span data-i18n="ps.4">Bantuan WhatsApp</span></div>
     </div>
   </div>
 </div>
@@ -688,11 +787,11 @@ html{overflow-x:clip}
         <div class="pc-name" data-i18n="pr.name">Semakan Similarity Turnitin</div>
         <div class="pc-price"><span class="rm">RM</span><span class="amt">3.50</span><span class="per" data-i18n="price.per">/ dokumen</span></div>
         <ul class="incl">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i1">Laporan similarity dalam format PDF</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i2">Menerima fail PDF dan DOCX</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i3">Order ID untuk menjejak setiap pesanan</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i4">Pautan muat turun dalam akaun anda sahaja</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i5">Tiada caj tambahan mengikut halaman</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i1">Laporan PDF</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i2">Fail PDF & DOCX</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i3">Order ID untuk jejak</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i4">Muat turun dari akaun anda</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i5">Tiada caj ikut halaman</span></li>
         </ul>
       </div>
 
@@ -715,7 +814,7 @@ html{overflow-x:clip}
         <div class="total-row">
           <div class="total-box"><span data-i18n="calc.total">Jumlah perlu dibayar</span><strong id="total" aria-live="polite">RM10.50</strong></div>
           <a href="#" class="btn btn-gold" data-portal="order" id="calc-cta">Tempah 3 dokumen</a>
-          <p class="small" data-i18n="calc.note">Jumlah akhir ikut fail yang dimuat naik.</p>
+          <p class="small" data-i18n="calc.note">Jumlah akhir ikut fail dimuat naik.</p>
         </div>
       </div>
     </div>
@@ -727,21 +826,21 @@ html{overflow-x:clip}
   <div class="wrap">
     <div class="sec-head center">
       <span class="kicker" data-i18n="how.kicker">Cara Tempahan</span>
-      <h2 data-i18n="how.title">Lima langkah dari muat naik hingga laporan.</h2>
-      <p data-i18n="how.sub">Status jelas pada setiap langkah.</p>
+      <h2 data-i18n="how.title">5 Langkah Mudah Tempahan</h2>
+      <p data-i18n="how.sub">Status jelas setiap langkah.</p>
     </div>
     <ol class="steps" style="margin-inline:auto">
-      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span class="s-num">1</span></div><div><h3 data-i18n="how.s1">Muat Naik</h3><p data-i18n="how.s1p">Pilih satu atau lebih fail PDF atau DOCX.</p></div></li>
-      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/><path d="M18 15v6M15 18h6"/></svg><span class="s-num">2</span></div><div><h3 data-i18n="how.s2">Pesanan</h3><p data-i18n="how.s2p">Order ID dijana dan jumlah dikira secara automatik.</p></div></li>
-      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 20h.01M17 20h.01M20 17h.01"/></svg><span class="s-num">3</span></div><div><h3 data-i18n="how.s3">Bayaran</h3><p data-i18n="how.s3p">Bayar melalui DuitNow QR dan muat naik bukti bayaran.</p></div></li>
-      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span class="s-num">4</span></div><div><h3 data-i18n="how.s4">Proses</h3><p data-i18n="how.s4p">Admin sahkan bayaran, kemudian proses dokumen.</p></div></li>
-      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9.5 14.5L12 17l2.5-2.5"/></svg><span class="s-num">5</span></div><div><h3 data-i18n="how.s5">Laporan</h3><p data-i18n="how.s5p">Laporan PDF tersedia untuk dimuat turun dalam akaun anda.</p></div></li>
+      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.400 3.600-8 8-8s8 3.600 8 8"/></svg><span class="s-num">1</span></div><div><h3 data-i18n="how.s1">Daftar / Log Masuk</h3><p data-i18n="how.s1p">Cipta akaun percuma.</p></div></li>
+      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span class="s-num">2</span></div><div><h3 data-i18n="how.s2">Upload Dokumen</h3><p data-i18n="how.s2p">PDF atau DOCX.</p></div></li>
+      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM17 20h4M20 17v4"/></svg><span class="s-num">3</span></div><div><h3 data-i18n="how.s3">Buat Pembayaran</h3><p data-i18n="how.s3p">Imbas DuitNow QR, hantar bukti.</p></div></li>
+      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="s-num">4</span></div><div><h3 data-i18n="how.s4">Tunggu Proses Semakan</h3><p data-i18n="how.s4p">Admin sahkan dan proses.</p></div></li>
+      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9.500 14.500 12 17l2.500-2.500"/></svg><span class="s-num">5</span></div><div><h3 data-i18n="how.s5">Muat Turun Laporan PDF</h3><p data-i18n="how.s5p">Dari akaun anda.</p></div></li>
     </ol>
 
     <div class="statuses">
       <div class="statuses-head">
-        <h3 data-i18n="st.title">Status pesanan dalam akaun anda</h3>
-        <p data-i18n="st.note">Laporan hanya tersedia selepas PDF sebenar dimuat naik oleh admin.</p>
+        <h3 data-i18n="st.title">Status pesanan</h3>
+        <p data-i18n="st.note"></p>
       </div>
       <div class="st-row">
         <span class="pill p-pending"><i></i><span data-i18n="st.1">Menunggu Bayaran</span></span>
@@ -758,16 +857,14 @@ html{overflow-x:clip}
 <section class="block" id="ciri">
   <div class="wrap">
     <div class="sec-head">
-      <span class="kicker" data-i18n="ft.kicker">Ciri Servis</span>
-      <h2 data-i18n="ft.title">Dibina supaya anda tahu apa yang berlaku pada setiap pesanan.</h2>
+      <span class="kicker" data-i18n="ft.kicker">Kelebihan</span>
+      <h2 data-i18n="ft.title">Mengapa Pilih ZiminStore?</h2>
     </div>
     <div class="features">
-      <article class="card feat"><div class="f-ic gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></div><h3 data-i18n="ft.1">Harga telus</h3><p data-i18n="ft.1p">RM3.50 setiap dokumen. Jumlah ditunjuk sebelum bayar.</p></article>
-      <article class="card feat"><div class="f-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h9a2 2 0 0 1 2 2v12"/><path d="M5 7h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/></svg></div><h3 data-i18n="ft.2">Banyak dokumen, satu pesanan</h3><p data-i18n="ft.2p">Hantar banyak tugasan di bawah satu Order ID.</p></article>
-      <article class="card feat"><div class="f-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg></div><h3 data-i18n="ft.3">Dokumen kekal peribadi</h3><p data-i18n="ft.3p">Hanya anda dan admin boleh akses fail anda.</p></article>
-      <article class="card feat"><div class="f-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3 data-i18n="ft.4">Status yang jelas</h3><p data-i18n="ft.4p">Jejak pesanan dari bayaran hingga laporan siap.</p></article>
-      <article class="card feat"><div class="f-ic gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 15l2 2 4-4"/></svg></div><h3 data-i18n="ft.5">Laporan PDF sebenar</h3><p data-i18n="ft.5p">Laporan sebenar, dimuat naik selepas semakan selesai.</p></article>
-      <article class="card feat"><div class="f-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg></div><h3 data-i18n="ft.6">Bantuan melalui WhatsApp</h3><p data-i18n="ft.6p">Ada masalah? Hubungi kami terus.</p></article>
+      <article class="card feat"><div class="f-ic gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.600 13.400l-7.200 7.200a2 2 0 0 1-2.800 0L3 13V3h10l7.600 7.600a2 2 0 0 1 0 2.800z"/><circle cx="8" cy="8" r="1.500"/></svg></div><h3 data-i18n="ft.1">Harga Berpatutan</h3><p data-i18n="ft.1p">Hanya RM3.50 setiap dokumen.</p></article>
+      <article class="card feat"><div class="f-ic "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><h3 data-i18n="ft.2">Mudah &amp; Cepat</h3><p data-i18n="ft.2p">Tempah dalam beberapa langkah.</p></article>
+      <article class="card feat"><div class="f-ic gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></div><h3 data-i18n="ft.3">Laporan PDF</h3><p data-i18n="ft.3p">Laporan similarity dalam PDF.</p></article>
+      <article class="card feat"><div class="f-ic "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="2.500" y="13" width="4" height="6" rx="1.500"/><rect x="17.500" y="13" width="4" height="6" rx="1.500"/><path d="M19.500 19c0 2-2 3-5 3"/></svg></div><h3 data-i18n="ft.4">Sokongan Mesra</h3><p data-i18n="ft.4p">Bantuan melalui WhatsApp.</p></article>
     </div>
   </div>
 </section>
@@ -778,7 +875,7 @@ html{overflow-x:clip}
     <div class="faq-side">
       <div class="sec-head">
         <span class="kicker" data-i18n="faq.kicker">Soalan Lazim</span>
-        <h2 data-i18n="faq.title">Perkara yang selalu ditanya.</h2>
+        <h2 data-i18n="faq.title">Soalan lazim.</h2>
       </div>
       <div class="card">
         <strong data-i18n="faq.side">Tidak jumpa jawapan?</strong>
@@ -787,14 +884,14 @@ html{overflow-x:clip}
       </div>
     </div>
     <div class="faq">
-      <details open><summary><span data-i18n="q1">Apakah yang saya terima selepas membuat tempahan?</span><span class="pm"></span></summary><div class="ans" data-i18n="a1">Anda akan menerima <strong>laporan similarity dalam format PDF</strong> bagi setiap dokumen. Laporan boleh dimuat turun daripada akaun ZiminStore anda sebaik sahaja status pesanan bertukar kepada Laporan Tersedia.</div></details>
-      <details><summary><span data-i18n="q2">Berapakah harganya?</span><span class="pm"></span></summary><div class="ans" data-i18n="a2"><strong>RM3.50 bagi setiap dokumen</strong>, tanpa caj tambahan mengikut bilangan halaman. Contohnya, tiga dokumen berjumlah RM10.50.</div></details>
-      <details><summary><span data-i18n="q3">Format fail apakah yang diterima?</span><span class="pm"></span></summary><div class="ans" data-i18n="a3">Kami menerima fail <strong>PDF</strong> dan <strong>DOCX</strong>. Pastikan dokumen anda boleh dibuka dan teksnya boleh dipilih, bukan imej yang diimbas.</div></details>
-      <details><summary><span data-i18n="q4">Bolehkah saya menghantar beberapa dokumen sekali gus?</span><span class="pm"></span></summary><div class="ans" data-i18n="a4">Boleh. Muat naik semua dokumen dalam satu pesanan. Jumlah bayaran dikira secara automatik dan setiap dokumen akan mempunyai laporan PDF tersendiri.</div></details>
-      <details><summary><span data-i18n="q5">Bagaimanakah cara membuat bayaran?</span><span class="pm"></span></summary><div class="ans" data-i18n="a5">Imbas DuitNow QR yang dipaparkan dalam portal menggunakan mana-mana aplikasi perbankan atau eWallet, kemudian muat naik bukti bayaran. Admin akan <strong>mengesahkan bayaran secara manual</strong> sebelum dokumen diproses.</div></details>
-      <details><summary><span data-i18n="q6">Bagaimanakah saya menjejak pesanan?</span><span class="pm"></span></summary><div class="ans" data-i18n="a6">Setiap pesanan mempunyai <strong>Order ID</strong>. Log masuk ke akaun anda untuk melihat status terkini, daripada Menunggu Bayaran hingga Laporan Tersedia.</div></details>
-      <details><summary><span data-i18n="q7">Adakah dokumen saya selamat?</span><span class="pm"></span></summary><div class="ans" data-i18n="a7">Dokumen dan laporan disimpan dalam storan tertutup dengan kawalan akses. Pautan muat turun hanya boleh dibuka oleh pemilik akaun. Kami tidak berkongsi dokumen anda dengan pelanggan lain.</div></details>
-      <details><summary><span data-i18n="q8">Adakah ZiminStore bergabung dengan Turnitin?</span><span class="pm"></span></summary><div class="ans" data-i18n="a8"><strong>Tidak.</strong> ZiminStore ialah servis bebas yang dikendalikan oleh pelajar dan tidak bergabung dengan, ditaja atau disahkan oleh Turnitin, LLC.</div></details>
+      <details open><summary><span data-i18n="q1">Apa yang saya dapat?</span><span class="pm"></span></summary><div class="ans" data-i18n="a1"><strong>Laporan similarity PDF</strong> bagi setiap dokumen, dimuat turun dari akaun anda.</div></details>
+      <details><summary><span data-i18n="q2">Berapa harganya?</span><span class="pm"></span></summary><div class="ans" data-i18n="a2"><strong>RM3.50 sedokumen.</strong> Tiada caj ikut halaman.</div></details>
+      <details><summary><span data-i18n="q3">Format fail apa?</span><span class="pm"></span></summary><div class="ans" data-i18n="a3"><strong>PDF</strong> dan <strong>DOCX</strong>. Teks mesti boleh dipilih, bukan imej imbasan.</div></details>
+      <details><summary><span data-i18n="q4">Boleh hantar banyak dokumen?</span><span class="pm"></span></summary><div class="ans" data-i18n="a4">Boleh, dalam satu pesanan. Setiap dokumen dapat laporan sendiri.</div></details>
+      <details><summary><span data-i18n="q5">Macam mana nak bayar?</span><span class="pm"></span></summary><div class="ans" data-i18n="a5">Imbas DuitNow QR dalam portal, kemudian muat naik bukti. Admin <strong>sahkan secara manual</strong>.</div></details>
+      <details><summary><span data-i18n="q6">Macam mana nak jejak pesanan?</span><span class="pm"></span></summary><div class="ans" data-i18n="a6">Log masuk dan lihat status pesanan mengikut <strong>Order ID</strong>.</div></details>
+      <details><summary><span data-i18n="q7">Dokumen saya selamat?</span><span class="pm"></span></summary><div class="ans" data-i18n="a7">Ya. Hanya anda dan admin boleh akses, dan dokumen dipadam selepas 30 hari.</div></details>
+      <details><summary><span data-i18n="q8">ZiminStore bergabung dengan Turnitin?</span><span class="pm"></span></summary><div class="ans" data-i18n="a8"><strong>Tidak.</strong> Kami servis bebas yang dikendalikan pelajar.</div></details>
     </div>
   </div>
 </section>
@@ -805,8 +902,8 @@ html{overflow-x:clip}
     <div class="band">
       <div>
         <span class="kicker" data-i18n="ct.kicker">Hubungi Kami</span>
-        <h2 style="margin-top:14px" data-i18n="ct.title">Ada soalan sebelum menempah?</h2>
-        <p data-i18n="ct.sub">Tanya apa sahaja di WhatsApp.</p>
+        <h2 style="margin-top:14px" data-i18n="ct.title">Ada soalan?</h2>
+        <p data-i18n="ct.sub">WhatsApp kami.</p>
       </div>
       <div class="acts">
         <a class="btn btn-wa wa-link" href="#" target="_blank" rel="noopener">
@@ -826,10 +923,16 @@ html{overflow-x:clip}
     <div class="f-grid">
       <div class="f-about">
         <a class="brand" href="#top" aria-label="ZiminStore">
-          <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="13" fill="#0D1D42" stroke="url(#lgA)" stroke-width="1.5"/><path d="M14 14h20l-14.5 17H34" fill="none" stroke="url(#lgA)" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 37c6-2.6 14-2.8 22-1" fill="none" stroke="url(#lgG)" stroke-width="2.4" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+        <rect x="4" y="11" width="40" height="35" rx="11" fill="#0B1F47" stroke="url(#lgA)" stroke-width="1.5"/>
+        <path d="M16 23h17L16 38h18" fill="none" stroke="#fff" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M13 12.5v4.2c5.5 3 16.500 3 22 0v-4.2" fill="#BFD9FF"/>
+        <path d="M24 2l19 7-19 7L5 9z" fill="#F4F9FF" stroke="#07142E" stroke-width="1" stroke-linejoin="round"/>
+        <path d="M39.500 10.300v7.500" stroke="url(#lgG)" stroke-width="1.8" stroke-linecap="round"/><circle cx="39.500" cy="19.500" r="1.900" fill="#F5B942"/>
+      </svg>
           <span class="brand-txt"><span class="wordmark">ZIMIN<b>STORE</b></span><span class="brand-tag">STUDENT BANTU STUDENT</span></span>
         </a>
-        <p data-i18n="fo.about">Semakan similarity untuk pelajar. Harga telus, dokumen dilindungi.</p>
+        <p data-i18n="fo.about">Semakan similarity untuk pelajar.</p>
         <div class="f-pay"><span>DuitNow QR</span><span>Touch 'n Go eWallet</span><span data-i18n="fo.bank">Perbankan dalam talian</span></div>
       </div>
       <div>
@@ -861,7 +964,7 @@ html{overflow-x:clip}
     </div>
     <p class="legal" style="margin:0 0 10px;font-size:12px;opacity:.8">Privasi (PDPA): data anda hanya untuk pesanan anda. Dokumen dipadam selepas 30 hari.</p>
     <div class="legal">
-      <p data-i18n="fo.disc">ZiminStore ialah servis bebas dan tidak bergabung dengan, ditaja atau disahkan oleh Turnitin, LLC. Turnitin ialah tanda dagangan Turnitin, LLC. Laporan yang diberikan ialah laporan sebenar yang dimuat naik selepas semakan, bukan hasil yang dijana oleh laman ini.</p>
+      <p data-i18n="fo.disc">ZiminStore ialah servis bebas dan tidak bergabung dengan, ditaja atau disahkan oleh Turnitin, LLC. Turnitin ialah tanda dagangan Turnitin, LLC.</p>
       <div class="row"><p>© 2026 ZiminStore. <span data-i18n="fo.rights">Hak cipta terpelihara.</span></p><p>Student Bantu Student</p></div>
     </div>
   </div>
@@ -1038,43 +1141,52 @@ const orderTotalSen = n => n * CONFIG.pricePerDocSen;
 
 /* ---------- i18n ---------- */
 const EN = {
-  'nav.price':'Pricing','nav.how':'How It Works','nav.features':'Features','nav.faq':'FAQ','nav.contact':'Contact',
+  'ps.4':'WhatsApp Help',
+  'ps.3':'DuitNow QR Payment',
+  'ps.2':'Report in PDF',
+  'ps.1':'Similarity Check',
+  'ps.per':'per document',
+  'ps.only':'Only',
+  'hero.b2':'Private documents',
+  'hero.b1':'Easy to use',
+  'nav.home':'Home',
+  'nav.price':'Service','nav.how':'How It Works','nav.features':'Features','nav.faq':'FAQ','nav.contact':'Contact',
   'nav.login':'Log In','nav.start':'Start Order','nav.register':'Register',
-  'hero.chip':'Turnitin similarity checks for students',
-  'hero.title':'Check your assignment similarity <span class="hl">before you submit.</span>',
-  'hero.sub':'Upload a PDF or DOCX, pay, and download your report. All in one portal.',
-  'price.per':'/ document','hero.pn1':'PDF report included','hero.pn2':'No extra charge per page',
-  'hero.cta1':'Upload Documents','hero.cta2':'See How It Works',
-  'con.order':'Order','con.sample':'Sample view','con.f1':'1.2 MB · uploaded','con.f2':'860 KB · uploaded',
+  'hero.chip':'Assignment checking platform for students',
+  'hero.title':'Check Your Assignment Similarity <span class="hl">Before You Submit.</span>',
+  'hero.sub':'An easy, fast and affordable similarity checking service that helps students check their assignments.',
+  'price.per':'/ document','hero.pn1':'PDF report included','hero.pn2':'No per-page charge',
+  'hero.cta1':'Order Now','hero.cta2':'See How It Works',
+  'con.order':'Order','con.sample':'Sample illustration','con.f1':'1.2 MB · uploaded','con.f2':'860 KB · uploaded',
   'con.total':'2 documents × RM3.50','con.t1':'Order received','con.t2':'Payment verified','con.t3':'Processing','con.t4':'PDF report ready','con.now':'now','con.private':'Private files',
   'tr.1a':'PDF &amp; DOCX','tr.1b':'Accepted file formats','tr.2a':'PDF report','tr.2b':'Downloaded from your account','tr.3a':'DuitNow QR','tr.3b':'eWallet or banking app','tr.4a':'Private documents','tr.4b':'Closed storage',
   'pr.kicker':'Pricing','pr.title':'One price for every document.','pr.sub':'No per-page charges.',
   'pr.label':'Main Service','pr.name':'Turnitin Similarity Check',
-  'pr.i1':'Similarity report in PDF format','pr.i2':'Accepts PDF and DOCX files','pr.i3':'An Order ID to track every order','pr.i4':'Download link inside your account only','pr.i5':'No extra charge per page',
-  'calc.title':'Work out your total','calc.sub':'Choose how many documents.','calc.qty':'Number of documents','calc.unit':'Unit price','calc.docs':'Documents','calc.report':'PDF reports','calc.total':'Amount to pay','calc.note':'Final total follows the files you upload.',
-  'how.kicker':'How It Works','how.title':'Five steps from upload to report.','how.sub':'A clear status at every step.',
-  'how.s1':'Upload','how.s1p':'Choose one or more PDF or DOCX files.','how.s2':'Order','how.s2p':'An Order ID is generated and the total is calculated automatically.','how.s3':'Payment','how.s3p':'Pay with DuitNow QR and upload your proof of payment.','how.s4':'Process','how.s4p':'Admin verifies payment, then processes your document.','how.s5':'Report','how.s5p':'Your PDF report is ready to download in your account.',
-  'st.title':'Order statuses in your account','st.note':'A report only appears after the real PDF has been uploaded by an admin.','st.1':'Awaiting Payment','st.2':'Payment Verified','st.3':'Processing','st.4':'Report Ready','st.5':'Action Required','st.5s':'file issue',
-  'ft.kicker':'Service Features','ft.title':'Built so you know what is happening with every order.',
-  'ft.1':'Transparent pricing','ft.1p':'RM3.50 per document. Total shown before you pay.',
-  'ft.2':'Many documents, one order','ft.2p':'Send several assignments under one Order ID.',
-  'ft.3':'Documents stay private','ft.3p':'Only you and the admin can access your files.',
-  'ft.4':'Clear status','ft.4p':'Track your order from payment to report.',
-  'ft.5':'Real PDF reports','ft.5p':'The real report, uploaded once the check is done.',
-  'ft.6':'Help on WhatsApp','ft.6p':'Any problem? Message us directly.',
-  'faq.kicker':'FAQ','faq.title':'Questions students often ask.','faq.side':'Can’t find your answer?','faq.sidep':'Ask us on WhatsApp.','faq.ask':'Ask on WhatsApp',
-  'q1':'What do I receive after ordering?','a1':'You receive a <strong>similarity report in PDF format</strong> for each document. You can download it from your ZiminStore account once the order status changes to Report Ready.',
-  'q2':'How much does it cost?','a2':'<strong>RM3.50 per document</strong>, with no extra charge for page count. For example, three documents come to RM10.50.',
-  'q3':'Which file formats are accepted?','a3':'We accept <strong>PDF</strong> and <strong>DOCX</strong> files. Make sure your document opens properly and its text can be selected, not a scanned image.',
-  'q4':'Can I send several documents at once?','a4':'Yes. Upload all your documents in one order. The total is calculated automatically and each document gets its own PDF report.',
-  'q5':'How do I pay?','a5':'Scan the DuitNow QR shown in the portal with any banking or eWallet app, then upload your proof of payment. An admin <strong>verifies the payment manually</strong> before your documents are processed.',
-  'q6':'How do I track my order?','a6':'Every order has an <strong>Order ID</strong>. Log in to your account to see its latest status, from Awaiting Payment to Report Ready.',
-  'q7':'Are my documents safe?','a7':'Documents and reports are kept in closed storage with access control. Download links only open for the account owner. We never share your documents with other customers.',
-  'q8':'Is ZiminStore affiliated with Turnitin?','a8':'<strong>No.</strong> ZiminStore is an independent, student run service and is not affiliated with, sponsored by or endorsed by Turnitin, LLC.',
-  'ct.kicker':'Contact Us','ct.title':'Questions before you order?','ct.sub':'Ask us anything on WhatsApp.','ct.wa':'Chat on WhatsApp','ct.reg':'Create Account',
-  'fo.about':'Similarity checks for students. Clear pricing, protected documents.','fo.bank':'Online banking','fo.links':'Links','fo.account':'Account','fo.track':'Track Order','fo.service':'Service',
+  'pr.i1':'PDF report','pr.i2':'PDF & DOCX files','pr.i3':'Order ID for tracking','pr.i4':'Download from your account','pr.i5':'No per-page charge',
+  'calc.title':'Work out your total','calc.sub':'Choose how many documents.','calc.qty':'Number of documents','calc.unit':'Unit price','calc.docs':'Documents','calc.report':'PDF reports','calc.total':'Amount to pay','calc.note':'Final total follows your uploads.',
+  'how.kicker':'How It Works','how.title':'5 Easy Steps to Order','how.sub':'Clear status at every step.',
+  'how.s1':'Register / Log In','how.s1p':'Create a free account.','how.s2':'Upload Documents','how.s2p':'PDF or DOCX.','how.s3':'Make Payment','how.s3p':'Scan DuitNow QR, send proof.','how.s4':'Wait for the Check','how.s4p':'Admin verifies and processes.','how.s5':'Download PDF Report','how.s5p':'From your account.',
+  'st.title':'Order statuses','st.note':'','st.1':'Awaiting Payment','st.2':'Payment Verified','st.3':'Processing','st.4':'Report Ready','st.5':'Action Required','st.5s':'file issue',
+  'ft.kicker':'Benefits','ft.title':'Why Choose ZiminStore?',
+  'ft.1':'Affordable Price','ft.1p':'Only RM3.50 per document.',
+  'ft.2':'Easy &amp; Quick','ft.2p':'Order in a few steps.',
+  'ft.3':'PDF Report','ft.3p':'Your similarity report as a PDF.',
+  'ft.4':'Friendly Support','ft.4p':'Help through WhatsApp.',
+  'ft.5':'Real PDF reports','ft.5p':'The real report after checking.',
+  'ft.6':'Help on WhatsApp','ft.6p':'Any problem? WhatsApp us.',
+  'faq.kicker':'FAQ','faq.title':'Common questions.','faq.side':'Can’t find your answer?','faq.sidep':'Ask us on WhatsApp.','faq.ask':'Ask on WhatsApp',
+  'q1':'What do I get?','a1':'A <strong>PDF similarity report</strong> for each document, downloaded from your account.',
+  'q2':'How much is it?','a2':'<strong>RM3.50 per document.</strong> No per-page charge.',
+  'q3':'Which file formats?','a3':'<strong>PDF</strong> and <strong>DOCX</strong>. Text must be selectable, not a scanned image.',
+  'q4':'Can I send several documents?','a4':'Yes, in one order. Each document gets its own report.',
+  'q5':'How do I pay?','a5':'Scan the DuitNow QR in the portal, then upload proof. An admin <strong>verifies it manually</strong>.',
+  'q6':'How do I track my order?','a6':'Log in and check the status by <strong>Order ID</strong>.',
+  'q7':'Are my documents safe?','a7':'Yes. Only you and the admin have access, and documents are deleted after 30 days.',
+  'q8':'Is ZiminStore affiliated with Turnitin?','a8':'<strong>No.</strong> We are an independent, student-run service.',
+  'ct.kicker':'Contact Us','ct.title':'Any questions?','ct.sub':'WhatsApp us.','ct.wa':'Chat on WhatsApp','ct.reg':'Create Account',
+  'fo.about':'Similarity checks for students.','fo.bank':'Online banking','fo.links':'Links','fo.account':'Account','fo.track':'Track Order','fo.service':'Service',
   'fo.s1':'Turnitin Similarity Check','fo.s2':'RM3.50 per document','fo.s3':'Report in PDF format',
-  'fo.disc':'ZiminStore is an independent service and is not affiliated with, sponsored by or endorsed by Turnitin, LLC. Turnitin is a trademark of Turnitin, LLC. Reports provided are the real reports uploaded after checking, never results generated by this site.',
+  'fo.disc':'ZiminStore is an independent service and is not affiliated with, sponsored or endorsed by Turnitin, LLC. Turnitin is a trademark of Turnitin, LLC.',
   'fo.rights':'All rights reserved.'
 };
 const UI = {
@@ -1213,6 +1325,10 @@ loginForm.addEventListener('submit',async e=>{
   }catch(err){
     if(err?.code==='email_not_confirmed'||(err?.message||'').toLowerCase().includes('email not confirmed'))
       showResend(email,'Akaun anda belum disahkan. Buka pautan dalam e-mel pengesahan ZiminStore yang paling baru, atau hantar semula e-mel pengesahan di bawah.','error');
+    else if(err?.code==='invalid_credentials'||(err?.message||'').toLowerCase().includes('invalid login credentials')){
+      document.getElementById('zs-reset-email').value=email;
+      portalMessage('E-mel atau kata laluan salah. Semak ejaan e-mel, atau tekan "Lupa kata laluan" untuk tetapkan kata laluan baharu. Belum ada akaun? Tekan "Daftar akaun".','error');
+    }
     else portalMessage(zsAuthError(err,'Log masuk gagal.'),'error');
   }
   finally{btn.disabled=false;}
@@ -1262,8 +1378,7 @@ registerForm.addEventListener('submit',async e=>{
       portalMessage('E-mel ini sudah berdaftar. Sila log masuk, atau guna "Lupa kata laluan" jika terlupa.','error');
     } else {
       sent=true; regBtn.dataset.sent='1'; regBtn.textContent='E-mel pengesahan telah dihantar';
-      portalMessage(`Berjaya! Tekan pautan dalam e-mel yang dihantar ke ${email}, kemudian log masuk. Semak juga Spam.`,'success');
-      document.getElementById('zs-resend-email').value=email;
+      showResend(email,`Akaun dicipta. Langkah terakhir: buka e-mel daripada ZiminStore di ${email} dan tekan pautan pengesahan, kemudian log masuk. Tiada e-mel dalam 2 minit? Semak Spam, atau tekan butang di bawah.`,'success');
     }
   }catch(err){portalMessage(zsAuthError(err,'Pendaftaran gagal.'),'error');}
   finally{ if(!sent) regBtn.disabled=false; }
