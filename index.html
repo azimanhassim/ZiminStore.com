@@ -7,7 +7,7 @@
 <meta name="description" content="ZiminStore: semakan similarity Turnitin untuk pelajar. RM3.50 setiap dokumen, laporan PDF.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&family=JetBrains+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
 <style>
 /* Layout: circuit-board hero with a glass order console, then pricing calculator, five-step flow, features, FAQ, contact band, footer. Single dark theme by design. */
 :root{
@@ -729,6 +729,250 @@ html{overflow-x:clip}
 }
 
 </style>
+<style id="h-home-style">
+/* ================= Homepage (2026-11 redesign, reference mockup) =================
+   Scoped to the public page: nav, #top, footer and the three dialogs. Portal styles untouched. */
+:root{--h-navy:#06152F;--h-blue:#09264A;--h-teal:#13B8B0;--bg:#06152F;--h-font:"Plus Jakarta Sans","Manrope",system-ui,-apple-system,"Segoe UI",sans-serif}
+body{background:radial-gradient(900px 600px at 85% 0%,rgba(24,201,232,.14),transparent 60%),radial-gradient(800px 600px at 0% 30%,rgba(19,184,176,.08),transparent 60%),var(--h-navy)}
+.h-nav,#top,.h-foot,.h-dlg{font-family:var(--h-font)}
+#top h1,#top h2,#top h3,.h-foot h4,.h-dlg h2,.h-dlg h3{font-family:var(--h-font);font-style:normal}
+.h-nav .wordmark{font-style:normal}
+.nav.scrolled{background:rgba(6,21,47,.82)}
+.h-nav .nav-links a,.h-nav .nav-links a:first-child{color:#C8D4EA;box-shadow:none;border-radius:0;padding:10px 12px}
+.h-nav .nav-links a.active{color:#fff;box-shadow:inset 0 -2px 0 var(--cyan)}
+.h-nav .nav-links a:hover{background:none;color:#fff}
+.h-nav .btn{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.h-nav .nav-links{gap:2px;margin-left:auto}
+.h-nav .nav-links a,.h-nav .nav-links a:first-child{white-space:nowrap;font-size:14px;padding:10px 10px}
+.h-nav .nav-actions{margin-left:14px}
+@media (max-width:1240px){.h-nav .nav-links a,.h-nav .nav-links a:first-child{padding:10px 7px;font-size:13.5px}.h-nav .brand-tag{display:none}}
+@media (max-width:1060px){.h-nav .nav-actions{margin-left:auto}.h-nav .nav-actions .btn-ghost{display:none}}
+@media (max-width:640px){.h-nav .nav-actions .btn-cyan{display:none}.h-nav .nav-in{gap:8px}.h-nav .nav-actions{gap:8px}}
+@media (pointer:coarse){.h-nav .lang button{min-width:40px;min-height:40px;padding:0 8px}.h-nav .btn-sm{min-height:44px}.burger{width:44px;height:44px}}
+.h-nav .btn svg{width:16px;height:16px}
+.h-login{border-color:rgba(255,255,255,.45);background:transparent}
+#mobile-menu a.active{color:var(--cyan)}
+.btn-outline{background:rgba(6,21,47,.4);border:1.5px solid rgba(255,255,255,.55);color:#fff}
+.btn-outline:hover{border-color:var(--cyan);background:rgba(24,201,232,.08)}
+#top .btn,.h-dlg .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;font-weight:700}
+#top .btn svg{width:18px;height:18px;flex:none}
+#top .btn-gold{color:#1A1203}
+
+/* hero */
+.h-hero{position:relative;overflow:hidden;margin-top:-75px;padding-top:75px}
+.h-hero::before{content:"";position:absolute;inset:0;pointer-events:none;background:
+  radial-gradient(60% 70% at 78% 40%,rgba(24,201,232,.20),transparent 65%),
+  radial-gradient(40% 50% at 100% 90%,rgba(19,184,176,.18),transparent 70%),
+  linear-gradient(180deg,rgba(9,38,74,.55),transparent 80%)}
+.h-hero-in{position:relative;display:grid;grid-template-columns:1.08fr .92fr;gap:40px;align-items:center;padding-block:52px 56px}
+.h-copy{min-width:0}
+.h-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 14px 7px 8px;border-radius:999px;border:1px solid rgba(24,201,232,.45);background:rgba(9,38,74,.65);font-size:13px;font-weight:700;color:#E6F6FF}
+.h-chip svg{width:20px;height:20px;padding:4px;border-radius:50%;background:var(--cyan);color:var(--h-navy)}
+.h-hero h1{font-size:clamp(34px,4.5vw,56px);font-weight:800;line-height:1.08;letter-spacing:-.025em;margin-top:18px;color:#fff}
+.h-hero h1 .hl{display:block;background:linear-gradient(92deg,var(--cyan),#5FE3F7 60%,var(--h-teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+.h-sub{color:#C9D6EE;font-size:clamp(15px,1.35vw,17px);line-height:1.65;max-width:54ch;margin-top:18px}
+.h-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:28px}
+.h-cta .btn{padding:14px 24px;font-size:15px}
+.h-benefits{list-style:none;display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:0;padding:0;margin:30px 0 0}
+.h-benefits li{display:flex;gap:10px;align-items:flex-start;padding:2px 18px}
+.h-benefits strong{white-space:nowrap}
+.h-benefits li:first-child{padding-left:0}
+.h-benefits li+li{border-left:1px solid rgba(255,255,255,.14)}
+.h-benefits svg{width:26px;height:26px;color:var(--cyan);flex:none;margin-top:2px}
+.h-benefits strong{display:block;font-size:14.5px;color:#fff}
+.h-benefits small{display:block;font-size:12.5px;color:#AFC0DD;line-height:1.4;margin-top:2px}
+
+/* hero visual: CSS laptop showing the sample report */
+.h-visual{position:relative;width:100%;max-width:600px;aspect-ratio:1.12/1;justify-self:end;min-width:0}
+.h-ring{position:absolute;left:4%;right:2%;bottom:8%;height:26%;border-radius:50%;border:2px solid rgba(24,201,232,.7);box-shadow:0 0 40px rgba(24,201,232,.45),inset 0 0 40px rgba(24,201,232,.2);background:radial-gradient(closest-side,rgba(24,201,232,.16),transparent)}
+.h-laptop{position:absolute;left:12%;right:2%;top:14%;transform:perspective(1400px) rotateY(-16deg) rotateX(5deg) rotate(-2deg);transform-origin:60% 60%}
+.h-screen{container-type:inline-size;background:#0B1324;border:2px solid #44567A;border-radius:16px 16px 4px 4px;padding:3%;box-shadow:0 40px 80px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.06) inset,0 0 50px rgba(24,201,232,.18)}
+.h-base{height:14px;margin:0 -7%;border-radius:2px 2px 16px 16px;background:linear-gradient(180deg,#C9D3E3,#7F8DA6);box-shadow:0 18px 30px -12px rgba(0,0,0,.7)}
+.h-cap{position:absolute;left:14%;top:-1%;width:30%;transform:rotate(-14deg);filter:drop-shadow(0 14px 18px rgba(0,0,0,.5))}
+.h-paper{position:absolute;left:-2%;top:58%;width:15%;z-index:2;background-image:repeating-linear-gradient(180deg,transparent 0 16%,#A9BCE0 16% 21%),linear-gradient(165deg,#F7FAFF,#D5E2F7)!important;background-size:72% 64%,100% 100%!important;background-position:50% 30%,0 0!important;background-repeat:no-repeat!important;aspect-ratio:.8;border-radius:10px;background:linear-gradient(165deg,#F7FAFF,#D5E2F7);box-shadow:0 20px 40px -14px rgba(0,0,0,.7);transform:rotate(-12deg);padding:14% 12%;display:flex;flex-direction:column;gap:12%}
+.h-paper i{display:block;width:100%;height:6px;border-radius:4px;background:#9CB2DA}.h-paper i:nth-child(2){width:80%}.h-paper i:nth-child(4){width:60%}
+.h-paper span{position:absolute;right:-16%;bottom:-10%;width:42%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:#0E5E9C;border:3px solid var(--cyan);color:#fff;box-shadow:0 0 18px rgba(24,201,232,.6)}
+.h-paper span svg{width:56%}
+.h-visual-tag{position:absolute;right:6%;bottom:6%;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px dashed rgba(245,185,66,.55);border-radius:8px;padding:4px 10px;background:rgba(6,21,47,.7)}
+@media (prefers-reduced-motion:no-preference){.h-cap{animation:hfloat 7s ease-in-out infinite}.h-paper{animation:hfloat2 8s ease-in-out infinite}
+@keyframes hfloat{50%{transform:rotate(-14deg) translateY(-7px)}}@keyframes hfloat2{50%{transform:rotate(-12deg) translateY(6px)}}}
+
+/* the sample report (light card), used in hero, section and dialog */
+.h-rep{background:#F7F9FD;color:#14223D;border-radius:12px;font-family:var(--h-font);overflow:hidden}
+.r-head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #E1E7F2;background:#fff}
+.r-z{width:24px;height:24px;flex:none}
+.r-brand{display:grid;line-height:1.15;min-width:0}.r-brand strong{font-size:14px;font-weight:800}.r-brand small{font-size:10.5px;color:#5A6B88}
+.r-id{margin-left:auto;font-size:10.5px;font-weight:700;color:#24406E;border:1px solid #C6D3EA;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.r-overall{display:flex;align-items:center;gap:14px;padding:12px 14px;min-width:0}
+.r-donut{position:relative;width:78px;flex:none}.r-donut svg{display:block;width:100%}
+.r-donut b{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-size:19px;font-weight:800;line-height:1}
+.r-donut b small{font-size:8.5px;font-weight:600;color:#5A6B88;margin-top:3px}
+.r-ov-txt{display:grid;gap:4px;min-width:0;flex:1}.r-ov-txt strong{font-size:17px;font-weight:800}.r-ov-txt small{font-size:11px;color:#5A6B88}
+.r-bar{display:block;height:8px;border-radius:6px;background:#E3EAF6;margin-top:4px}.r-bar i{display:block;height:100%;border-radius:6px;background:var(--gold)}
+.r-stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #E1E7F2}
+.r-stats>div{display:grid;justify-items:center;gap:2px;padding:9px 4px;text-align:center}
+.r-stats>div+div{border-left:1px solid #E1E7F2}
+.r-stats svg{width:16px;height:16px;color:#24406E}.r-stats strong{font-size:15px;font-weight:800}.r-stats small{font-size:9.5px;color:#5A6B88;line-height:1.2}
+/* compact version inside the laptop screen: sizes follow the screen width */
+.h-screen .r-head{padding:2.6cqw 3.4cqw;gap:2cqw}.h-screen .r-z{width:5.5cqw;height:5.5cqw}
+.h-screen .r-brand strong{font-size:3.6cqw}.h-screen .r-brand small{font-size:2.5cqw}.h-screen .r-id{font-size:2.4cqw;padding:.6cqw 2cqw}
+.h-screen .r-overall{padding:3.4cqw;gap:3.4cqw}.h-screen .r-donut{width:21cqw}.h-screen .r-donut b{font-size:5cqw}.h-screen .r-donut b small{font-size:2.1cqw}
+.h-screen .r-ov-txt strong{font-size:4.6cqw}.h-screen .r-ov-txt small{font-size:2.5cqw}.h-screen .r-bar{height:2cqw}
+.h-screen .r-stats>div{padding:2.4cqw 1cqw}.h-screen .r-stats svg{width:4cqw;height:4cqw}.h-screen .r-stats strong{font-size:4cqw}.h-screen .r-stats small{font-size:2.2cqw}
+.r-top{display:grid;grid-template-columns:auto 1fr;align-items:center;border-bottom:1px solid #E1E7F2;background:#fff}
+.r-top .r-stats{border-top:0;border-left:1px solid #E1E7F2}
+.r-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:12px;padding:12px}
+.r-grid>div{min-width:0;background:#fff;border:1px solid #E1E7F2;border-radius:10px;padding:10px}
+.r-h{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;margin:0 0 8px;color:#14223D}.r-h svg{width:15px;height:15px}.r-h span{font-weight:600;color:#5A6B88}
+.r-src-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.r-src{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;font-size:11.5px}
+.r-num{width:20px;height:20px;flex:none;border-radius:5px;display:grid;place-items:center;color:#fff;font-size:10.5px;font-weight:800}
+.r-src-name{display:grid;min-width:0;flex:1}.r-src-name strong{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r-src-name small{display:flex;align-items:center;gap:4px;color:#5A6B88;font-size:10px}.r-src-name small svg{width:11px;height:11px}
+.r-pct{font-weight:800;display:grid;justify-items:end}.r-pct small{font-size:9.5px;font-weight:600;color:#5A6B88;background:#fff;border-radius:999px;padding:1px 7px;margin-top:2px}
+.s1{background:#FDECEC}.s1 .r-num,.t1{background:#E5484D}
+.s2{background:#F4ECFB}.s2 .r-num,.t2{background:#8E4EC6}
+.s3{background:#EAF0FD}.s3 .r-num,.t3{background:#3E63DD}
+.s4{background:#E6F6F3}.s4 .r-num{background:#12A594}
+.s5{background:#E9F6EC}.s5 .r-num{background:#30A46C}
+.r-text p{font-size:12px;line-height:1.75;margin:0 0 8px;color:#22314D}
+.r-text mark{color:inherit;padding:1px 0;border-radius:3px}
+.r-text .m1{background:#FBD5D6}.r-text .m2{background:#E7D7F6}.r-text .m3{background:#D6E1FB}
+.r-text sup{display:inline-grid;place-items:center;min-width:15px;height:15px;margin-left:3px;border-radius:4px;color:#fff;font-size:9px;font-weight:800;vertical-align:2px}
+
+/* pricing + sample row */
+.h-sec{padding-top:72px}
+.h-duo{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.3fr);gap:26px;align-items:stretch}
+.h-price,.h-sample{position:relative;border-radius:22px;padding:28px;background:linear-gradient(165deg,rgba(13,45,88,.85),rgba(6,21,47,.9));min-width:0}
+.h-price{border:1.5px solid transparent;background:linear-gradient(165deg,#0D2D58,#071A39) padding-box,linear-gradient(140deg,var(--gold),rgba(245,185,66,.25) 40%,var(--cyan)) border-box;box-shadow:0 0 50px -18px rgba(245,185,66,.55),0 0 40px -20px rgba(24,201,232,.5);display:flex;flex-direction:column}
+.h-sample{border:1px solid rgba(24,201,232,.45);box-shadow:0 0 50px -24px rgba(24,201,232,.6);scroll-margin-top:96px}
+.h-card-title{font-size:21px;font-weight:800;color:#fff;margin:0}
+.h-amt{display:flex;align-items:baseline;gap:10px;margin-top:20px;flex-wrap:wrap}
+.h-amt strong{font-size:clamp(46px,5.4vw,62px);font-weight:800;line-height:1;letter-spacing:-.02em;background:linear-gradient(180deg,#FFF,#FFE7B0 55%,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.h-amt span{font-size:18px;font-weight:600;color:#DCE6F7}
+.h-amt-note{font-size:13px;color:#AFC0DD;margin:6px 0 0}
+.h-feats{list-style:none;margin:20px 0 0;padding:20px 0 0;border-top:1px solid rgba(255,255,255,.12);display:grid;gap:13px}
+.h-feats li[hidden]{display:none!important}
+.h-feats li{display:flex;align-items:center;gap:11px;font-size:15px;color:#E9F0FC}
+.h-feats svg{width:22px;height:22px;flex:none;padding:4px;border-radius:50%;background:#2FB866;color:#fff}
+.h-feats{margin-bottom:26px!important}
+.h-price-cta{margin-top:auto;width:100%}
+.h-sample-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:16px}
+.h-sample-head>svg{width:34px;height:34px;color:var(--cyan);flex:none;margin-top:2px}
+.h-sample-head p{font-size:13.5px;color:#BFD0EC;margin:4px 0 0}
+.h-rep-mid{box-shadow:0 20px 50px -20px rgba(0,0,0,.6)}
+.h-sample-label{display:flex;align-items:center;justify-content:center;gap:8px;margin:14px 0 0;font-size:12.5px;font-weight:700;color:var(--gold);text-align:center}
+.h-sample-label svg{width:16px;height:16px;flex:none}
+.h-full-btn{display:flex!important;width:max-content;max-width:100%;margin:14px auto 0}
+.h-full-btn svg{width:16px!important;height:16px!important}
+
+/* steps */
+.h-sec-head{text-align:center}
+.h-sec-head h2{display:inline-flex;align-items:center;gap:12px;font-size:clamp(26px,3.2vw,36px);font-weight:800;color:#fff;position:relative}
+.h-sec-head h2 svg{width:32px;height:32px;color:var(--cyan)}
+.h-sec-head h2::before,.h-sec-head h2::after{content:"";position:absolute;top:50%;width:min(160px,16vw);height:2px;background:linear-gradient(90deg,transparent,var(--cyan))}
+.h-sec-head h2::before{right:calc(100% + 18px)}.h-sec-head h2::after{left:calc(100% + 18px);transform:scaleX(-1)}
+.h-sec-head p{color:#C9D6EE;margin:8px 0 0;font-size:15px}
+.h-steps{list-style:none;padding:0;margin:34px 0 0;display:grid;grid-template-columns:repeat(4,1fr);gap:36px}
+.h-steps li{position:relative;display:flex;gap:14px;align-items:center;padding:20px 18px;border-radius:18px;border:1px solid rgba(24,201,232,.35);background:linear-gradient(170deg,rgba(13,45,88,.7),rgba(6,21,47,.75));min-width:0}
+.h-steps li+li::before{content:"›";position:absolute;left:-26px;top:50%;transform:translateY(-55%);color:#fff;font-size:30px;font-weight:300;line-height:1}
+.h-step-ic{width:52px;height:52px;flex:none;border-radius:14px;display:grid;place-items:center;color:#fff;background:rgba(24,201,232,.1);border:1px solid rgba(24,201,232,.35)}
+.h-step-ic svg{width:28px;height:28px}
+.h-steps h3{display:flex;gap:8px;align-items:baseline;font-size:16px;font-weight:800;color:#fff;margin:0}
+.h-steps h3 b{color:var(--gold);font-size:13px}
+.h-steps p{font-size:13px;color:#C2D1EA;margin:5px 0 0;line-height:1.45}
+
+/* FAQ section keeps its markup; just tighter spacing */
+#soalan.block{padding-top:84px}
+
+/* final CTA */
+.h-final{padding-block:84px 70px}
+.h-band{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding:34px 44px;border-radius:24px;border:1.5px solid transparent;
+  background:linear-gradient(110deg,rgba(24,201,232,.22),rgba(9,38,74,.92) 38%,rgba(9,38,74,.92) 62%,rgba(245,185,66,.24)) padding-box,linear-gradient(100deg,var(--cyan),rgba(24,201,232,.2) 45%,rgba(245,185,66,.3) 60%,var(--gold)) border-box;
+  box-shadow:0 0 60px -24px rgba(24,201,232,.7)}
+.h-band h2{font-size:clamp(24px,3vw,34px);font-weight:800;color:#fff;margin:0}
+.h-band p{color:#D2DEF2;margin:6px 0 0}
+.h-band .btn{padding:16px 30px;font-size:16px}
+
+/* footer */
+.h-foot{border-top:1px solid rgba(24,201,232,.18);background:rgba(4,14,32,.7)}
+.h-foot-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr;gap:36px;padding-block:52px 30px}
+.h-foot-about p{color:#AFC0DD;font-size:14px;margin-top:14px;max-width:34ch}
+.h-foot h4{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:800;margin:0 0 14px}
+.h-foot ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.h-foot ul a,.h-linkbtn{color:#C8D4EA;text-decoration:none;font:500 14px var(--h-font);background:none;border:0;padding:0;cursor:pointer;text-align:left}
+.h-foot ul a:hover,.h-linkbtn:hover{color:#fff}
+.h-foot-legal{border-top:1px solid rgba(255,255,255,.08);padding-block:20px 90px;display:grid;gap:8px}
+.h-foot-legal p{margin:0;font-size:12px;color:#8496B8;line-height:1.6}
+
+/* dialogs */
+html:has(dialog.h-dlg[open]){overflow:hidden}
+.h-dlg{border:0;padding:0;background:transparent;color:var(--text);width:min(1120px,calc(100% - 24px));max-width:none;max-height:none;margin:auto}
+.h-dlg::backdrop{background:rgba(2,8,22,.8);backdrop-filter:blur(8px)}
+.h-dlg-in{max-height:calc(100dvh - 32px);overflow:auto;border-radius:20px;border:1px solid rgba(24,201,232,.4);background:#0A1C3D;padding:20px}
+.h-dlg-text{width:min(720px,calc(100% - 24px))}
+.h-dlg-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.h-dlg-bar h2{font-size:20px;font-weight:800;margin:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.h-dlg-bar form{margin:0}
+.h-dlg-x{all:unset;box-sizing:border-box;width:44px;height:44px;display:grid;place-items:center;border-radius:12px;border:1px solid var(--line-2);cursor:pointer;color:#fff}
+.h-dlg-x:focus-visible{outline:2px solid var(--cyan)}
+.h-dlg-x svg{width:18px;height:18px}
+.h-dlg .h-sample-label{justify-content:flex-start;margin:0 0 12px}
+.h-rep-full .r-info{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#E1E7F2;border-bottom:1px solid #E1E7F2}
+.h-rep-full .r-info>div{background:#fff;padding:10px 14px;display:grid;gap:2px}
+.h-rep-full .r-info small{font-size:10.5px;color:#5A6B88}.h-rep-full .r-info strong{font-size:13px}
+.r-grid-3{grid-template-columns:1fr 1.35fr .8fr}
+.r-detail-card{display:flex;gap:8px;align-items:center;font-size:12.5px}.r-detail-card .r-num{background:#E5484D}.r-detail-card div{display:grid}.r-detail-card small{color:#5A6B88;font-size:10.5px}
+.r-detail-pct{margin:10px 0;text-align:center;font-weight:800;color:#C8333A;background:#FDECEC;border-radius:999px;padding:6px}
+.r-detail-h{font-weight:800;font-size:11.5px}
+.r-detail blockquote{margin:6px 0 0;padding:8px 10px;border-radius:8px;background:#F1F4FA;font-size:11.5px;line-height:1.55;color:#22314D}
+.h-draft{font-size:11px;font-weight:800;letter-spacing:.1em;color:#1A1203;background:var(--gold);border-radius:6px;padding:3px 8px}
+.h-draft-note{margin:0 0 14px;padding:10px 12px;border-radius:10px;border:1px dashed rgba(245,185,66,.6);color:#FFE2A6;font-size:13px}
+.h-dlg-text h3{font-size:15px;font-weight:800;margin:16px 0 4px;color:#fff}
+.h-dlg-text p{font-size:14px;line-height:1.65;color:#C9D6EE;margin:0}
+
+/* tablet */
+@media (max-width:1060px){
+  .h-hero-in{grid-template-columns:1fr;gap:28px;padding-block:40px 24px}
+  .h-visual{justify-self:center;max-width:540px}
+  .h-duo{grid-template-columns:1fr}
+  .h-price{max-width:none}
+  .h-steps{grid-template-columns:1fr 1fr;gap:16px}
+  .h-steps li+li::before{display:none}
+  .h-foot-grid{grid-template-columns:1fr 1fr}
+  .h-foot-about{grid-column:1/-1}
+  .r-grid-3{grid-template-columns:1fr 1.3fr}.r-grid-3 .r-detail{grid-column:1/-1}
+}
+/* phone */
+@media (max-width:640px){
+  .h-hero{margin-top:-67px;padding-top:67px}
+  .h-hero h1{font-size:clamp(30px,8.6vw,38px)}
+  .h-cta .btn{flex:1 1 100%}
+  .h-benefits{grid-template-columns:1fr;gap:12px}
+  .h-benefits li,.h-benefits li:first-child{padding:0}
+  .h-benefits li+li{border-left:0}
+  .h-visual{max-width:100%}
+  .h-sec{padding-top:56px}
+  .h-price,.h-sample{padding:20px 16px;border-radius:18px}
+  .h-feats li{font-size:14.5px}
+  .r-top{grid-template-columns:1fr}.r-top .r-stats{border-left:0;border-top:1px solid #E1E7F2}
+  .r-grid,.r-grid-3{grid-template-columns:1fr;padding:10px}
+  .r-overall{padding:12px}
+  .r-stats small{font-size:9px}
+  .h-rep-full .r-info{grid-template-columns:1fr 1fr}
+  .h-sec-head h2::before,.h-sec-head h2::after{display:none}
+  .h-steps{grid-template-columns:1fr;gap:0;position:relative}
+  .h-steps::before{content:"";position:absolute;left:44px;top:30px;bottom:30px;width:2px;background:linear-gradient(180deg,var(--cyan),var(--h-teal),var(--gold))}
+  .h-steps li{border:0;background:none;padding:10px 0 10px 18px}
+  .h-step-ic{position:relative;background:#0B2550}
+  .h-band{padding:24px 20px;border-radius:20px}
+  .h-band .btn{flex:1 1 100%}
+  .h-foot-grid{gap:26px 18px;padding-block:40px 24px}
+  .h-dlg-in{padding:14px;border-radius:16px}
+  .h-dlg{width:calc(100% - 16px)}
+}
+
+</style>
 <style id="zs-music-style">
 /* ---------- ZiminStore Music: isolated floating player (all classes prefixed zsm-) ----------
    Sits bottom-right, stacked ABOVE the WhatsApp button; z-index below the portal (1000)
@@ -791,7 +1035,7 @@ html{overflow-x:clip}
 <body>
 
 <!-- ================= NAV ================= -->
-<header class="nav" id="nav">
+<header class="nav h-nav" id="nav">
   <div class="wrap nav-in">
     <a class="brand" href="#top" aria-label="ZiminStore, laman utama">
       <svg viewBox="0 0 48 48" aria-hidden="true">
@@ -808,32 +1052,32 @@ html{overflow-x:clip}
       <span class="brand-txt"><span class="wordmark">ZIMIN<b>STORE</b></span><span class="brand-tag">STUDENT BANTU STUDENT</span></span>
     </a>
     <nav class="nav-links" aria-label="Utama">
-      <a href="#top" data-i18n="nav.home">Utama</a>
-      <a href="#harga" data-i18n="nav.price">Servis</a>
-      <a href="#cara" data-i18n="nav.how">Cara Tempahan</a>
+      <a href="#top" class="active" data-i18n="nav.home">Utama</a>
+      <a href="#harga" data-i18n="nav.service">Perkhidmatan</a>
+      <a href="#cara" data-i18n="nav.how">Cara Tempah</a>
+      <a href="#contoh" data-i18n="nav.sample">Contoh Laporan</a>
       <a href="#soalan" data-i18n="nav.faq">FAQ</a>
-      <a href="#hubungi" data-i18n="nav.contact">Hubungi</a>
     </nav>
     <div class="nav-actions">
       <div class="lang" role="group" aria-label="Bahasa / Language">
         <button type="button" id="lang-bm" data-lang="bm" aria-pressed="true">BM</button>
         <button type="button" id="lang-en" data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <a href="#" class="btn btn-ghost btn-sm" data-portal="login" data-i18n="nav.login">Log Masuk</a>
-      <a href="#" class="btn btn-cyan btn-sm" data-portal="register" data-i18n="nav.register">Daftar</a>
+      <a href="#" class="btn btn-ghost btn-sm h-login" data-portal="login"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><span data-i18n="nav.login">Log Masuk</span></a>
+      <a href="#" class="btn btn-cyan btn-sm" data-portal="order"><span data-i18n="nav.order">Tempah Sekarang</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span></button>
     </div>
   </div>
   <div class="mobile-menu" id="mobile-menu">
     <div class="wrap">
       <a href="#top" data-i18n="nav.home">Utama</a>
-      <a href="#harga" data-i18n="nav.price">Servis</a>
-      <a href="#cara" data-i18n="nav.how">Cara Tempahan</a>
+      <a href="#harga" data-i18n="nav.service">Perkhidmatan</a>
+      <a href="#cara" data-i18n="nav.how">Cara Tempah</a>
+      <a href="#contoh" data-i18n="nav.sample">Contoh Laporan</a>
       <a href="#soalan" data-i18n="nav.faq">FAQ</a>
-      <a href="#hubungi" data-i18n="nav.contact">Hubungi</a>
       <div class="m-acts">
         <a href="#" class="btn btn-ghost" data-portal="login" data-i18n="nav.login">Log Masuk</a>
-        <a href="#" class="btn btn-cyan" data-portal="register" data-i18n="nav.register">Daftar</a>
+        <a href="#" class="btn btn-cyan" data-portal="order" data-i18n="nav.order">Tempah Sekarang</a>
       </div>
     </div>
   </div>
@@ -841,152 +1085,86 @@ html{overflow-x:clip}
 
 <main id="top">
 <!-- ================= HERO ================= -->
-<section class="hero">
-  <canvas id="circuit" aria-hidden="true"></canvas>
-  <div class="glow g1"></div><div class="glow g2"></div>
-  <div class="wrap hero-in">
-    <div class="hero-copy">
-      <span class="chip rise"><i></i><span data-i18n="hero.chip">Platform Semakan Tugasan Untuk Pelajar</span></span>
-      <h1 class="rise d1" data-i18n="hero.title">Semak Similarity Tugasan Anda <span class="hl">Sebelum Dihantar.</span></h1>
-      <p class="hero-sub rise d2" data-i18n="hero.sub">Perkhidmatan semakan similarity yang mudah, pantas dan berpatutan untuk membantu pelajar menyemak tugasan mereka.</p>
-      <div class="hero-cta rise d3">
-        <a href="#" class="btn btn-gold" data-portal="order">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
-          <span data-i18n="hero.cta1">Tempah Sekarang</span>
-        </a>
-        <a href="#cara" class="btn btn-ghost" data-i18n="hero.cta2">Lihat Cara Tempahan</a>
+<section class="h-hero">
+  <div class="wrap h-hero-in">
+    <div class="h-copy">
+      <span class="h-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span data-i18n="h.chip">Semakan Similarity Dokumen Akademik</span></span>
+      <h1 data-i18n="h.title">Semak Similarity Dokumen Anda dengan Mudah, <span class="hl">Pantas &amp; Berpatutan</span></h1>
+      <p class="h-sub" data-i18n="h.sub">ZiminStore membantu pelajar, pensyarah dan penyelidik menyemak tahap keserupaan (similarity) dokumen akademik dengan laporan yang terperinci, kemas dan mudah difahami.</p>
+      <div class="h-cta">
+        <a href="#" class="btn btn-gold" data-portal="order"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg><span data-i18n="h.cta1">Tempah Sekarang</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#contoh" class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m10 8.5 5 3.5-5 3.5z" fill="currentColor"/></svg><span data-i18n="h.cta2">Lihat Contoh Laporan</span></a>
       </div>
-      <ul class="hero-badges rise d4">
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span data-i18n="hero.b1">Mudah digunakan</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.500 8-8 9-4.500-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n="hero.b2">Dokumen peribadi</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.200"/><path d="M3 20c0-3.300 2.700-6 6-6s6 2.700 6 6"/><path d="M16 5.200a3 3 0 0 1 0 5.600M18 14.500c1.800.800 3 2.700 3 5.500"/></svg><span>Student Bantu Student</span></li>
+      <ul class="h-benefits">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><div><strong data-i18n="h.b1">Mudah Digunakan</strong><small data-i18n="h.b1p">Daftar &amp; tempah.</small></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><div><strong data-i18n="h.b2">Dokumen Dilindungi</strong><small data-i18n="h.b2p">Akses terhad.</small></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M10 3 8 9l4 12 4-12-2-6"/></svg><div><strong data-i18n="h.b3">Harga Berpatutan</strong><small data-i18n="h.b3p">RM3.50 / dokumen</small></div></li>
       </ul>
     </div>
-
-    <div class="rep-wrap rise d5" role="img" aria-label="Ilustrasi contoh laporan similarity">
-      <div class="rep-ring"></div>
-      <div class="rep-sheet back" aria-hidden="true"></div>
-      <div class="rep-sheet" aria-hidden="true">
-        <div class="rep-title">Similarity Report</div>
-        <div class="rep-donut">
-          <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="#D9E4F7" stroke-width="13"/><circle cx="60" cy="60" r="46" fill="none" stroke="#35C46A" stroke-width="13" stroke-linecap="round" stroke-dasharray="52 289" transform="rotate(-90 60 60)"/></svg>
-          <strong>18%</strong>
-        </div>
-        <div class="rep-lines"><i></i><i></i><i></i><i></i></div>
-        <span class="rep-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.400" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.500 4.500 4.500L19 7.500"/></svg></span>
+    <div class="h-visual" role="img" aria-label="Ilustrasi contoh laporan similarity pada skrin komputer riba">
+      <div class="h-ring" aria-hidden="true"></div>
+      <div class="h-laptop" aria-hidden="true">
+        <div class="h-screen"><div class="h-rep">
+          <div class="r-head"><svg class="r-z" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h13L6 18h13" fill="none" stroke="#18C9E8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="r-brand"><strong>ZiminStore</strong><small>Similarity Report · Contoh</small></span><span class="r-id">Report ID: CONTOH-01</span></div>
+          <div class="r-overall"><div class="r-donut"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="#E3EAF6" stroke-width="12"/><circle cx="60" cy="60" r="46" fill="none" stroke="#F5B942" stroke-width="12" stroke-linecap="round" stroke-dasharray="34.7 289" transform="rotate(-90 60 60)"/></svg><b>12%<small>Similarity</small></b></div><div class="r-ov-txt"><strong>12% Overall Similarity</strong><small>Gabungan semua padanan bagi dokumen ini.</small><i class="r-bar"><i style="width:12%"></i></i></div></div>
+          <div class="r-stats"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><strong>2,534</strong><small>Words Analysed</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><strong>5</strong><small>Matched Sources</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><strong>8</strong><small>Matched Passages</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 20h16"/></svg><strong>PDF</strong><small>Report Format</small></div></div>
+        </div></div>
+        <div class="h-base"></div>
       </div>
-      <svg class="rep-cap" viewBox="0 0 120 90" aria-hidden="true"><path d="M30 44v20c14 12 46 12 60 0V44" fill="#12306B"/><path d="M60 8 114 32 60 56 6 32z" fill="#1B3F8A" stroke="#3E6FD0" stroke-width="2" stroke-linejoin="round"/><path d="M101 37v26" stroke="#F5B942" stroke-width="4" stroke-linecap="round"/><path d="M96 62h10l2 16H94z" fill="#F5B942"/></svg>
-      <span class="sample rep-sample" data-i18n="con.sample">Contoh ilustrasi</span>
+      <svg class="h-cap" viewBox="0 0 120 90" aria-hidden="true"><path d="M30 44v20c14 12 46 12 60 0V44" fill="#12306B"/><path d="M60 8 114 32 60 56 6 32z" fill="#1B3F8A" stroke="#3E6FD0" stroke-width="2" stroke-linejoin="round"/><path d="M101 37v26" stroke="#F5B942" stroke-width="4" stroke-linecap="round"/><path d="M96 62h10l2 16H94z" fill="#F5B942"/></svg>
+      <div class="h-paper" aria-hidden="true"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span></div>
+      <span class="h-visual-tag" data-i18n="h.sample">Contoh paparan</span>
     </div>
   </div>
 </section>
 
-<!-- trust -->
-<div class="trust">
-  <div class="wrap">
-    <div class="pstrip">
-      <div class="ps-price"><small data-i18n="ps.only">Hanya</small><strong>RM3.50</strong><span data-i18n="ps.per">setiap dokumen</span></div>
-      <div class="ps-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.500-3.500"/></svg><span data-i18n="ps.1">Semakan Similarity</span></div>
-      <div class="ps-item ps-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6M9 17h4"/></svg><span data-i18n="ps.2">Laporan dalam PDF</span></div>
-      <div class="ps-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v0M17 20h4M20 17v4"/></svg><span data-i18n="ps.3">Pembayaran DuitNow QR</span></div>
-      <div class="ps-item ps-wa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.500a8.400 8.400 0 0 1-12.400 7.400L3 21l2.100-5.400A8.400 8.400 0 1 1 21 11.500z"/></svg><span data-i18n="ps.4">Bantuan WhatsApp</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- ================= PRICING ================= -->
-<section class="block" id="harga">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="kicker" data-i18n="pr.kicker">Harga</span>
-      <h2 data-i18n="pr.title">Satu harga untuk setiap dokumen.</h2>
-      <p data-i18n="pr.sub">Tiada caj mengikut halaman.</p>
-    </div>
-    <div class="pricing">
-      <div class="card price-card">
-        <span class="pc-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg><span data-i18n="pr.label">Servis Utama</span></span>
-        <div class="pc-name" data-i18n="pr.name">Semakan Similarity Turnitin</div>
-        <div class="pc-price"><span class="rm">RM</span><span class="amt">3.50</span><span class="per" data-i18n="price.per">/ dokumen</span></div>
-        <ul class="incl">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i1">Laporan PDF</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i2">Fail PDF & DOCX</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i3">Order ID untuk jejak</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i4">Muat turun dari akaun anda</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="pr.i5">Tiada caj ikut halaman</span></li>
-        </ul>
-      </div>
-
-      <div class="card calc">
-        <h3 data-i18n="calc.title">Kira jumlah anda</h3>
-        <p data-i18n="calc.sub">Pilih bilangan dokumen.</p>
-        <div class="stepper">
-          <label for="qty" data-i18n="calc.qty">Bilangan dokumen</label>
-          <div class="stp">
-            <button type="button" id="minus" aria-label="Kurangkan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
-            <input id="qty" type="number" inputmode="numeric" min="1" max="50" value="3">
-            <button type="button" id="plus" aria-label="Tambah"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
-          </div>
-        </div>
-        <div class="breakdown">
-          <div><span data-i18n="calc.unit">Harga seunit</span><span class="mono">RM3.50</span></div>
-          <div><span data-i18n="calc.docs">Dokumen</span><span class="mono" id="qty-out">× 3</span></div>
-          <div><span data-i18n="calc.report">Laporan PDF</span><span class="mono" id="rep-out">3</span></div>
-        </div>
-        <div class="total-row">
-          <div class="total-box"><span data-i18n="calc.total">Jumlah perlu dibayar</span><strong id="total" aria-live="polite">RM10.50</strong></div>
-          <a href="#" class="btn btn-gold" data-portal="order" id="calc-cta">Tempah 3 dokumen</a>
-          <p class="small" data-i18n="calc.note">Jumlah akhir ikut fail dimuat naik.</p>
+<!-- ================= PRICING + SAMPLE REPORT ================= -->
+<section class="block h-sec" id="harga">
+  <div class="wrap h-duo">
+    <article class="h-price">
+      <h2 class="h-card-title" data-i18n="pr.title">Harga Perkhidmatan</h2>
+      <div class="h-amt"><strong>RM3.50</strong><span data-i18n="pr.per">/ dokumen</span></div>
+      <p class="h-amt-note" data-i18n="pr.note">Tiada caj ikut halaman.</p>
+      <ul class="h-feats">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span data-i18n="pr.f1">Semakan similarity</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span data-i18n="pr.f2">Laporan terperinci dalam PDF</span></li>
+        <li class="h-opt" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span data-i18n="pr.f3">Highlight teks sepadan</span></li>
+        <li class="h-opt" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span data-i18n="pr.f4">Senarai sumber padanan</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span data-i18n="pr.f5">Muat turun laporan PDF dari akaun anda</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span data-i18n="pr.f6">Bayaran melalui DuitNow QR</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span data-i18n="pr.f7">Bantuan melalui WhatsApp</span></li>
+      </ul>
+      <a href="#" class="btn btn-gold h-price-cta" data-portal="order"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg><span data-i18n="pr.cta">Tempah Sekarang</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </article>
+    <article class="h-sample" id="contoh">
+      <div class="h-sample-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><div><h2 class="h-card-title" data-i18n="sm.title">Contoh Laporan Similarity</h2><p data-i18n="sm.sub">Lihat sendiri format laporan terperinci yang akan anda terima.</p></div></div>
+      <div class="h-rep h-rep-mid" aria-hidden="true">
+        <div class="r-head"><svg class="r-z" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h13L6 18h13" fill="none" stroke="#18C9E8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="r-brand"><strong>ZiminStore</strong><small>Similarity Report · Contoh</small></span><span class="r-id">Report ID: CONTOH-01</span></div>
+        <div class="r-top"><div class="r-overall"><div class="r-donut"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="#E3EAF6" stroke-width="12"/><circle cx="60" cy="60" r="46" fill="none" stroke="#F5B942" stroke-width="12" stroke-linecap="round" stroke-dasharray="34.7 289" transform="rotate(-90 60 60)"/></svg><b>12%<small>Similarity</small></b></div><div class="r-ov-txt"><strong>12% Overall Similarity</strong><small>Gabungan semua padanan bagi dokumen ini.</small><i class="r-bar"><i style="width:12%"></i></i></div></div><div class="r-stats"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><strong>2,534</strong><small>Words Analysed</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><strong>5</strong><small>Matched Sources</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><strong>8</strong><small>Matched Passages</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 20h16"/></svg><strong>PDF</strong><small>Report Format</small></div></div></div>
+        <div class="r-grid">
+          <div><h4 class="r-h">Top Sources</h4><ol class="r-src-list"><li class="r-src s1"><span class="r-num">1</span><span class="r-src-name"><strong>Sumber Internet A</strong></span><span class="r-pct">6%</span></li><li class="r-src s2"><span class="r-num">2</span><span class="r-src-name"><strong>Penerbitan B</strong></span><span class="r-pct">3%</span></li><li class="r-src s3"><span class="r-num">3</span><span class="r-src-name"><strong>Sumber Internet C</strong></span><span class="r-pct">2%</span></li><li class="r-src s4"><span class="r-num">4</span><span class="r-src-name"><strong>Kertas Pelajar D</strong></span><span class="r-pct">1%</span></li></ol></div>
+          <div><h4 class="r-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Matched Text <span>(1 / 8)</span></h4><div class="r-text"><p>Pendidikan merupakan proses berterusan untuk membentuk insan yang <mark class="m1">seimbang dari segi intelek, emosi, rohani dan jasmani.</mark><sup class="t1">1</sup></p><p>Dalam konteks abad ke-21, <mark class="m2">penggunaan teknologi digital telah menjadi elemen penting dalam pengajaran dan pembelajaran.</mark><sup class="t2">2</sup></p></div></div>
         </div>
       </div>
-    </div>
+      <p class="h-sample-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n="sm.label">Contoh Paparan — Bukan Keputusan Pemeriksaan Sebenar</span></p>
+      <button type="button" class="btn btn-outline h-full-btn" data-open-dialog="h-report-dlg"><span data-i18n="sm.full">Lihat Contoh Laporan Penuh</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></button>
+    </article>
   </div>
 </section>
 
-<!-- ================= HOW IT WORKS ================= -->
-<section class="block" id="cara">
+<!-- ================= HOW TO ORDER ================= -->
+<section class="block h-sec" id="cara">
   <div class="wrap">
-    <div class="sec-head center">
-      <span class="kicker" data-i18n="how.kicker">Cara Tempahan</span>
-      <h2 data-i18n="how.title">5 Langkah Mudah Tempahan</h2>
-      <p data-i18n="how.sub">Status jelas setiap langkah.</p>
+    <div class="h-sec-head">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><span data-i18n="hw.title">Cara Tempah</span></h2>
+      <p data-i18n="hw.sub">Hanya 4 langkah mudah untuk mendapatkan laporan anda.</p>
     </div>
-    <ol class="steps" style="margin-inline:auto">
-      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.400 3.600-8 8-8s8 3.600 8 8"/></svg><span class="s-num">1</span></div><div><h3 data-i18n="how.s1">Daftar / Log Masuk</h3><p data-i18n="how.s1p">Cipta akaun percuma.</p></div></li>
-      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span class="s-num">2</span></div><div><h3 data-i18n="how.s2">Upload Dokumen</h3><p data-i18n="how.s2p">PDF atau DOCX.</p></div></li>
-      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM17 20h4M20 17v4"/></svg><span class="s-num">3</span></div><div><h3 data-i18n="how.s3">Buat Pembayaran</h3><p data-i18n="how.s3p">Imbas DuitNow QR, hantar bukti.</p></div></li>
-      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="s-num">4</span></div><div><h3 data-i18n="how.s4">Tunggu Proses Semakan</h3><p data-i18n="how.s4p">Admin sahkan dan proses.</p></div></li>
-      <li class="step"><div class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9.500 14.500 12 17l2.500-2.500"/></svg><span class="s-num">5</span></div><div><h3 data-i18n="how.s5">Muat Turun Laporan PDF</h3><p data-i18n="how.s5p">Dari akaun anda.</p></div></li>
+    <ol class="h-steps">
+      <li><span class="h-step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg></span><div><h3><b>01</b><span data-i18n="hw.1">Daftar &amp; Muat Naik</span></h3><p data-i18n="hw.1p">Cipta akaun dan pilih fail PDF/DOCX.</p></div></li>
+      <li><span class="h-step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 10h18M7 15h3"/></svg></span><div><h3><b>02</b><span data-i18n="hw.2">Bayar</span></h3><p data-i18n="hw.2p">Buat pembayaran mengikut jumlah pesanan.</p></div></li>
+      <li><span class="h-step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span><div><h3><b>03</b><span data-i18n="hw.3">Proses</span></h3><p data-i18n="hw.3p">Dokumen diproses menggunakan penyedia similarity yang dibenarkan.</p></div></li>
+      <li><span class="h-step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 20h16"/></svg></span><div><h3><b>04</b><span data-i18n="hw.4">Terima Laporan</span></h3><p data-i18n="hw.4p">Muat turun laporan similarity dalam format PDF apabila siap.</p></div></li>
     </ol>
-
-    <div class="statuses">
-      <div class="statuses-head">
-        <h3 data-i18n="st.title">Status pesanan</h3>
-        <p data-i18n="st.note"></p>
-      </div>
-      <div class="st-row">
-        <span class="pill p-pending"><i></i><span data-i18n="st.1">Menunggu Bayaran</span></span>
-        <span class="pill p-verified"><i></i><span data-i18n="st.2">Bayaran Disahkan</span></span>
-        <span class="pill p-processing"><i></i><span data-i18n="st.3">Sedang Diproses</span></span>
-        <span class="pill p-ready"><i></i><span data-i18n="st.4">Laporan Tersedia</span></span>
-        <span class="pill p-action"><i></i><span data-i18n="st.5">Perlu Tindakan</span><small data-i18n="st.5s">fail bermasalah</small></span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= FEATURES ================= -->
-<section class="block" id="ciri">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="kicker" data-i18n="ft.kicker">Kelebihan</span>
-      <h2 data-i18n="ft.title">Mengapa Pilih ZiminStore?</h2>
-    </div>
-    <div class="features">
-      <article class="card feat"><div class="f-ic gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.600 13.400l-7.200 7.200a2 2 0 0 1-2.800 0L3 13V3h10l7.600 7.600a2 2 0 0 1 0 2.800z"/><circle cx="8" cy="8" r="1.500"/></svg></div><h3 data-i18n="ft.1">Harga Berpatutan</h3><p data-i18n="ft.1p">Hanya RM3.50 setiap dokumen.</p></article>
-      <article class="card feat"><div class="f-ic "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><h3 data-i18n="ft.2">Mudah &amp; Cepat</h3><p data-i18n="ft.2p">Tempah dalam beberapa langkah.</p></article>
-      <article class="card feat"><div class="f-ic gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></div><h3 data-i18n="ft.3">Laporan PDF</h3><p data-i18n="ft.3p">Laporan similarity dalam PDF.</p></article>
-      <article class="card feat"><div class="f-ic "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="2.500" y="13" width="4" height="6" rx="1.500"/><rect x="17.500" y="13" width="4" height="6" rx="1.500"/><path d="M19.500 19c0 2-2 3-5 3"/></svg></div><h3 data-i18n="ft.4">Sokongan Mesra</h3><p data-i18n="ft.4p">Bantuan melalui WhatsApp.</p></article>
-    </div>
   </div>
 </section>
 
@@ -1017,33 +1195,22 @@ html{overflow-x:clip}
   </div>
 </section>
 
-<!-- ================= CONTACT ================= -->
-<section class="contact" id="hubungi">
+<!-- ================= FINAL CTA ================= -->
+<section class="h-sec h-final" id="hubungi">
   <div class="wrap">
-    <div class="band">
-      <div>
-        <span class="kicker" data-i18n="ct.kicker">Hubungi Kami</span>
-        <h2 style="margin-top:14px" data-i18n="ct.title">Ada soalan?</h2>
-        <p data-i18n="ct.sub">WhatsApp kami.</p>
-      </div>
-      <div class="acts">
-        <a class="btn btn-wa wa-link" href="#" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.8 9.8 0 0 0-8.4 14.9L2.2 21.8l4.8-1.3A9.8 9.8 0 1 0 12 2.2zm0 17.8a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.2.2-.6.2-1 .1-1.2l-.4-.2z"/></svg>
-          <span data-i18n="ct.wa">Hubungi di WhatsApp</span>
-        </a>
-        <a href="#" class="btn btn-ghost" data-portal="register" data-i18n="ct.reg">Daftar Akaun</a>
-      </div>
+    <div class="h-band">
+      <div><h2 data-i18n="cta.title">Sedia Semak Dokumen Anda?</h2><p data-i18n="cta.sub">Dapatkan laporan similarity yang terperinci dan mudah difahami.</p></div>
+      <a href="#" class="btn btn-gold" data-portal="order"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg><span data-i18n="cta.btn">Tempah Sekarang</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
   </div>
 </section>
 </main>
 
 <!-- ================= FOOTER ================= -->
-<footer>
-  <div class="wrap">
-    <div class="f-grid">
-      <div class="f-about">
-        <a class="brand" href="#top" aria-label="ZiminStore">
+<footer class="h-foot">
+  <div class="wrap h-foot-grid">
+    <div class="h-foot-about">
+      <a class="brand" href="#top" aria-label="ZiminStore">
           <svg viewBox="0 0 48 48" aria-hidden="true">
         <rect x="4" y="11" width="40" height="35" rx="11" fill="#0B1F47" stroke="url(#lgA)" stroke-width="1.5"/>
         <path d="M16 23h17L16 38h18" fill="none" stroke="#fff" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1053,43 +1220,75 @@ html{overflow-x:clip}
       </svg>
           <span class="brand-txt"><span class="wordmark">ZIMIN<b>STORE</b></span><span class="brand-tag">STUDENT BANTU STUDENT</span></span>
         </a>
-        <p data-i18n="fo.about">Semakan similarity untuk pelajar.</p>
-        <div class="f-pay"><span>DuitNow QR</span><span>Touch 'n Go eWallet</span><span data-i18n="fo.bank">Perbankan dalam talian</span></div>
-      </div>
-      <div>
-        <h4 data-i18n="fo.links">Pautan</h4>
-        <ul>
-          <li><a href="#harga" data-i18n="nav.price">Harga</a></li>
-          <li><a href="#cara" data-i18n="nav.how">Cara Tempahan</a></li>
-          <li><a href="#ciri" data-i18n="nav.features">Ciri</a></li>
-          <li><a href="#soalan" data-i18n="nav.faq">Soalan Lazim</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 data-i18n="fo.account">Akaun</h4>
-        <ul>
-          <li><a href="#" data-portal="login" data-i18n="nav.login">Log Masuk</a></li>
-          <li><a href="#" data-portal="register" data-i18n="nav.register">Daftar</a></li>
-          <li><a href="#" data-portal="track" data-i18n="fo.track">Jejak Pesanan</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 data-i18n="fo.service">Servis</h4>
-        <ul>
-          <li><span data-i18n="fo.s1">Semakan Similarity Turnitin</span></li>
-          <li><span data-i18n="fo.s2">RM3.50 setiap dokumen</span></li>
-          <li><span data-i18n="fo.s3">Laporan dalam format PDF</span></li>
-          <li><a href="#" class="wa-link" target="_blank" rel="noopener">WhatsApp</a></li>
-        </ul>
-      </div>
+      <p data-i18n="fo.about">Semakan similarity dokumen akademik untuk pelajar, pensyarah dan penyelidik.</p>
     </div>
-    <p class="legal" style="margin:0 0 10px;font-size:12px;opacity:.8">Privasi (PDPA): data anda hanya untuk pesanan anda. Dokumen dipadam selepas 30 hari.</p>
-    <div class="legal">
-      <p data-i18n="fo.disc">ZiminStore ialah servis bebas dan tidak bergabung dengan, ditaja atau disahkan oleh Turnitin, LLC. Turnitin ialah tanda dagangan Turnitin, LLC.</p>
-      <div class="row"><p>© 2026 ZiminStore. <span data-i18n="fo.rights">Hak cipta terpelihara.</span></p><p>Student Bantu Student</p></div>
-    </div>
+    <div><h4 data-i18n="fo.links">Pautan</h4><ul>
+      <li><a href="#top" data-i18n="nav.home">Utama</a></li><li><a href="#harga" data-i18n="nav.service">Perkhidmatan</a></li><li><a href="#cara" data-i18n="nav.how">Cara Tempah</a></li><li><a href="#contoh" data-i18n="nav.sample">Contoh Laporan</a></li><li><a href="#soalan" data-i18n="nav.faq">FAQ</a></li></ul></div>
+    <div><h4 data-i18n="fo.account">Akaun</h4><ul>
+      <li><a href="#" data-portal="login" data-i18n="nav.login">Log Masuk</a></li><li><a href="#" data-portal="register" data-i18n="nav.register">Daftar</a></li><li><a href="#" data-portal="track" data-i18n="fo.track">Jejak Pesanan</a></li></ul></div>
+    <div><h4 data-i18n="fo.contact">Hubungi</h4><ul>
+      <li><a href="#" class="wa-link" target="_blank" rel="noopener">WhatsApp 011-1453 3195</a></li>
+      <li><button type="button" class="h-linkbtn" data-open-dialog="h-privacy-dlg" data-i18n="fo.privacy">Dasar Privasi</button></li>
+      <li><button type="button" class="h-linkbtn" data-open-dialog="h-terms-dlg" data-i18n="fo.terms">Terma Perkhidmatan</button></li></ul></div>
+  </div>
+  <div class="wrap h-foot-legal">
+    <p data-i18n="fo.pdpa">Privasi (PDPA): data anda hanya untuk pesanan anda. Dokumen dipadam selepas 30 hari.</p>
+    <p data-i18n="fo.disc">ZiminStore ialah servis bebas dan tidak bergabung dengan, ditaja atau disahkan oleh Turnitin, LLC. Turnitin ialah tanda dagangan Turnitin, LLC.</p>
+    <p>© 2026 ZiminStore · Student Bantu Student. <span data-i18n="fo.rights">Hak cipta terpelihara.</span></p>
   </div>
 </footer>
+
+<!-- ================= DIALOGS: full sample report, privacy & terms drafts ================= -->
+<dialog class="h-dlg" id="h-report-dlg" aria-labelledby="h-report-dlg-t">
+  <div class="h-dlg-in">
+    <div class="h-dlg-bar"><h2 id="h-report-dlg-t" data-i18n="sm.title">Contoh Laporan Similarity</h2><form method="dialog"><button class="h-dlg-x" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></form></div>
+    <p class="h-sample-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n="sm.label">Contoh Paparan — Bukan Keputusan Pemeriksaan Sebenar</span></p>
+    <div class="h-rep h-rep-full">
+      <div class="r-head"><svg class="r-z" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h13L6 18h13" fill="none" stroke="#18C9E8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="r-brand"><strong>ZiminStore</strong><small>Similarity Report · Contoh</small></span><span class="r-id">Report ID: CONTOH-0001</span></div>
+      <div class="r-top"><div class="r-overall"><div class="r-donut"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="#E3EAF6" stroke-width="12"/><circle cx="60" cy="60" r="46" fill="none" stroke="#F5B942" stroke-width="12" stroke-linecap="round" stroke-dasharray="34.7 289" transform="rotate(-90 60 60)"/></svg><b>12%<small>Similarity</small></b></div><div class="r-ov-txt"><strong>12% Overall Similarity</strong><small>Gabungan semua padanan bagi dokumen ini.</small><i class="r-bar"><i style="width:12%"></i></i></div></div><div class="r-stats"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><strong>2,534</strong><small>Words Analysed</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><strong>5</strong><small>Matched Sources</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><strong>8</strong><small>Matched Passages</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 20h16"/></svg><strong>PDF</strong><small>Report Format</small></div></div></div>
+      <div class="r-info">
+        <div><small>File Name</small><strong>Contoh_Tugasan.docx</strong></div>
+        <div><small>Word Count</small><strong>2,534</strong></div>
+        <div><small>Report ID</small><strong>CONTOH-0001</strong></div>
+        <div><small>Exclusions</small><strong>Bibliography · Quoted Text</strong></div>
+      </div>
+      <div class="r-grid r-grid-3">
+        <div><h4 class="r-h">Top Sources</h4><ol class="r-src-list"><li class="r-src s1"><span class="r-num">1</span><span class="r-src-name"><strong>Sumber Internet A</strong><small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Internet Source</small></span><span class="r-pct">6%<small>4 passages</small></span></li><li class="r-src s2"><span class="r-num">2</span><span class="r-src-name"><strong>Penerbitan B</strong><small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Publication</small></span><span class="r-pct">3%<small>2 passages</small></span></li><li class="r-src s3"><span class="r-num">3</span><span class="r-src-name"><strong>Sumber Internet C</strong><small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Internet Source</small></span><span class="r-pct">2%<small>1 passage</small></span></li><li class="r-src s4"><span class="r-num">4</span><span class="r-src-name"><strong>Kertas Pelajar D</strong><small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Student Paper</small></span><span class="r-pct">1%<small>1 passage</small></span></li><li class="r-src s5"><span class="r-num">5</span><span class="r-src-name"><strong>Sumber Internet E</strong><small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Internet Source</small></span><span class="r-pct">&lt;1%<small>1 passage</small></span></li></ol></div>
+        <div><h4 class="r-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Matched Text <span>(1 / 8)</span></h4><div class="r-text"><p>Pendidikan merupakan proses berterusan untuk membentuk insan yang <mark class="m1">seimbang dari segi intelek, emosi, rohani dan jasmani.</mark><sup class="t1">1</sup></p><p>Dalam konteks abad ke-21, <mark class="m2">penggunaan teknologi digital telah menjadi elemen penting dalam pengajaran dan pembelajaran.</mark><sup class="t2">2</sup></p><p>Kajian lepas menunjukkan bahawa <mark class="m3">integrasi teknologi dapat meningkatkan motivasi murid dan mewujudkan pembelajaran yang lebih interaktif.</mark><sup class="t3">3</sup> Oleh itu, guru perlu menguasai kemahiran digital yang sesuai.</p></div></div>
+        <div class="r-detail"><h4 class="r-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Source Details</h4>
+          <div class="r-detail-card"><span class="r-num">1</span><div><strong>Sumber Internet A</strong><small>Internet Source</small></div></div>
+          <p class="r-detail-pct">6% Similarity</p>
+          <small class="r-detail-h">Matched Text (4)</small>
+          <blockquote>“… seimbang dari segi intelek, emosi, rohani dan jasmani …”</blockquote>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+<dialog class="h-dlg h-dlg-text" id="h-privacy-dlg" aria-labelledby="h-privacy-dlg-t">
+  <div class="h-dlg-in">
+    <div class="h-dlg-bar"><h2 id="h-privacy-dlg-t">Dasar Privasi <span class="h-draft">DRAF</span></h2><form method="dialog"><button class="h-dlg-x" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></form></div>
+    <p class="h-draft-note">Draf untuk semakan. Belum dimuktamadkan.</p>
+    <h3>1. Data yang kami kumpul</h3><p>Nama, alamat e-mel dan nombor telefon semasa pendaftaran; dokumen yang anda muat naik; bukti bayaran; dan laporan similarity bagi pesanan anda.</p>
+    <h3>2. Tujuan</h3><p>Data digunakan untuk memproses pesanan, mengesahkan bayaran, menghantar laporan dan menghubungi anda tentang pesanan anda sahaja.</p>
+    <h3>3. Penyimpanan dan akses</h3><p>Data disimpan dalam storan peribadi. Hanya anda dan admin yang memproses pesanan boleh mengaksesnya. Dokumen anda dihantar kepada penyedia semakan similarity untuk menjana laporan.</p>
+    <h3>4. Tempoh simpanan</h3><p>Dokumen yang dimuat naik dipadam secara automatik 30 hari selepas pesanan dibuat. Rekod pesanan, bukti bayaran dan laporan disimpan untuk rujukan pesanan.</p>
+    <h3>5. Perkongsian</h3><p>Kami tidak menjual atau berkongsi data anda dengan pihak lain untuk tujuan pemasaran.</p>
+    <h3>6. Hak anda</h3><p>Anda boleh meminta salinan, pembetulan atau pemadaman data anda dengan menghubungi kami melalui WhatsApp, selaras dengan Akta Perlindungan Data Peribadi 2010.</p>
+  </div>
+</dialog>
+<dialog class="h-dlg h-dlg-text" id="h-terms-dlg" aria-labelledby="h-terms-dlg-t">
+  <div class="h-dlg-in">
+    <div class="h-dlg-bar"><h2 id="h-terms-dlg-t">Terma Perkhidmatan <span class="h-draft">DRAF</span></h2><form method="dialog"><button class="h-dlg-x" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></form></div>
+    <p class="h-draft-note">Draf untuk semakan. Belum dimuktamadkan.</p>
+    <h3>1. Perkhidmatan</h3><p>ZiminStore menyediakan semakan similarity dokumen akademik dan menghantar laporan dalam format PDF melalui akaun anda.</p>
+    <h3>2. Harga dan bayaran</h3><p>Harga ialah RM3.50 bagi setiap dokumen. Bayaran dibuat melalui DuitNow QR dan disahkan secara manual oleh admin sebelum dokumen diproses.</p>
+    <h3>3. Tanggungjawab pelanggan</h3><p>Anda hanya boleh menghantar dokumen yang anda berhak hantar, dalam format PDF atau DOCX yang boleh dibuka.</p>
+    <h3>4. Had laporan</h3><p>Laporan menunjukkan peratus keserupaan teks dengan sumber lain. Laporan tidak menentukan sama ada sesuatu dokumen diplagiat, dan keputusan boleh berbeza daripada semakan yang dibuat oleh institusi anda.</p>
+    <h3>5. Hubungan dengan Turnitin</h3><p>ZiminStore ialah servis bebas dan tidak bergabung dengan, ditaja atau disahkan oleh Turnitin, LLC.</p>
+    <h3>6. Perubahan</h3><p>Terma ini boleh dikemas kini dari semasa ke semasa. Versi terkini dipaparkan di laman ini.</p>
+  </div>
+</dialog>
 
 <a class="wa-float wa-link" href="#" target="_blank" rel="noopener" aria-label="WhatsApp ZiminStore">
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.8 9.8 0 0 0-8.4 14.9L2.2 21.8l4.8-1.3A9.8 9.8 0 1 0 12 2.2zm0 17.8a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.2.2-.6.2-1 .1-1.2l-.4-.2z"/></svg>
@@ -1302,7 +1501,10 @@ const CONFIG = {
   // DuitNow QR (static, MYR, MOHAMADAZIMANBINHASSIM). Regenerated from the decoded
   // payload of the owner's QR; checksum verified. Shown in the payment step.
   paymentQrUrl: 'assets/duitnow-qr.png',
-  paymentName: 'MOHAMAD AZIMAN BIN HASSIM'
+  paymentName: 'MOHAMAD AZIMAN BIN HASSIM',
+  // Set to true once confirmed that the delivered PDF reports include highlighted matching
+  // text and a list of matching sources; the price card then lists both features.
+  reportShowsMatches: false
   // Note: prices shown here are display only. The database recalculates every total.
 };
 const formatRM = sen => CONFIG.currency + (sen/100).toFixed(2);
@@ -1310,6 +1512,50 @@ const orderTotalSen = n => n * CONFIG.pricePerDocSen;
 
 /* ---------- i18n ---------- */
 const EN = {
+  'fo.pdpa':'Privacy (PDPA): your data is used only for your orders. Documents are deleted after 30 days.',
+  'fo.terms':'Terms of Service',
+  'fo.privacy':'Privacy Policy',
+  'fo.contact':'Contact',
+  'cta.btn':'Order Now',
+  'cta.sub':'Get a detailed, easy-to-understand similarity report.',
+  'cta.title':'Ready to Check Your Document?',
+  'hw.4p':'Download your similarity report as a PDF when it is ready.',
+  'hw.4':'Receive Report',
+  'hw.3p':'Documents are processed using an authorised similarity provider.',
+  'hw.3':'Process',
+  'hw.2p':'Pay according to your order total.',
+  'hw.2':'Pay',
+  'hw.1p':'Create an account and choose PDF/DOCX files.',
+  'hw.1':'Register &amp; Upload',
+  'hw.sub':'Just 4 easy steps to get your report.',
+  'hw.title':'How to Order',
+  'sm.full':'View Full Sample Report',
+  'sm.label':'Sample View — Not an Actual Check Result',
+  'sm.sub':'See the format of the detailed report you will receive.',
+  'sm.title':'Sample Similarity Report',
+  'pr.cta':'Order Now',
+  'pr.f5':'Download the PDF report from your account','pr.f6':'Payment via DuitNow QR','pr.f7':'Help via WhatsApp',
+  'pr.f4':'List of matching sources',
+  'pr.f3':'Highlighted matching text',
+  'pr.f2':'Detailed report in PDF',
+  'pr.f1':'Similarity check',
+  'pr.note':'No per-page charge.',
+  'pr.per':'/ document',
+  'h.sample':'Sample view',
+  'h.b3p':'RM3.50 / document',
+  'h.b3':'Affordable Price',
+  'h.b2p':'Restricted access.',
+  'h.b2':'Protected Documents',
+  'h.b1p':'Register &amp; order.',
+  'h.b1':'Easy to Use',
+  'h.cta2':'See Sample Report',
+  'h.cta1':'Order Now',
+  'h.sub':'ZiminStore helps students, lecturers and researchers check the similarity of academic documents with a detailed, tidy and easy-to-understand report.',
+  'h.title':'Check Your Document Similarity Easily, <span class="hl">Quickly &amp; Affordably</span>',
+  'h.chip':'Academic document similarity checking',
+  'nav.order':'Order Now',
+  'nav.sample':'Sample Report',
+  'nav.service':'Services',
   'ps.4':'WhatsApp Help',
   'ps.3':'DuitNow QR Payment',
   'ps.2':'Report in PDF',
@@ -1319,7 +1565,7 @@ const EN = {
   'hero.b2':'Private documents',
   'hero.b1':'Easy to use',
   'nav.home':'Home',
-  'nav.price':'Service','nav.how':'How It Works','nav.features':'Features','nav.faq':'FAQ','nav.contact':'Contact',
+  'nav.price':'Service','nav.how':'How to Order','nav.features':'Features','nav.faq':'FAQ','nav.contact':'Contact',
   'nav.login':'Log In','nav.start':'Start Order','nav.register':'Register',
   'hero.chip':'Assignment checking platform for students',
   'hero.title':'Check Your Assignment Similarity <span class="hl">Before You Submit.</span>',
@@ -1329,7 +1575,7 @@ const EN = {
   'con.order':'Order','con.sample':'Sample illustration','con.f1':'1.2 MB · uploaded','con.f2':'860 KB · uploaded',
   'con.total':'2 documents × RM3.50','con.t1':'Order received','con.t2':'Payment verified','con.t3':'Processing','con.t4':'PDF report ready','con.now':'now','con.private':'Private files',
   'tr.1a':'PDF &amp; DOCX','tr.1b':'Accepted file formats','tr.2a':'PDF report','tr.2b':'Downloaded from your account','tr.3a':'DuitNow QR','tr.3b':'eWallet or banking app','tr.4a':'Private documents','tr.4b':'Closed storage',
-  'pr.kicker':'Pricing','pr.title':'One price for every document.','pr.sub':'No per-page charges.',
+  'pr.kicker':'Pricing','pr.title':'Service Price','pr.sub':'No per-page charges.',
   'pr.label':'Main Service','pr.name':'Turnitin Similarity Check',
   'pr.i1':'PDF report','pr.i2':'PDF & DOCX files','pr.i3':'Order ID for tracking','pr.i4':'Download from your account','pr.i5':'No per-page charge',
   'calc.title':'Work out your total','calc.sub':'Choose how many documents.','calc.qty':'Number of documents','calc.unit':'Unit price','calc.docs':'Documents','calc.report':'PDF reports','calc.total':'Amount to pay','calc.note':'Final total follows your uploads.',
@@ -1353,7 +1599,7 @@ const EN = {
   'q7':'Are my documents safe?','a7':'Yes. Only you and the admin have access, and documents are deleted after 30 days.',
   'q8':'Is ZiminStore affiliated with Turnitin?','a8':'<strong>No.</strong> We are an independent, student-run service.',
   'ct.kicker':'Contact Us','ct.title':'Any questions?','ct.sub':'WhatsApp us.','ct.wa':'Chat on WhatsApp','ct.reg':'Create Account',
-  'fo.about':'Similarity checks for students.','fo.bank':'Online banking','fo.links':'Links','fo.account':'Account','fo.track':'Track Order','fo.service':'Service',
+  'fo.about':'Academic document similarity checks for students, lecturers and researchers.','fo.bank':'Online banking','fo.links':'Links','fo.account':'Account','fo.track':'Track Order','fo.service':'Service',
   'fo.s1':'Turnitin Similarity Check','fo.s2':'RM3.50 per document','fo.s3':'Report in PDF format',
   'fo.disc':'ZiminStore is an independent service and is not affiliated with, sponsored or endorsed by Turnitin, LLC. Turnitin is a trademark of Turnitin, LLC.',
   'fo.rights':'All rights reserved.'
@@ -1373,7 +1619,7 @@ function setLang(l){
     if (v !== undefined) el.innerHTML = v;
   });
   document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.lang===l));
-  updateCalc(); setWhatsApp();
+  setWhatsApp();
   try{ localStorage.setItem('zs-lang', l); }catch(e){}
 }
 document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
@@ -1385,23 +1631,29 @@ function setWhatsApp(){
   document.querySelectorAll('.wa-link').forEach(a=>a.href = href);
 }
 
-/* ---------- Price calculator ---------- */
-const qty = document.getElementById('qty');
-const minus = document.getElementById('minus'), plus = document.getElementById('plus');
-function clampQty(){ let n = parseInt(qty.value,10); if (isNaN(n)||n<1) n=1; if (n>CONFIG.maxDocsPerOrder) n=CONFIG.maxDocsPerOrder; return n; }
-function updateCalc(){
-  const n = clampQty();
-  document.getElementById('total').textContent = formatRM(orderTotalSen(n));
-  document.getElementById('qty-out').textContent = '× ' + n;
-  document.getElementById('rep-out').textContent = n;
-  document.getElementById('calc-cta').textContent = UI[lang].cta(n);
-  minus.disabled = n<=1; plus.disabled = n>=CONFIG.maxDocsPerOrder;
-}
-minus.addEventListener('click',()=>{ qty.value = clampQty()-1; updateCalc(); });
-plus.addEventListener('click',()=>{ qty.value = clampQty()+1; updateCalc(); });
-qty.addEventListener('input',updateCalc);
-qty.addEventListener('blur',()=>{ qty.value = clampQty(); updateCalc(); });
-
+/* ---------- Homepage: report-detail features, dialogs, active menu item ---------- */
+// Show "highlighted matches" and "list of sources" in the price card only when the real PDF has them.
+if(CONFIG.reportShowsMatches) document.querySelectorAll('.h-opt').forEach(el=>el.hidden=false);
+document.querySelectorAll('[data-open-dialog]').forEach(btn=>btn.addEventListener('click',e=>{
+  e.preventDefault(); const d=document.getElementById(btn.dataset.openDialog);
+  if(d?.showModal) d.showModal(); else d?.setAttribute('open','');
+}));
+document.querySelectorAll('dialog.h-dlg').forEach(d=>d.addEventListener('click',e=>{ if(e.target===d) d.close(); }));
+(function(){
+  const links=[...document.querySelectorAll('.nav-links a[href^="#"], #mobile-menu a[href^="#"]')];
+  const ids=['top','harga','contoh','cara','soalan'];
+  const topOf=id=>{const el=document.getElementById(id);return el?el.getBoundingClientRect().top+scrollY:Infinity;};
+  function spy(){
+    const y=scrollY+140; let cur='top';
+    for(const id of ids){
+      if(id==='contoh'&&Math.abs(topOf('contoh')-document.querySelector('.h-price').getBoundingClientRect().top-scrollY)<40) continue; // side by side on wide screens
+      if(id!=='top'&&topOf(id)<=y) cur=id;
+    }
+    if(innerHeight+scrollY>=document.documentElement.scrollHeight-4) cur='soalan';
+    links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+  }
+  addEventListener('scroll',spy,{passive:true}); addEventListener('resize',spy); spy();
+})();
 
 /* ---------- Supabase customer/admin portal ---------- */
 const toast = document.getElementById('toast'); let tt;
@@ -2269,72 +2521,6 @@ const onScroll = ()=>nav.classList.toggle('scrolled', scrollY>12);
 addEventListener('scroll',onScroll,{passive:true}); onScroll();
 burger.addEventListener('click',()=>{ const o = nav.classList.toggle('open'); burger.setAttribute('aria-expanded',o); });
 document.querySelectorAll('#mobile-menu a[href^="#"]').forEach(a=>a.addEventListener('click',()=>{ nav.classList.remove('open'); burger.setAttribute('aria-expanded',false); }));
-
-/* ---------- Circuit background ---------- */
-(function(){
-  const cv = document.getElementById('circuit'), ctx = cv.getContext('2d');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let W,H,dpr,traces=[],pulses=[],raf;
-  const G = 26;
-  function rnd(a,b){return a+Math.random()*(b-a)}
-  function build(){
-    dpr = Math.min(devicePixelRatio||1,2);
-    W = cv.clientWidth; H = cv.clientHeight;
-    cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
-    traces = [];
-    const count = Math.round((W*H)/16000);
-    const dirs = [[1,0],[0,1],[1,1],[1,-1],[-1,0],[0,-1]];
-    for(let i=0;i<count;i++){
-      // bias traces toward the right half where the console sits
-      let x = Math.round((Math.random()<.65 ? rnd(W*.4,W) : rnd(0,W))/G)*G;
-      let y = Math.round(rnd(0,H)/G)*G;
-      const pts=[[x,y]]; let d = dirs[Math.floor(Math.random()*4)];
-      const segs = Math.floor(rnd(2,5));
-      for(let s=0;s<segs;s++){
-        const len = Math.floor(rnd(2,8))*G;
-        x += d[0]*len; y += d[1]*len; pts.push([x,y]);
-        d = d[0]&&d[1] ? (Math.random()<.5?[d[0],0]:[0,d[1]]) : (Math.random()<.5?[d[0]||1,d[1]||1]:[d[1],d[0]]);
-      }
-      let L=0; const seg=[]; for(let k=1;k<pts.length;k++){const l=Math.hypot(pts[k][0]-pts[k-1][0],pts[k][1]-pts[k-1][1]); seg.push(l); L+=l;}
-      traces.push({pts,seg,L,gold:Math.random()<.08});
-    }
-    pulses = traces.filter(()=>Math.random()<.35).map(t=>({t,p:Math.random(),v:rnd(.0015,.004)}));
-  }
-  function at(t,f){
-    let d=f*t.L;
-    for(let k=0;k<t.seg.length;k++){ if(d<=t.seg[k]){const a=t.pts[k],b=t.pts[k+1],r=d/t.seg[k];return [a[0]+(b[0]-a[0])*r,a[1]+(b[1]-a[1])*r];} d-=t.seg[k]; }
-    return t.pts[t.pts.length-1];
-  }
-  function drawStatic(){
-    ctx.clearRect(0,0,W,H);
-    ctx.lineWidth=1;
-    for(const t of traces){
-      ctx.strokeStyle = t.gold ? 'rgba(242,184,75,.22)' : 'rgba(77,133,255,.17)';
-      ctx.beginPath(); t.pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.stroke();
-      const e=t.pts[t.pts.length-1];
-      ctx.fillStyle = t.gold ? 'rgba(242,184,75,.5)' : 'rgba(34,211,238,.35)';
-      ctx.beginPath(); ctx.arc(e[0],e[1],2.2,0,7); ctx.fill();
-      ctx.strokeStyle='rgba(77,133,255,.3)'; ctx.beginPath(); ctx.arc(t.pts[0][0],t.pts[0][1],2.6,0,7); ctx.stroke();
-    }
-  }
-  function frame(){
-    drawStatic();
-    for(const p of pulses){
-      p.p += p.v; if(p.p>1) p.p=0;
-      const [x,y]=at(p.t,p.p);
-      const g=ctx.createRadialGradient(x,y,0,x,y,14);
-      const c = p.t.gold ? '242,184,75' : '34,211,238';
-      g.addColorStop(0,`rgba(${c},.9)`); g.addColorStop(1,`rgba(${c},0)`);
-      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,14,0,7); ctx.fill();
-      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x,y,1.4,0,7); ctx.fill();
-    }
-    raf = requestAnimationFrame(frame);
-  }
-  function start(){ cancelAnimationFrame(raf); build(); reduce ? drawStatic() : frame(); }
-  let rt; addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(start,180);});
-  document.addEventListener('visibilitychange',()=>{ if(document.hidden) cancelAnimationFrame(raf); else if(!reduce) frame(); });
-  start();
-})();
 
 /* ---------- Init ---------- */
 let saved='bm'; try{ saved = localStorage.getItem('zs-lang') || 'bm'; }catch(e){}
