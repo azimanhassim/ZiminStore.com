@@ -27,5 +27,15 @@ Deno.serve(async (req) => {
     const { error: upErr } = await sb.from("documents").update({ storage_path: `deleted/${d.id}` }).eq("id", d.id);
     if (upErr) failed++; else deleted++;
   }
-  return Response.json({ found: docs?.length ?? 0, deleted, failed });
+  // DRAFT addition (needs migration 20261118 for zs_orphan_payment_proofs; not deployed):
+  // remove payment-proof files older than 24 h that never got a payments row
+  // (e.g. the customer's insert failed after the upload). Skipped if the helper is missing.
+  let orphanProofs = 0;
+  const { data: stray, error: strayErr } = await sb.rpc("zs_orphan_payment_proofs");
+  if (!strayErr && stray?.length) {
+    const names = stray.map((r: { name: string }) => r.name);
+    const { error: rmProofErr } = await sb.storage.from("payment-proofs").remove(names);
+    if (!rmProofErr) orphanProofs = names.length;
+  }
+  return Response.json({ found: docs?.length ?? 0, deleted, failed, orphan_proofs: orphanProofs });
 });

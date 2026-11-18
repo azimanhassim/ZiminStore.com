@@ -2154,6 +2154,23 @@ document.getElementById('zs-create-order').addEventListener('click',async()=>{
     portalMessage((createdOrder?`Pesanan ${createdOrder.order_number} telah dicipta tetapi muat naik belum lengkap. Hubungi admin dengan Order ID ini. `:'')+(err.message||'Tidak dapat mencipta pesanan.'),'error');
   }finally{button.disabled=false;button.textContent='Cipta pesanan';}
 });
+/* Customer-facing payment errors in plain BM (the raw Postgres/Storage text is never shown). */
+function zsPaymentError(err){
+  const m=String(err?.message||err?.cause?.message||'').toLowerCase();
+  if(err?.zs==='pending'||err?.code==='23505'||m.includes('zs_payments_one_pending')||m.includes('duplicate key'))
+    return 'Bukti bayaran untuk pesanan ini sudah dihantar dan sedang disemak. Tidak perlu hantar sekali lagi.';
+  if(err?.zs==='paid'||m.includes('sudah disahkan dibayar')) return 'Pesanan ini sudah disahkan dibayar. Tiada bukti bayaran lain diperlukan.';
+  if(m.includes('tidak menerima bukti bayaran')) return 'Pesanan ini tidak menerima bukti bayaran pada masa ini. Hubungi kami di WhatsApp jika perlu.';
+  if(m.includes('bilangan rekod dokumen')||m.includes('belum lengkap')) return 'Dokumen pesanan ini belum lengkap. Muat naik semua dokumen dahulu, kemudian hantar bukti bayaran.';
+  if(err?.zs==='upload'){
+    const u=String(err.cause?.message||'').toLowerCase();
+    if(u.includes('size')||u.includes('too large')) return 'Fail bukti terlalu besar. Maksimum 5 MB.';
+    if(u.includes('mime')||u.includes('type')) return 'Jenis fail tidak diterima. Gunakan JPG, PNG atau PDF.';
+    return 'Fail bukti tidak dapat dimuat naik. Semak sambungan internet dan cuba lagi.';
+  }
+  if(m.includes('failed to fetch')||m.includes('network')) return 'Sambungan internet terputus. Cuba lagi sebentar.';
+  return 'Bukti bayaran tidak dapat dihantar. Cuba lagi, atau hubungi kami di WhatsApp.';
+}
 async function signedDownload(bucket,path,filename){
   // `download` makes Storage send the original name; without it the browser saves the
   // storage name (<uuid>-<name>) because the download attribute is ignored cross-origin.
@@ -2246,17 +2263,31 @@ async function loadCustomerOrders(){
         payButton.addEventListener('click',async()=>{
           const file=payInput.files?.[0];if(!file){portalMessage('Pilih bukti pembayaran dahulu.','error');return;}
           if(!['image/jpeg','image/png','application/pdf'].includes(file.type)||file.size>5*1024*1024){portalMessage('Bukti mestilah JPG, PNG atau PDF dan maksimum 5 MB.','error');return;}
+          if(payButton.disabled)return;
           payButton.disabled=true;
+          let path=null;
           try{
-            const path=`${currentProfile.id}/${o.id}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
+            // Check first, so no file is uploaded for an order that already has a proof under review or is paid.
+            const {data:existing,error:checkError}=await sb.from('payments').select('status').eq('order_id',o.id).in('status',['pending','verified']);
+            if(checkError)throw checkError;
+            if(existing?.some(p=>p.status==='verified'))throw {zs:'paid'};
+            if(existing?.length)throw {zs:'pending'};
+            path=`${currentProfile.id}/${o.id}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
             const {error:uploadError}=await sb.storage.from('payment-proofs').upload(path,file,{contentType:file.type});
-            if(uploadError)throw uploadError;
+            if(uploadError){path=null;throw {zs:'upload',cause:uploadError};}
             // SECURITY: the zs_payments_prepare trigger and zs_payments_insert policy decide
             // amount_sen/status server side; only 'pending' is accepted from customers.
             const {error:paymentError}=await sb.from('payments').insert({order_id:o.id,customer_id:currentProfile.id,amount_sen:o.total_sen,proof_path:path,status:'pending'});
             if(paymentError)throw paymentError;
+            path=null;
             portalMessage('Bukti pembayaran berjaya dihantar. Admin akan menyemaknya.','success');await loadCustomerOrders();
-          }catch(err){portalMessage(err.message||'Tidak dapat menghantar bukti pembayaran.','error');}
+          }catch(err){
+            // The payment row was not saved: try to remove the uploaded file. If storage policy does not let
+            // customers delete, zs-cleanup removes such orphan files after 24 hours.
+            if(path){ try{ sb.storage.from('payment-proofs').remove([path]).catch(()=>{}); }catch(e){} }
+            portalMessage(zsPaymentError(err),'error');
+            if(err?.zs==='pending'||err?.zs==='paid'||err?.code==='23505') loadCustomerOrders();
+          }
           finally{payButton.disabled=false;}
         });
         payWrap.append(payLabel,payInput,payButton);card.append(payWrap);
@@ -2405,7 +2436,7 @@ async function zsLogEvent(orderId,kind,detail){
   if(error&&!zsMissingTable(error)) console.warn('zs_order_events',error.message);
 }
 function zsAgo(t){const m=Math.max(0,Math.round((Date.now()-new Date(t))/60000));return m<60?m+' minit lalu':m<1440?Math.round(m/60)+' jam lalu':Math.round(m/1440)+' hari lalu';}
-const ZS_EVENT_LABEL={status_changed:'Status',payment_verified:'Bayaran disahkan',payment_rejected:'Bayaran ditolak',report_uploaded:'Laporan dimuat naik',processing_started:'Mula diproses',action_required:'Perlu tindakan',note:'Nota',notify_retry:'E-mel dicuba semula',error:'Ralat'};
+const ZS_EVENT_LABEL={report_replaced:'Laporan diganti',report_removed:'Laporan dikeluarkan',notify_sent:'E-mel dihantar',notify_failed:'E-mel gagal',status_changed:'Status',payment_verified:'Bayaran disahkan',payment_rejected:'Bayaran ditolak',report_uploaded:'Laporan dimuat naik',processing_started:'Mula diproses',action_required:'Perlu tindakan',note:'Nota',notify_retry:'E-mel dicuba semula',error:'Ralat'};
 document.querySelectorAll('.zs-q-tabs button').forEach(b=>b.addEventListener('click',()=>{zsQ.view=b.dataset.q;document.querySelectorAll('.zs-q-tabs button').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-selected',String(x===b));});loadAdminQueue();}));
 async function loadAdminQueue(){
   const host=document.getElementById('zs-q-list');host.textContent='Memuatkan...';
@@ -2609,10 +2640,10 @@ async function loadAdminOrders(){
         const {error:reportError}=await sb.from('reports').insert({order_id:o.id,document_id:doc.id,customer_id:o.customer_id,report_path:path});
         if(reportError){await sb.storage.from('similarity-reports').remove([path]);throw new Error(file.name+': '+reportError.message);}
         if(old.length){
+          // The old PDF is NOT deleted: it stays in the private bucket. Removing the row hides it from the
+          // customer; the zs_reports_after_delete trigger (migration 20261118) records it in zs_report_archive.
           const {error:delErr}=await sb.from('reports').delete().in('id',old.map(r=>r.id));
-          if(delErr) return ' (Laporan lama "'+doc.original_filename+'" tidak dapat dipadam; pelanggan hanya nampak yang terbaru.)';
-          const {error:rmErr}=await sb.storage.from('similarity-reports').remove(old.map(r=>r.report_path));
-          if(rmErr) return ' (Fail lama kekal dalam storan.)';
+          if(delErr) return ' (Laporan lama "'+doc.original_filename+'" tidak dapat dikeluarkan; pelanggan hanya nampak yang terbaru.)';
         }
         return '';
       }
