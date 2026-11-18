@@ -220,7 +220,6 @@ begin
   end if;
 end $$;
 
--- The website asks this before replacing a report: true = keep the old PDF.
 -- Informational for the admin UI. The website does NOT rely on it to keep a PDF:
 -- it keeps an old PDF only when the archive row for that exact report exists
 -- (written by the trigger in the same transaction as the delete).
@@ -415,6 +414,8 @@ alter table public.zs_notification_log add constraint zs_notification_log_state_
 create or replace function public.zs_claim_notification(p_kind text, p_ref uuid, p_lease_seconds integer default 300)
 returns table (claim_token uuid, lease_until timestamptz)
 language plpgsql security definer set search_path = '' as $$
+#variable_conflict use_column
+-- (output names match zs_notification_log columns; always resolve to the column)
 declare v_lease interval := make_interval(secs => greatest(p_lease_seconds, 30));
 begin
   return query
