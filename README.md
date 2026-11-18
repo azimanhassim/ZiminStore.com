@@ -17,6 +17,8 @@ accounts, orders, file storage and the admin dashboard.
 | `assets/music/` | Background track for the ZiminStore Music player (original composition) and its README. |
 | `tools/compose-study-night.py` | Script that generated the original track (proof of origin; re-run to regenerate). |
 | `supabase/functions/zs-cleanup/` + `supabase/retention-30-days.sql` | 30-day retention (PDPA notice): a daily pg_cron job calls the `zs-cleanup` Edge Function, which deletes customer document files 30 days after the order was created and marks `documents.storage_path` as `deleted/<id>`. **Applied 16 Nov 2026.** |
+| `supabase/migrations/20261118_processing_queue.sql` | **Draft, not applied.** Processing history (`zs_order_events`), automatic order status after payment review / report upload, one pending payment proof per order, e-mail retry every 15 min. |
+| `supabase/functions/zs-similarity/` | **Draft, not deployed.** Adapter for a future officially licensed similarity API. Only `manual` today: no logins, scraping or stored passwords. |
 | `supabase/optional-cleanup.sql` | Optional tidy-ups from the audit. **Not applied.** Nothing in it is required for security. |
 
 ## Configuration

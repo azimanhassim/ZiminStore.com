@@ -572,6 +572,23 @@ footer{margin-top:110px;border-top:1px solid var(--line);background:linear-gradi
   .portal-card{padding:14px}
   .portal-order-top{align-items:flex-start}
 }
+
+/* ---------- Admin processing queue ---------- */
+.zs-q-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}.zs-q-head h3{margin:0}
+.zs-q-prov{font-size:11.5px;color:var(--muted);border:1px dashed var(--line-2);border-radius:999px;padding:4px 10px}
+.zs-q-tabs{display:flex;gap:6px;margin-bottom:12px}
+.zs-q-tabs button{border:1px solid var(--line-2);background:none;color:var(--muted);border-radius:10px;padding:9px 14px;font:600 13px var(--f-body);cursor:pointer;min-height:40px}
+.zs-q-tabs button.active{background:linear-gradient(120deg,#1f6fe0,#18C9E8);color:#fff;border-color:transparent}
+.zs-q-tabs b{margin-left:4px;color:var(--gold)}.zs-q-tabs button.active b{color:#fff}
+.zs-q-item{border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:10px;background:rgba(255,255,255,.025)}
+.zs-q-item.warn{border-color:rgba(255,90,90,.45)}
+.zs-q-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.zs-q-top strong{font:700 14px var(--f-mono)}.zs-q-top small{margin-left:auto;color:var(--muted);font-size:11.5px}
+.zs-q-meta{font-size:12.5px;color:var(--text);margin-top:6px}
+.zs-q-bar{display:block;height:5px;border-radius:4px;background:rgba(255,255,255,.08);margin:8px 0 10px}.zs-q-bar i{display:block;height:100%;border-radius:4px;background:var(--cyan)}
+.zs-q-acts{gap:6px}.zs-q-acts .portal-btn{font-size:12px;padding:8px 11px;text-decoration:none}
+.zs-q-hist[hidden]{display:none!important}
+.zs-q-hist{list-style:none;margin:10px 0 0;padding:10px 0 0;border-top:1px solid var(--line);display:grid;gap:5px;font-size:12px;color:var(--muted)}
+.zs-q-hist time{color:var(--text);font-family:var(--f-mono);font-size:11px;margin-right:4px}
 /* ---------- Layout polish: less scrolling on phones, balanced cards on desktop ---------- */
 .price-card{display:flex;flex-direction:column;justify-content:center}
 @media (max-width:640px){
@@ -1427,6 +1444,7 @@ html:has(dialog.h-dlg[open]){overflow:hidden}
         <nav class="portal-tabs zs-side-nav" id="zs-dash-tabs" aria-label="Menu akaun">
           <button type="button" class="active zs-cust-only" data-dash-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/></svg><span>Dashboard</span></button>
           <button type="button" class="portal-hidden zs-admin-only" data-dash-tab="admin-home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/></svg><span>Dashboard</span></button>
+          <button type="button" class="portal-hidden zs-admin-only" data-dash-tab="admin-queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6"/><path d="m16 15 3 3 3-3M19 18V9"/></svg><span>Pemprosesan</span><b class="zs-badge" id="zs-nav-queue" hidden></b></button>
           <button type="button" class="portal-hidden zs-admin-only" id="zs-admin-tab" data-dash-tab="admin" data-quick=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span>Pesanan</span></button>
           <button type="button" class="portal-hidden zs-admin-only" data-dash-tab="admin" data-quick="payments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg><span>Pembayaran</span><b class="zs-badge" id="zs-nav-pay" hidden></b></button>
           <button type="button" class="portal-hidden zs-admin-only" data-dash-tab="admin" data-quick="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span>Laporan</span><b class="zs-badge" id="zs-nav-rep" hidden></b></button>
@@ -1490,6 +1508,11 @@ html:has(dialog.h-dlg[open]){overflow:hidden}
           <div class="portal-card zs-recent"><div class="zs-recent-head"><h3>Pesanan Terbaharu</h3><button type="button" class="zs-link" id="zs-admin-all">Lihat semua →</button></div><div id="zs-admin-recent" class="portal-note">Memuatkan...</div></div>
         </div>
       </section>
+      <section id="zs-admin-queue-panel" class="portal-hidden"><div class="portal-card">
+        <div class="zs-q-head"><h3>Pemprosesan</h3><span class="zs-q-prov" title="Penyedia similarity">Penyedia: Manual (admin)</span></div>
+        <div class="zs-q-tabs" role="tablist"><button type="button" role="tab" data-q="queue" class="active" aria-selected="true">Barisan <b id="zs-q-n"></b></button><button type="button" role="tab" data-q="done" aria-selected="false">Selesai</button></div>
+        <div id="zs-q-list" class="portal-note">Memuatkan...</div>
+      </div></section>
       <section id="zs-admin-customers-panel" class="portal-hidden"><div class="portal-card"><h3>Pelanggan</h3><div id="zs-cust-list" class="portal-note">Memuatkan...</div></div></section>
       <section id="zs-admin-panel" class="portal-hidden"><div class="portal-card"><h3 id="zs-admin-title">Pesanan</h3>
 <form id="zs-admin-filter" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
@@ -1977,7 +2000,8 @@ function showDashTab(tab,quick){
   }
   document.getElementById('zs-admin-home-panel').classList.toggle('portal-hidden',tab!=='admin-home');
   document.getElementById('zs-admin-customers-panel').classList.toggle('portal-hidden',tab!=='admin-customers');
-  if(currentProfile?.role==='admin'){ if(tab==='admin-home')loadAdminHome(); if(tab==='admin-customers')loadAdminCustomers(); }
+  document.getElementById('zs-admin-queue-panel').classList.toggle('portal-hidden',tab!=='admin-queue');
+  if(currentProfile?.role==='admin'){ if(tab==='admin-home')loadAdminHome(); if(tab==='admin-customers')loadAdminCustomers(); if(tab==='admin-queue')loadAdminQueue(); }
   document.getElementById('zs-home-panel').classList.toggle('portal-hidden',tab!=='home');
   document.getElementById('zs-profile-panel').classList.toggle('portal-hidden',tab!=='profile');
   document.getElementById('zs-orders-panel').classList.toggle('portal-hidden',tab!=='orders');
@@ -2335,7 +2359,8 @@ async function loadAdminHome(){
     document.getElementById('zs-as-pay').textContent=waitPay;
     document.getElementById('zs-as-proc').textContent=proc;
     document.getElementById('zs-as-done').textContent=done;
-    for(const [id,n] of [['zs-nav-pay',waitPay],['zs-nav-rep',proc]]){const b=document.getElementById(id);b.textContent=n;b.hidden=!n;}
+    const queueN=all.filter(o=>ZS_QUEUE.includes(o.status)).length;
+    for(const [id,n] of [['zs-nav-pay',waitPay],['zs-nav-rep',proc],['zs-nav-queue',queueN]]){const b=document.getElementById(id);b.textContent=n;b.hidden=!n;}
     // last 7 days, by the admin's local date
     const key=d=>d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
     const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-(6-i));return d;});
@@ -2367,6 +2392,79 @@ async function loadAdminHome(){
       recent.append(row);
     }
   }catch(err){recent.textContent='Tidak dapat memuatkan ringkasan: '+(err.message||'Ralat');}
+}
+/* ---------- Admin processing queue ----------
+   Paid orders, oldest first. Report upload reuses the existing checked uploader in "Pesanan".
+   History comes from public.zs_order_events (supabase/migrations/20261118_processing_queue.sql);
+   until that migration is applied the queue still works and history shows a notice. */
+const ZS_QUEUE=['payment_verified','processing','action_required'];
+const zsQ={view:'queue'};
+const zsMissingTable=e=>e&&(e.code==='42P01'||e.code==='PGRST205'||/does not exist|schema cache/i.test(e.message||''));
+async function zsLogEvent(orderId,kind,detail){
+  const {error}=await sb.from('zs_order_events').insert({order_id:orderId,kind,detail:detail||null,actor:currentProfile.id});
+  if(error&&!zsMissingTable(error)) console.warn('zs_order_events',error.message);
+}
+function zsAgo(t){const m=Math.max(0,Math.round((Date.now()-new Date(t))/60000));return m<60?m+' minit lalu':m<1440?Math.round(m/60)+' jam lalu':Math.round(m/1440)+' hari lalu';}
+const ZS_EVENT_LABEL={status_changed:'Status',payment_verified:'Bayaran disahkan',payment_rejected:'Bayaran ditolak',report_uploaded:'Laporan dimuat naik',processing_started:'Mula diproses',action_required:'Perlu tindakan',note:'Nota',notify_retry:'E-mel dicuba semula',error:'Ralat'};
+document.querySelectorAll('.zs-q-tabs button').forEach(b=>b.addEventListener('click',()=>{zsQ.view=b.dataset.q;document.querySelectorAll('.zs-q-tabs button').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-selected',String(x===b));});loadAdminQueue();}));
+async function loadAdminQueue(){
+  const host=document.getElementById('zs-q-list');host.textContent='Memuatkan...';
+  try{
+    let q=sb.from('orders').select('id,order_number,customer_id,document_count,status,created_at,updated_at,documents(id,original_filename,storage_path),reports(id,document_id,report_path,uploaded_at)');
+    q=zsQ.view==='queue'?q.in('status',ZS_QUEUE).order('created_at',{ascending:true}).limit(200):q.eq('status','report_ready').order('updated_at',{ascending:false}).limit(50);
+    const {data:orders,error}=await q; if(error)throw error;
+    if(zsQ.view==='queue'){const n=(orders||[]).length;document.getElementById('zs-q-n').textContent=n||'';const b=document.getElementById('zs-nav-queue');b.textContent=n;b.hidden=!n;}
+    if(!orders?.length){host.textContent=zsQ.view==='queue'?'Tiada pesanan menunggu pemprosesan.':'Belum ada pesanan selesai.';return;}
+    const ids=[...new Set(orders.map(o=>o.customer_id))];
+    const {data:people}=await sb.from('profiles').select('id,full_name,phone').in('id',ids);
+    const who=new Map((people||[]).map(c=>[c.id,c]));
+    host.innerHTML='';
+    for(const o of orders){
+      const c=who.get(o.customer_id)||{}, docs=o.documents||[], done=new Set((o.reports||[]).map(r=>r.document_id)).size;
+      const card=document.createElement('article');card.className='zs-q-item'+(o.status==='action_required'?' warn':'');
+      const top=document.createElement('div');top.className='zs-q-top';
+      const id=document.createElement('strong');id.textContent=o.order_number;
+      const badge=document.createElement('span');badge.className='portal-status s-'+o.status+(o.status==='report_ready'?' ready':'');badge.textContent=statusLabels[o.status]||o.status;
+      const age=document.createElement('small');age.textContent=(zsQ.view==='queue'?'Dibuat ':'Siap ')+zsAgo(zsQ.view==='queue'?o.created_at:o.updated_at);
+      top.append(id,badge,age);
+      const meta=document.createElement('div');meta.className='zs-q-meta';
+      meta.textContent=(c.full_name||'(tiada nama)')+' · '+o.document_count+' dokumen · laporan '+done+'/'+o.document_count;
+      const bar=document.createElement('i');bar.className='zs-q-bar';const fill=document.createElement('i');fill.style.width=Math.min(100,done/o.document_count*100)+'%';bar.append(fill);
+      const acts=document.createElement('div');acts.className='portal-actions zs-q-acts';
+      const btn=(t,cls,fn)=>{const b=document.createElement('button');b.type='button';b.className='portal-btn'+(cls?' '+cls:'');b.textContent=t;b.addEventListener('click',()=>fn(b));acts.append(b);return b;};
+      for(const d of docs){ if(zsDocGone(d)) continue; btn('Dokumen: '+d.original_filename,'',b=>signedDownload('customer-documents',d.storage_path,d.original_filename).catch(e=>portalMessage(e.message,'error'))); }
+      if(docs.filter(d=>!zsDocGone(d)).length>1) btn(`Semua (${docs.length}) · ZIP`,'',b=>zsDownloadAllDocs(o,b));
+      if(zsQ.view==='queue'){
+        if(o.status!=='processing') btn('Mula proses','primary',async b=>{
+          b.disabled=true;
+          const {error}=await sb.from('orders').update({status:'processing',updated_at:new Date().toISOString()}).eq('id',o.id).in('status',['payment_verified','action_required']);
+          if(error){portalMessage('Tidak dapat menukar status: '+error.message,'error');b.disabled=false;return;}
+          await zsLogEvent(o.id,'processing_started'); portalMessage(o.order_number+' kini sedang diproses.','success'); loadAdminQueue();
+        });
+        btn('Muat naik laporan','primary',()=>{document.getElementById('zs-admin-q').value=o.order_number;Object.assign(zsAdminView,{q:o.order_number,status:''});document.getElementById('zs-admin-status').value='';showDashTab('admin','');});
+        if(o.status!=='action_required') btn('Perlu tindakan','',async b=>{
+          const why=(prompt('Sebab (contoh: fail rosak, dokumen tidak lengkap). Akan direkod dalam sejarah:')||'').trim().slice(0,300);
+          if(!why) return; b.disabled=true;
+          const {error}=await sb.from('orders').update({status:'action_required',updated_at:new Date().toISOString()}).eq('id',o.id);
+          if(error){portalMessage('Tidak dapat menukar status: '+error.message,'error');b.disabled=false;return;}
+          await zsLogEvent(o.id,'action_required',why); portalMessage(o.order_number+' ditanda perlu tindakan. Hubungi pelanggan melalui WhatsApp.','success'); loadAdminQueue();
+        });
+      }
+      const wa=zsWaNumber(c.phone);
+      if(wa){const a=document.createElement('a');a.className='portal-btn';a.target='_blank';a.rel='noopener';a.textContent='WhatsApp';a.style.color='#7ef0b8';a.href=`https://wa.me/${wa}?text=${encodeURIComponent('Salam, ini ZiminStore berkenaan pesanan '+o.order_number+'. ')}`;acts.append(a);}
+      const hist=document.createElement('ol');hist.className='zs-q-hist';hist.hidden=true;
+      btn('Sejarah','',async b=>{
+        if(!hist.hidden){hist.hidden=true;return;}
+        hist.hidden=false;hist.textContent='Memuatkan...';
+        const {data:ev,error}=await sb.from('zs_order_events').select('kind,detail,created_at').eq('order_id',o.id).order('created_at',{ascending:false}).limit(30);
+        hist.innerHTML='';
+        if(error){const li=document.createElement('li');li.textContent=zsMissingTable(error)?'Sejarah akan aktif selepas migrasi pemprosesan dijalankan.':'Tidak dapat memuatkan sejarah: '+error.message;hist.append(li);return;}
+        if(!ev?.length){const li=document.createElement('li');li.textContent='Belum ada sejarah.';hist.append(li);return;}
+        for(const e of ev){const li=document.createElement('li');const t=document.createElement('time');t.textContent=new Date(e.created_at).toLocaleString('ms-MY',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});li.append(t,document.createTextNode(' '+(ZS_EVENT_LABEL[e.kind]||e.kind)+(e.detail?': '+e.detail:'')));hist.append(li);}
+      });
+      card.append(top,meta,bar,acts,hist);host.append(card);
+    }
+  }catch(err){host.textContent='Tidak dapat memuatkan barisan: '+(err.message||'Ralat');}
 }
 async function loadAdminCustomers(){
   const host=document.getElementById('zs-cust-list');host.textContent='Memuatkan pelanggan...';
