@@ -789,11 +789,11 @@ body{background:radial-gradient(900px 600px at 85% 0%,rgba(24,201,232,.14),trans
 .h-screen{container-type:inline-size;background:#0B1324;border:2px solid #44567A;border-radius:16px 16px 4px 4px;padding:3%;box-shadow:0 40px 80px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.06) inset,0 0 50px rgba(24,201,232,.18)}
 .h-base{height:14px;margin:0 -7%;border-radius:2px 2px 16px 16px;background:linear-gradient(180deg,#C9D3E3,#7F8DA6);box-shadow:0 18px 30px -12px rgba(0,0,0,.7)}
 .h-cap{position:absolute;left:14%;top:-1%;width:30%;transform:rotate(-14deg);filter:drop-shadow(0 14px 18px rgba(0,0,0,.5))}
-.h-paper{position:absolute;left:-2%;top:58%;width:15%;z-index:2;background-image:repeating-linear-gradient(180deg,transparent 0 16%,#A9BCE0 16% 21%),linear-gradient(165deg,#F7FAFF,#D5E2F7)!important;background-size:72% 64%,100% 100%!important;background-position:50% 30%,0 0!important;background-repeat:no-repeat!important;aspect-ratio:.8;border-radius:10px;background:linear-gradient(165deg,#F7FAFF,#D5E2F7);box-shadow:0 20px 40px -14px rgba(0,0,0,.7);transform:rotate(-12deg);padding:14% 12%;display:flex;flex-direction:column;gap:12%}
+.h-paper{position:absolute;left:-2%;top:64%;width:15%;z-index:2;background-image:repeating-linear-gradient(180deg,transparent 0 16%,#A9BCE0 16% 21%),linear-gradient(165deg,#F7FAFF,#D5E2F7)!important;background-size:72% 64%,100% 100%!important;background-position:50% 30%,0 0!important;background-repeat:no-repeat!important;aspect-ratio:.8;border-radius:10px;background:linear-gradient(165deg,#F7FAFF,#D5E2F7);box-shadow:0 20px 40px -14px rgba(0,0,0,.7);transform:rotate(-12deg);padding:14% 12%;display:flex;flex-direction:column;gap:12%}
 .h-paper i{display:block;width:100%;height:6px;border-radius:4px;background:#9CB2DA}.h-paper i:nth-child(2){width:80%}.h-paper i:nth-child(4){width:60%}
 .h-paper span{position:absolute;right:-16%;bottom:-10%;width:42%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:#0E5E9C;border:3px solid var(--cyan);color:#fff;box-shadow:0 0 18px rgba(24,201,232,.6)}
 .h-paper span svg{width:56%}
-.h-visual-tag{position:absolute;right:6%;bottom:6%;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px dashed rgba(245,185,66,.55);border-radius:8px;padding:4px 10px;background:rgba(6,21,47,.7)}
+.h-visual-tag{position:absolute;right:6%;bottom:-2%;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px dashed rgba(245,185,66,.55);border-radius:8px;padding:4px 10px;background:rgba(6,21,47,.7)}
 @media (prefers-reduced-motion:no-preference){.h-cap{animation:hfloat 7s ease-in-out infinite}.h-paper{animation:hfloat2 8s ease-in-out infinite}
 @keyframes hfloat{50%{transform:rotate(-14deg) translateY(-7px)}}@keyframes hfloat2{50%{transform:rotate(-12deg) translateY(6px)}}}
 
@@ -1011,6 +1011,15 @@ html:has(dialog.h-dlg[open]){overflow:hidden}
   .h-vw-stage{height:62dvh}
   .h-vw-tools{justify-content:center}
 }
+/* hero laptop: the same redacted report, sized to the screen */
+.h-screen .h-or-mini{padding:3.2cqw 4cqw 2cqw;border-radius:8px;box-shadow:none}
+.h-or-mini .h-or-file{padding-bottom:1.2cqw;border-bottom-width:.4cqw}.h-or-mini .h-or-file span{font-size:2.4cqw;padding:1.2cqw 2.4cqw;border-radius:1cqw}
+.h-or-mini .h-or-cap{font-size:2.1cqw;padding:1.1cqw 0}
+.h-or-mini .h-or-score{padding:1.4cqw 0 1.2cqw;border-bottom-width:.4cqw}.h-or-mini .h-or-score strong{font-size:10cqw}.h-or-mini .h-or-score strong span{font-size:3.6cqw}.h-or-mini .h-or-score small{font-size:2.1cqw}
+.h-or-mini .h-or-src li{gap:2.2cqw;padding:1.5cqw 0}
+.h-or-mini .or-n{width:4.6cqw;height:4.6cqw;font-size:2.4cqw}
+.h-or-mini .or-name strong{font-size:3cqw}.h-or-mini .or-name small{font-size:2cqw}
+.h-or-mini .or-pct{font-size:2.5cqw}.h-or-mini .or-pct b{font-size:4.4cqw}
 </style>
 <style id="zs-music-style">
 /* ---------- ZiminStore Music: isolated floating player (all classes prefixed zsm-) ----------
@@ -1143,10 +1152,10 @@ html:has(dialog.h-dlg[open]){overflow:hidden}
     <div class="h-visual" role="img" aria-label="Ilustrasi contoh laporan similarity pada skrin komputer riba">
       <div class="h-ring" aria-hidden="true"></div>
       <div class="h-laptop" aria-hidden="true">
-        <div class="h-screen"><div class="h-rep">
-          <div class="r-head"><svg class="r-z" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h13L6 18h13" fill="none" stroke="#18C9E8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="r-brand"><strong>ZiminStore</strong><small>Similarity Report · Contoh</small></span><span class="r-id">Report ID: CONTOH-01</span></div>
-          <div class="r-overall"><div class="r-donut"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="#E3EAF6" stroke-width="12"/><circle cx="60" cy="60" r="46" fill="none" stroke="#F5B942" stroke-width="12" stroke-linecap="round" stroke-dasharray="34.7 289" transform="rotate(-90 60 60)"/></svg><b>12%<small>Similarity</small></b></div><div class="r-ov-txt"><strong>12% Overall Similarity</strong><small>Gabungan semua padanan bagi dokumen ini.</small><i class="r-bar"><i style="width:12%"></i></i></div></div>
-          <div class="r-stats"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><strong>2,534</strong><small>Words Analysed</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><strong>5</strong><small>Matched Sources</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><strong>8</strong><small>Matched Passages</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 20h16"/></svg><strong>PDF</strong><small>Report Format</small></div></div>
+        <div class="h-screen"><div class="h-or h-or-mini">
+          <div class="h-or-file"><span>NAMA FAIL DISUNTING</span></div><small class="h-or-cap">ORIGINALITY REPORT</small>
+          <div class="h-or-score"><strong>20<span>%</span></strong><small>SIMILARITY INDEX</small></div>
+          <div class="h-or-src"><small class="h-or-cap">PRIMARY SOURCES</small><ol><li><span class="or-n" style="background:#E00000">1</span><span class="or-name"><strong style="color:#E00000">anyflip.com</strong><small>Internet</small></span><span class="or-pct">76 words — <b>6%</b></span></li><li><span class="or-n" style="background:#D400C4">2</span><span class="or-name"><strong style="color:#D400C4">www.coursehero.com</strong><small>Internet</small></span><span class="or-pct">52 words — <b>4%</b></span></li><li><span class="or-n" style="background:#8000F0">3</span><span class="or-name"><strong style="color:#8000F0">www.slideshare.net</strong><small>Internet</small></span><span class="or-pct">35 words — <b>3%</b></span></li></ol></div>
         </div></div>
         <div class="h-base"></div>
       </div>
