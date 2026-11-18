@@ -972,6 +972,45 @@ html:has(dialog.h-dlg[open]){overflow:hidden}
   .h-dlg{width:calc(100% - 16px)}
 }
 
+
+/* ---------- #contoh: real (redacted) report summary + page viewer ---------- */
+.h-real-label{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 12px;padding:9px 12px;border-radius:10px;background:linear-gradient(90deg,rgba(245,185,66,.18),rgba(245,185,66,.08));border:1px solid rgba(245,185,66,.6);color:#FFD98A;font-size:12px;font-weight:800;letter-spacing:.06em;text-align:center;line-height:1.35}
+.h-real-label svg{width:17px;height:17px;flex:none}
+.h-real-note{display:flex;align-items:flex-start;justify-content:center;gap:7px;margin:12px 0 0;font-size:12.5px;color:#BFD0EC;text-align:center;line-height:1.5}
+.h-real-note svg{width:15px;height:15px;flex:none;margin-top:2px;color:var(--cyan)}
+.h-or{background:#fff;color:#1A1A1A;border-radius:12px;padding:16px 18px 14px;font-family:"Open Sans",var(--h-font);box-shadow:0 20px 50px -20px rgba(0,0,0,.6)}
+.h-or-file span{display:inline-block;background:#1E293B;color:#fff;font:800 italic 11px var(--h-font);letter-spacing:.04em;padding:6px 12px;border-radius:5px}
+.h-or-file{border-bottom:2px solid #111;padding-bottom:6px}
+.h-or-cap{display:block;font-size:9.5px;letter-spacing:.02em;color:#222;padding:5px 0;border-bottom:1px solid #999}
+.h-or-score{padding:8px 0 6px;border-bottom:2px solid #111}
+.h-or-score strong{font-weight:400;font-size:46px;line-height:1;letter-spacing:-.02em}.h-or-score strong span{font-size:17px}
+.h-or-score small{display:block;font-size:9.5px;margin-top:2px}
+.h-or-src ol{list-style:none;margin:0;padding:0}
+.h-or-src li{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #E3E3E3}
+.or-n{width:22px;height:22px;flex:none;display:grid;place-items:center;color:#fff;font-size:11.5px}
+.or-name{display:grid;min-width:0;flex:1;line-height:1.2}.or-name strong{font-weight:400;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.or-name small{font-size:9.5px;color:#777}
+.or-pct{font-size:12px;color:#222;white-space:nowrap}.or-pct b{font-weight:400;font-size:21px}
+.h-or-more{margin:8px 0 0;font-size:11.5px;color:#555;text-align:center}
+.h-or-ex{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;margin-top:10px;padding-top:9px;border-top:1px solid #DDD;font-size:10px;color:#9A9A9A;letter-spacing:.02em}
+.h-or-ex span{display:flex;justify-content:space-between;gap:8px}.h-or-ex b{font-weight:600;color:#666}.h-or-ex b.on{color:#1F7A3A}
+.h-viewer{width:min(980px,calc(100% - 24px))}
+.h-viewer .h-real-label{justify-content:flex-start}
+.h-vw-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.h-vw-group{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#DCE6F7}
+.h-vw-btn{all:unset;box-sizing:border-box;min-width:44px;height:44px;padding:0 12px;display:grid;place-items:center;border-radius:11px;border:1px solid var(--line-2);color:#fff;font:700 20px/1 var(--h-font);cursor:pointer}
+.h-vw-btn:hover:not(:disabled){border-color:var(--cyan);background:rgba(24,201,232,.1)}
+.h-vw-btn:disabled{opacity:.35;cursor:default}
+.h-vw-btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.h-vw-fit{font-size:13px}
+.h-vw-stage{height:min(68dvh,760px);overflow:auto;border-radius:12px;background:#E9EEF6;border:1px solid rgba(24,201,232,.35);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.h-vw-stage img{display:block;margin:0 auto;max-width:none;height:auto;cursor:zoom-in;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+@media (max-width:640px){
+  .h-or{padding:12px}.h-or-score strong{font-size:38px}
+  .or-name strong{font-size:12.5px}.or-pct{font-size:11px}.or-pct b{font-size:17px}
+  .h-or-ex{grid-template-columns:1fr;gap:3px}
+  .h-vw-stage{height:62dvh}
+  .h-vw-tools{justify-content:center}
+}
 </style>
 <style id="zs-music-style">
 /* ---------- ZiminStore Music: isolated floating player (all classes prefixed zsm-) ----------
@@ -1138,15 +1177,16 @@ html:has(dialog.h-dlg[open]){overflow:hidden}
     </article>
     <article class="h-sample" id="contoh">
       <div class="h-sample-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><div><h2 class="h-card-title" data-i18n="sm.title">Contoh Laporan Similarity</h2><p data-i18n="sm.sub">Lihat sendiri format laporan terperinci yang akan anda terima.</p></div></div>
-      <div class="h-rep h-rep-mid" aria-hidden="true">
-        <div class="r-head"><svg class="r-z" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h13L6 18h13" fill="none" stroke="#18C9E8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="r-brand"><strong>ZiminStore</strong><small>Similarity Report · Contoh</small></span><span class="r-id">Report ID: CONTOH-01</span></div>
-        <div class="r-top"><div class="r-overall"><div class="r-donut"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="#E3EAF6" stroke-width="12"/><circle cx="60" cy="60" r="46" fill="none" stroke="#F5B942" stroke-width="12" stroke-linecap="round" stroke-dasharray="34.7 289" transform="rotate(-90 60 60)"/></svg><b>12%<small>Similarity</small></b></div><div class="r-ov-txt"><strong>12% Overall Similarity</strong><small>Gabungan semua padanan bagi dokumen ini.</small><i class="r-bar"><i style="width:12%"></i></i></div></div><div class="r-stats"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><strong>2,534</strong><small>Words Analysed</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><strong>5</strong><small>Matched Sources</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><strong>8</strong><small>Matched Passages</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 20h16"/></svg><strong>PDF</strong><small>Report Format</small></div></div></div>
-        <div class="r-grid">
-          <div><h4 class="r-h">Top Sources</h4><ol class="r-src-list"><li class="r-src s1"><span class="r-num">1</span><span class="r-src-name"><strong>Sumber Internet A</strong></span><span class="r-pct">6%</span></li><li class="r-src s2"><span class="r-num">2</span><span class="r-src-name"><strong>Penerbitan B</strong></span><span class="r-pct">3%</span></li><li class="r-src s3"><span class="r-num">3</span><span class="r-src-name"><strong>Sumber Internet C</strong></span><span class="r-pct">2%</span></li><li class="r-src s4"><span class="r-num">4</span><span class="r-src-name"><strong>Kertas Pelajar D</strong></span><span class="r-pct">1%</span></li></ol></div>
-          <div><h4 class="r-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Matched Text <span>(1 / 8)</span></h4><div class="r-text"><p>Pendidikan merupakan proses berterusan untuk membentuk insan yang <mark class="m1">seimbang dari segi intelek, emosi, rohani dan jasmani.</mark><sup class="t1">1</sup></p><p>Dalam konteks abad ke-21, <mark class="m2">penggunaan teknologi digital telah menjadi elemen penting dalam pengajaran dan pembelajaran.</mark><sup class="t2">2</sup></p></div></div>
-        </div>
+<p class="h-real-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n="sm.label">CONTOH LAPORAN SEBENAR — MAKLUMAT PERIBADI TELAH DISUNTING</span></p>
+      <div class="h-or" role="img" aria-label="Ringkasan contoh laporan: Similarity Index 20%, 11 sumber utama kategori Internet, Exclude Quotes ON, Exclude Bibliography ON, Exclude Sources OFF, Exclude Matches OFF">
+        <div class="h-or-file"><span>NAMA FAIL DISUNTING</span></div>
+        <small class="h-or-cap">ORIGINALITY REPORT</small>
+        <div class="h-or-score"><strong>20<span>%</span></strong><small>SIMILARITY INDEX</small></div>
+        <div class="h-or-src"><small class="h-or-cap">PRIMARY SOURCES</small><ol><li><span class="or-n" style="background:#E00000">1</span><span class="or-name"><strong style="color:#E00000">anyflip.com</strong><small>Internet</small></span><span class="or-pct">76 words — <b>6%</b></span></li><li><span class="or-n" style="background:#D400C4">2</span><span class="or-name"><strong style="color:#D400C4">www.coursehero.com</strong><small>Internet</small></span><span class="or-pct">52 words — <b>4%</b></span></li><li><span class="or-n" style="background:#8000F0">3</span><span class="or-name"><strong style="color:#8000F0">www.slideshare.net</strong><small>Internet</small></span><span class="or-pct">35 words — <b>3%</b></span></li><li><span class="or-n" style="background:#009C9C">4</span><span class="or-name"><strong style="color:#009C9C">gurubesar.my</strong><small>Internet</small></span><span class="or-pct">30 words — <b>2%</b></span></li><li><span class="or-n" style="background:#009A00">5</span><span class="or-name"><strong style="color:#009A00">idoc.pub</strong><small>Internet</small></span><span class="or-pct">15 words — <b>1%</b></span></li><li><span class="or-n" style="background:#A06A00">6</span><span class="or-name"><strong style="color:#A06A00">kaliteevi.weebly.com</strong><small>Internet</small></span><span class="or-pct">14 words — <b>1%</b></span></li></ol>
+          <p class="h-or-more" data-i18n="sm.more">+5 sumber lagi dalam laporan penuh · 11 sumber, semua kategori Internet</p></div>
+        <div class="h-or-ex"><span>EXCLUDE QUOTES <b class="on">ON</b></span><span>EXCLUDE SOURCES <b>OFF</b></span><span>EXCLUDE BIBLIOGRAPHY <b class="on">ON</b></span><span>EXCLUDE MATCHES <b>OFF</b></span></div>
       </div>
-      <p class="h-sample-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n="sm.label">Contoh Paparan — Bukan Keputusan Pemeriksaan Sebenar</span></p>
+      <p class="h-real-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span data-i18n="sm.note">Contoh ini bertujuan menunjukkan format laporan. Keputusan similarity setiap dokumen adalah berbeza.</span></p>
       <button type="button" class="btn btn-outline h-full-btn" data-open-dialog="h-report-dlg"><span data-i18n="sm.full">Lihat Contoh Laporan Penuh</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></button>
     </article>
   </div>
@@ -1239,30 +1279,16 @@ html:has(dialog.h-dlg[open]){overflow:hidden}
 </footer>
 
 <!-- ================= DIALOGS: full sample report, privacy & terms drafts ================= -->
-<dialog class="h-dlg" id="h-report-dlg" aria-labelledby="h-report-dlg-t">
+<dialog class="h-dlg h-viewer" id="h-report-dlg" aria-labelledby="h-report-dlg-t">
   <div class="h-dlg-in">
     <div class="h-dlg-bar"><h2 id="h-report-dlg-t" data-i18n="sm.title">Contoh Laporan Similarity</h2><form method="dialog"><button class="h-dlg-x" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></form></div>
-    <p class="h-sample-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n="sm.label">Contoh Paparan — Bukan Keputusan Pemeriksaan Sebenar</span></p>
-    <div class="h-rep h-rep-full">
-      <div class="r-head"><svg class="r-z" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h13L6 18h13" fill="none" stroke="#18C9E8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="r-brand"><strong>ZiminStore</strong><small>Similarity Report · Contoh</small></span><span class="r-id">Report ID: CONTOH-0001</span></div>
-      <div class="r-top"><div class="r-overall"><div class="r-donut"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="#E3EAF6" stroke-width="12"/><circle cx="60" cy="60" r="46" fill="none" stroke="#F5B942" stroke-width="12" stroke-linecap="round" stroke-dasharray="34.7 289" transform="rotate(-90 60 60)"/></svg><b>12%<small>Similarity</small></b></div><div class="r-ov-txt"><strong>12% Overall Similarity</strong><small>Gabungan semua padanan bagi dokumen ini.</small><i class="r-bar"><i style="width:12%"></i></i></div></div><div class="r-stats"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><strong>2,534</strong><small>Words Analysed</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><strong>5</strong><small>Matched Sources</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><strong>8</strong><small>Matched Passages</small></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 20h16"/></svg><strong>PDF</strong><small>Report Format</small></div></div></div>
-      <div class="r-info">
-        <div><small>File Name</small><strong>Contoh_Tugasan.docx</strong></div>
-        <div><small>Word Count</small><strong>2,534</strong></div>
-        <div><small>Report ID</small><strong>CONTOH-0001</strong></div>
-        <div><small>Exclusions</small><strong>Bibliography · Quoted Text</strong></div>
-      </div>
-      <div class="r-grid r-grid-3">
-        <div><h4 class="r-h">Top Sources</h4><ol class="r-src-list"><li class="r-src s1"><span class="r-num">1</span><span class="r-src-name"><strong>Sumber Internet A</strong><small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Internet Source</small></span><span class="r-pct">6%<small>4 passages</small></span></li><li class="r-src s2"><span class="r-num">2</span><span class="r-src-name"><strong>Penerbitan B</strong><small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Publication</small></span><span class="r-pct">3%<small>2 passages</small></span></li><li class="r-src s3"><span class="r-num">3</span><span class="r-src-name"><strong>Sumber Internet C</strong><small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Internet Source</small></span><span class="r-pct">2%<small>1 passage</small></span></li><li class="r-src s4"><span class="r-num">4</span><span class="r-src-name"><strong>Kertas Pelajar D</strong><small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Student Paper</small></span><span class="r-pct">1%<small>1 passage</small></span></li><li class="r-src s5"><span class="r-num">5</span><span class="r-src-name"><strong>Sumber Internet E</strong><small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Internet Source</small></span><span class="r-pct">&lt;1%<small>1 passage</small></span></li></ol></div>
-        <div><h4 class="r-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Matched Text <span>(1 / 8)</span></h4><div class="r-text"><p>Pendidikan merupakan proses berterusan untuk membentuk insan yang <mark class="m1">seimbang dari segi intelek, emosi, rohani dan jasmani.</mark><sup class="t1">1</sup></p><p>Dalam konteks abad ke-21, <mark class="m2">penggunaan teknologi digital telah menjadi elemen penting dalam pengajaran dan pembelajaran.</mark><sup class="t2">2</sup></p><p>Kajian lepas menunjukkan bahawa <mark class="m3">integrasi teknologi dapat meningkatkan motivasi murid dan mewujudkan pembelajaran yang lebih interaktif.</mark><sup class="t3">3</sup> Oleh itu, guru perlu menguasai kemahiran digital yang sesuai.</p></div></div>
-        <div class="r-detail"><h4 class="r-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Source Details</h4>
-          <div class="r-detail-card"><span class="r-num">1</span><div><strong>Sumber Internet A</strong><small>Internet Source</small></div></div>
-          <p class="r-detail-pct">6% Similarity</p>
-          <small class="r-detail-h">Matched Text (4)</small>
-          <blockquote>“… seimbang dari segi intelek, emosi, rohani dan jasmani …”</blockquote>
-        </div>
-      </div>
+    <p class="h-real-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n="sm.label">CONTOH LAPORAN SEBENAR — MAKLUMAT PERIBADI TELAH DISUNTING</span></p>
+    <div class="h-vw-tools">
+      <div class="h-vw-group"><button type="button" class="h-vw-btn" id="h-vw-prev" aria-label="Halaman sebelum">‹</button><span id="h-vw-page" aria-live="polite">1 / 2</span><button type="button" class="h-vw-btn" id="h-vw-next" aria-label="Halaman seterusnya">›</button></div>
+      <div class="h-vw-group"><button type="button" class="h-vw-btn" id="h-vw-out" aria-label="Zum keluar">−</button><span id="h-vw-zoom">100%</span><button type="button" class="h-vw-btn" id="h-vw-in" aria-label="Zum masuk">+</button><button type="button" class="h-vw-btn h-vw-fit" id="h-vw-fit" data-i18n="vw.fit">Muat skrin</button></div>
     </div>
+    <div class="h-vw-stage" id="h-vw-stage"><img id="h-vw-img" alt="" decoding="async"></div>
+    <p class="h-real-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span data-i18n="sm.note">Contoh ini bertujuan menunjukkan format laporan. Keputusan similarity setiap dokumen adalah berbeza.</span></p>
   </div>
 </dialog>
 <dialog class="h-dlg h-dlg-text" id="h-privacy-dlg" aria-labelledby="h-privacy-dlg-t">
@@ -1504,7 +1530,7 @@ const CONFIG = {
   paymentName: 'MOHAMAD AZIMAN BIN HASSIM',
   // Set to true once confirmed that the delivered PDF reports include highlighted matching
   // text and a list of matching sources; the price card then lists both features.
-  reportShowsMatches: false
+  reportShowsMatches: true
   // Note: prices shown here are display only. The database recalculates every total.
 };
 const formatRM = sen => CONFIG.currency + (sen/100).toFixed(2);
@@ -1512,6 +1538,9 @@ const orderTotalSen = n => n * CONFIG.pricePerDocSen;
 
 /* ---------- i18n ---------- */
 const EN = {
+  'vw.fit':'Fit to screen',
+  'sm.more':'+5 more sources in the full report · 11 sources, all Internet category',
+  'sm.note':'This sample shows the report format. Similarity results differ for every document.',
   'fo.pdpa':'Privacy (PDPA): your data is used only for your orders. Documents are deleted after 30 days.',
   'fo.terms':'Terms of Service',
   'fo.privacy':'Privacy Policy',
@@ -1530,7 +1559,7 @@ const EN = {
   'hw.sub':'Just 4 easy steps to get your report.',
   'hw.title':'How to Order',
   'sm.full':'View Full Sample Report',
-  'sm.label':'Sample View — Not an Actual Check Result',
+  'sm.label':'ACTUAL SAMPLE REPORT — PERSONAL INFORMATION REDACTED',
   'sm.sub':'See the format of the detailed report you will receive.',
   'sm.title':'Sample Similarity Report',
   'pr.cta':'Order Now',
@@ -1639,6 +1668,32 @@ document.querySelectorAll('[data-open-dialog]').forEach(btn=>btn.addEventListene
   if(d?.showModal) d.showModal(); else d?.setAttribute('open','');
 }));
 document.querySelectorAll('dialog.h-dlg').forEach(d=>d.addEventListener('click',e=>{ if(e.target===d) d.close(); }));
+/* Sample report viewer: two redacted page images (no original PDF is published). */
+(function(){
+  const dlg=document.getElementById('h-report-dlg'), img=document.getElementById('h-vw-img'), stage=document.getElementById('h-vw-stage');
+  const pages=[
+    {src:'assets/sample-report/contoh-laporan-1.png',alt:{bm:'Halaman 1: Originality Report, Similarity Index 20%, 11 sumber utama. Nama fail disunting.',en:'Page 1: Originality Report, Similarity Index 20%, 11 primary sources. File name redacted.'}},
+    {src:'assets/sample-report/contoh-laporan-2.png',alt:{bm:'Halaman 2: tetapan pengecualian. Exclude Quotes ON, Exclude Bibliography ON, Exclude Sources OFF, Exclude Matches OFF.',en:'Page 2: exclusion settings. Exclude Quotes ON, Exclude Bibliography ON, Exclude Sources OFF, Exclude Matches OFF.'}}];
+  const zooms=[1,1.5,2,3]; let page=0, z=0;
+  function show(){
+    img.src=pages[page].src; img.alt=pages[page].alt[lang]||pages[page].alt.bm;
+    img.style.width=(zooms[z]*100)+'%';
+    document.getElementById('h-vw-page').textContent=(lang==='en'?'Page ':'Halaman ')+(page+1)+' / '+pages.length;
+    document.getElementById('h-vw-zoom').textContent=Math.round(zooms[z]*100)+'%';
+    document.getElementById('h-vw-prev').disabled=page===0; document.getElementById('h-vw-next').disabled=page===pages.length-1;
+    document.getElementById('h-vw-out').disabled=z===0; document.getElementById('h-vw-in').disabled=z===zooms.length-1;
+  }
+  const go=n=>{page=Math.max(0,Math.min(pages.length-1,n));stage.scrollTo(0,0);show();};
+  const zoom=n=>{z=Math.max(0,Math.min(zooms.length-1,n));show();};
+  document.getElementById('h-vw-prev').addEventListener('click',()=>go(page-1));
+  document.getElementById('h-vw-next').addEventListener('click',()=>go(page+1));
+  document.getElementById('h-vw-in').addEventListener('click',()=>zoom(z+1));
+  document.getElementById('h-vw-out').addEventListener('click',()=>zoom(z-1));
+  document.getElementById('h-vw-fit').addEventListener('click',()=>zoom(0));
+  img.addEventListener('dblclick',()=>zoom(z?0:2));
+  dlg.addEventListener('keydown',e=>{ if(e.key==='ArrowRight')go(page+1); if(e.key==='ArrowLeft')go(page-1); if(e.key==='+'||e.key==='=')zoom(z+1); if(e.key==='-')zoom(z-1); });
+  document.querySelectorAll('[data-open-dialog="h-report-dlg"]').forEach(b=>b.addEventListener('click',()=>{page=0;z=0;show();const pre=new Image();pre.src=pages[1].src;}));
+})();
 (function(){
   const links=[...document.querySelectorAll('.nav-links a[href^="#"], #mobile-menu a[href^="#"]')];
   const ids=['top','harga','contoh','cara','soalan'];
