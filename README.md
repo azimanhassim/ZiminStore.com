@@ -17,6 +17,7 @@ accounts, orders, file storage and the admin dashboard.
 | `assets/music/` | Background track for the ZiminStore Music player (original composition) and its README. |
 | `tools/compose-study-night.py` | Script that generated the original track (proof of origin; re-run to regenerate). |
 | `supabase/functions/zs-cleanup/` + `supabase/retention-30-days.sql` | 30-day retention (PDPA notice): a daily pg_cron job calls the `zs-cleanup` Edge Function, which deletes customer document files 30 days after the order was created and marks `documents.storage_path` as `deleted/<id>`. **Applied 16 Nov 2026.** |
+| `supabase/migrations/20261118_processing_queue_rollback.sql` | **Draft.** Undo for the processing migration; restores `zs_prepare_payment` definition and grants. |
 | `supabase/migrations/20261118_processing_queue.sql` | **Draft, not applied.** Processing history (`zs_order_events`), automatic order status after payment review / report upload, one pending payment proof per order, e-mail retry every 15 min. |
 | `supabase/functions/zs-similarity/` | **Draft, not deployed.** Adapter for a future officially licensed similarity API. Only `manual` today: no logins, scraping or stored passwords. |
 | `supabase/optional-cleanup.sql` | Optional tidy-ups from the audit. **Not applied.** Nothing in it is required for security. |
@@ -120,3 +121,26 @@ python3 -m http.server 8080
 ## Deployment
 
 Not deployed yet. Any static host works (GitHub Pages, Netlify, Cloudflare Pages, Vercel).
+
+## Urutan deploy / rollback (migrasi pemprosesan, draf)
+
+Tiada langkah ini telah dijalankan. Setiap langkah memerlukan kelulusan pemilik.
+
+**Deploy:** (1) migrasi `20261118_processing_queue.sql` → (2) `zs-notify` v4 → (3) `zs-cleanup` → (4) laman.
+Setiap komponen selamat dalam apa jua susunan separa:
+
+| Keadaan | Kesan |
+|---|---|
+| Laman baharu, migrasi belum | Tiada jadual arkib → PDF lama dipadam seperti dahulu. Sejarah memaparkan notis. |
+| Migrasi, ujian polisi storan gagal | Trigger arkib tidak dicipta → tiada baris arkib → laman memadam PDF lama. |
+| Migrasi, `zs-notify` masih v3 | v3 menulis baris log tanpa `claim_token` (keadaan `sent`); retry tidak menyentuhnya. |
+| `zs-notify` v4, migrasi belum / sudah di-rollback | v4 kembali kepada tuntutan v3. |
+| `zs-cleanup` baharu, migrasi belum | Langkah bukti tertinggal dilangkau. |
+
+Laman **tidak pernah** menyimpan PDF lama tanpa trigger arkib aktif: ia menyimpan fail hanya jika
+baris `zs_report_archive` bagi laporan itu wujud selepas pemadaman, dan baris itu hanya ditulis oleh
+trigger dalam transaksi yang sama.
+
+**Rollback:** (1) jalankan `20261118_processing_queue_rollback.sql` (laman tidak perlu diubah; ia kembali
+memadam PDF lama secara automatik) → (2) pilihan: deploy semula `zs-notify` v3 dan `zs-cleanup` v1.
+PDF yang telah diarkib sebelum rollback kekal dalam bucket peribadi.

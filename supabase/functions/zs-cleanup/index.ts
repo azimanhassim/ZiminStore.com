@@ -27,15 +27,33 @@ Deno.serve(async (req) => {
     const { error: upErr } = await sb.from("documents").update({ storage_path: `deleted/${d.id}` }).eq("id", d.id);
     if (upErr) failed++; else deleted++;
   }
-  // DRAFT addition (needs migration 20261118 for zs_orphan_payment_proofs; not deployed):
-  // remove payment-proof files older than 24 h that never got a payments row
-  // (e.g. the customer's insert failed after the upload). Skipped if the helper is missing.
-  let orphanProofs = 0;
+  // DRAFT addition (needs migration 20261118 for zs_orphan_payment_proofs; NOT deployed):
+  // remove payment-proof files that are older than 24 hours AND have no payments row
+  // (e.g. the customer's insert failed after the upload). Two independent checks:
+  //   1. the SQL helper only returns such files (24 h is a hard minimum there);
+  //   2. here, each file is re-checked for age and, immediately before removal, for a
+  //      payments row (a proof is never removed if any payments row points to it).
+  // Skipped entirely if the helper is missing (migration not applied).
+  const ORPHAN_MIN_AGE_MS = 24 * 3600_000;
+  let orphanProofs = 0, orphanSkipped = 0;
   const { data: stray, error: strayErr } = await sb.rpc("zs_orphan_payment_proofs");
   if (!strayErr && stray?.length) {
-    const names = stray.map((r: { name: string }) => r.name);
-    const { error: rmProofErr } = await sb.storage.from("payment-proofs").remove(names);
-    if (!rmProofErr) orphanProofs = names.length;
+    const old = (stray as { name: string; created_at: string }[])
+      .filter((r) => r.name && Date.now() - new Date(r.created_at).getTime() > ORPHAN_MIN_AGE_MS);
+    orphanSkipped += stray.length - old.length;
+    const names = old.map((r) => r.name);
+    if (names.length) {
+      const { data: linked, error: linkErr } = await sb.from("payments").select("proof_path").in("proof_path", names);
+      if (!linkErr) {
+        const keep = new Set((linked ?? []).map((p: { proof_path: string }) => p.proof_path));
+        const remove = names.filter((n) => !keep.has(n));
+        orphanSkipped += names.length - remove.length;
+        if (remove.length) {
+          const { error: rmProofErr } = await sb.storage.from("payment-proofs").remove(remove);
+          if (!rmProofErr) orphanProofs = remove.length;
+        }
+      }
+    }
   }
-  return Response.json({ found: docs?.length ?? 0, deleted, failed, orphan_proofs: orphanProofs });
+  return Response.json({ found: docs?.length ?? 0, deleted, failed, orphan_proofs: orphanProofs, orphan_skipped: orphanSkipped });
 });

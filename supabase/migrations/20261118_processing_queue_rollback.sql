@@ -2,8 +2,12 @@
 -- ROLLBACK for 20261118_processing_queue.sql
 -- STATUS: DRAFT. Run only if the migration was applied and must be undone.
 --
--- Order: (1) redeploy zs-notify v3 (or keep v4: it falls back to the old claim
--- when the RPC functions are gone), (2) run this file.
+-- Order (see README section "Urutan deploy / rollback"):
+--   1. Website: nothing needed. It keeps an old PDF only when an archive row for that
+--      exact report exists, so once the trigger is gone it deletes old PDFs again.
+--   2. zs-notify: keep v4 (falls back to the v3 claim when the RPC functions are gone)
+--      or redeploy v3. zs-cleanup: its orphan step is skipped when the helper is gone.
+--   3. Run this file.
 --
 -- One transaction. Restores zs_prepare_payment's definition AND its original
 -- grants (from zs_migration_backup), removes every trigger, index, cron job,
@@ -161,6 +165,7 @@ alter table public.zs_notification_log
   drop column if exists state,
   drop column if exists lease_until,
   drop column if exists attempts,
+  drop column if exists claim_token,
   drop column if exists updated_at;
 
 -- 7. New functions
@@ -172,7 +177,7 @@ drop function if exists public.zs_log_order_status();
 drop function if exists public.zs_retry_report_notifications();
 drop function if exists public.zs_orphan_payment_proofs(interval);
 drop function if exists public.zs_claim_notification(text, uuid, integer);
-drop function if exists public.zs_finish_notification(text, uuid, text);
+drop function if exists public.zs_finish_notification(text, uuid, uuid, text);
 
 commit;
 

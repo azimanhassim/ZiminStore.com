@@ -2524,13 +2524,14 @@ async function loadAdminCustomers(){
     const cnt=document.createElement('p');cnt.className='portal-note';cnt.style.margin='0 0 8px';cnt.textContent=list.length+' pelanggan berdaftar.';host.append(cnt,wrap);
   }catch(err){host.textContent='Tidak dapat memuatkan pelanggan: '+(err.message||'Ralat');}
 }
-// true only when the archive trigger exists (created by the migration after its policy test passed).
-let zsArchiveFlag=null;
-async function zsArchiveEnabled(){
-  if(zsArchiveFlag!==null) return zsArchiveFlag;
-  try{ const {data,error}=await sb.rpc('zs_archive_enabled'); zsArchiveFlag=!error&&data===true; }
-  catch(e){ zsArchiveFlag=false; }
-  return zsArchiveFlag;
+// Report ids that the database has archived (rows in zs_report_archive). Any error => empty set,
+// so the caller deletes the old PDFs as before. Never cached: checked after every delete.
+async function zsArchivedReportIds(ids){
+  if(!ids.length) return new Set();
+  try{
+    const {data,error}=await sb.from('zs_report_archive').select('report_id').in('report_id',ids);
+    return error?new Set():new Set((data||[]).map(r=>r.report_id));
+  }catch(e){ return new Set(); }
 }
 async function loadAdminOrders(){
   const host=document.getElementById('zs-admin-list');host.textContent='Memuatkan semua pesanan...';
@@ -2650,10 +2651,14 @@ async function loadAdminOrders(){
         if(old.length){
           const {error:delErr}=await sb.from('reports').delete().in('id',old.map(r=>r.id));
           if(delErr) return ' (Laporan lama "'+doc.original_filename+'" tidak dapat dikeluarkan; pelanggan hanya nampak yang terbaru.)';
-          // Keep the old PDF only when the database has proved (migration 20261118, live policy test)
-          // that customers cannot read a report file without its reports row. Otherwise delete it as before.
-          if(!(await zsArchiveEnabled())){
-            const {error:rmErr}=await sb.storage.from('similarity-reports').remove(old.map(r=>r.report_path));
+          // Keep an old PDF ONLY if the archive row for that exact report now exists. That row is written
+          // by the zs_reports_after_delete trigger in the same transaction as the delete, and the trigger
+          // exists only after the migration's storage-policy test passed. No row (trigger missing, disabled,
+          // rolled back, or migration not applied) => delete the PDF exactly as before.
+          const archived=await zsArchivedReportIds(old.map(r=>r.id));
+          const toDelete=old.filter(r=>!archived.has(r.id)).map(r=>r.report_path);
+          if(toDelete.length){
+            const {error:rmErr}=await sb.storage.from('similarity-reports').remove(toDelete);
             if(rmErr) return ' (Fail lama kekal dalam storan.)';
           }
         }

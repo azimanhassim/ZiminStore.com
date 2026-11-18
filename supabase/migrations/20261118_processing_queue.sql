@@ -12,18 +12,20 @@
 -- B. public.zs_report_archive   metadata of replaced/removed reports.
 --    Archive-in-place (keeping the old PDF) is switched on ONLY if a live test in
 --    this transaction proves a customer cannot read a report file once its
---    public.reports row is gone. Otherwise the archive trigger is not created,
---    zs_archive_enabled() returns false and the website keeps deleting old PDFs
---    exactly as it does today.
+--    public.reports row is gone. Otherwise the archive trigger is not created.
+--    The website keeps an old PDF only when the archive row for that exact report
+--    exists after the delete; with no trigger (not created, disabled or rolled
+--    back) there is no row and the PDF is deleted exactly as today.
 -- C. Automatic order status     payment verified -> payment_verified;
 --                               report inserted  -> processing / report_ready
 --                               (row lock on the order, DISTINCT documents).
 -- D. Status history             every orders.status change, with from/to.
 -- E. Duplicate payment guards   one PENDING proof per order (unique index);
 --                               no new proof once a payment is VERIFIED.
--- F. Leased notification claims zs_notification_log gets state/lease columns;
+-- F. Leased notification claims zs_notification_log gets state/lease/token columns;
 --                               a claim that was never sent can be taken over
---                               after its lease expires.
+--                               after its lease expires; only the holder of the
+--                               current claim_token can finish it.
 -- G. E-mail retry               keyed on the time the order BECAME report_ready.
 -- H. Orphan payment proofs      helper for zs-cleanup (service role only).
 -- =====================================================================
@@ -219,11 +221,18 @@ begin
 end $$;
 
 -- The website asks this before replacing a report: true = keep the old PDF.
+-- Informational for the admin UI. The website does NOT rely on it to keep a PDF:
+-- it keeps an old PDF only when the archive row for that exact report exists
+-- (written by the trigger in the same transaction as the delete).
 create or replace function public.zs_archive_enabled()
 returns boolean language sql stable security definer set search_path = '' as $$
   select public.is_admin() and exists (
-    select 1 from pg_trigger
-     where tgrelid = 'public.reports'::regclass and tgname = 'zs_reports_after_delete' and not tgisinternal)
+    select 1 from pg_trigger t
+     where t.tgrelid = 'public.reports'::regclass
+       and t.tgname = 'zs_reports_after_delete'
+       and not t.tgisinternal
+       and t.tgenabled in ('O','A')                                   -- enabled (origin / always), not D or R
+       and t.tgfoid = 'public.zs_archive_report()'::regprocedure)
 $$;
 
 -- ---------------------------------------------------------------------
@@ -395,39 +404,49 @@ alter table public.zs_notification_log
   add column if not exists state       text not null default 'sent',
   add column if not exists lease_until timestamptz,
   add column if not exists attempts    integer not null default 1,
+  add column if not exists claim_token uuid,
   add column if not exists updated_at  timestamptz not null default now();
 alter table public.zs_notification_log drop constraint if exists zs_notification_log_state_check;
 alter table public.zs_notification_log add constraint zs_notification_log_state_check
   check (state in ('claimed','sent','unknown'));
 
--- Claim: free, or a previous claim whose lease has expired. Returns true if this caller owns it.
+-- Claim: free, or a previous claim whose lease has expired. Each successful claim gets a
+-- NEW random claim_token; the caller receives (token, lease_until). No row = not claimed.
 create or replace function public.zs_claim_notification(p_kind text, p_ref uuid, p_lease_seconds integer default 300)
-returns boolean language plpgsql security definer set search_path = '' as $$
-declare v_ok boolean;
+returns table (claim_token uuid, lease_until timestamptz)
+language plpgsql security definer set search_path = '' as $$
+declare v_lease interval := make_interval(secs => greatest(p_lease_seconds, 30));
 begin
-  insert into public.zs_notification_log as l (kind, ref_id, state, lease_until, attempts, created_at, updated_at)
-  values (p_kind, p_ref, 'claimed', now() + make_interval(secs => greatest(p_lease_seconds, 30)), 1, now(), now())
+  return query
+  insert into public.zs_notification_log as l
+         (kind, ref_id, state, lease_until, attempts, claim_token, created_at, updated_at)
+  values (p_kind, p_ref, 'claimed', now() + v_lease, 1, gen_random_uuid(), now(), now())
   on conflict (kind, ref_id) do update
-     set state = 'claimed', lease_until = now() + make_interval(secs => greatest(p_lease_seconds, 30)),
-         attempts = l.attempts + 1, updated_at = now()
+     set state = 'claimed', lease_until = now() + v_lease, attempts = l.attempts + 1,
+         claim_token = gen_random_uuid(), updated_at = now()
    where l.state = 'claimed' and l.lease_until < now()
-  returning true into v_ok;
-  return coalesce(v_ok, false);
+  returning l.claim_token, l.lease_until;
 end; $$;
 
 -- Finish: 'sent' (accepted), 'unknown' (no response) or 'released' (definite failure:
--- lease ends now so the next retry may claim it). Only the current claim can be finished.
-create or replace function public.zs_finish_notification(p_kind text, p_ref uuid, p_outcome text)
-returns void language plpgsql security definer set search_path = '' as $$
+-- lease ends now so a retry may claim it). Updates ONLY the claim holding p_token, so a
+-- process whose lease expired and was taken over cannot overwrite the new claim.
+-- Returns true if this token still owned the claim.
+create or replace function public.zs_finish_notification(p_kind text, p_ref uuid, p_token uuid, p_outcome text)
+returns boolean language plpgsql security definer set search_path = '' as $$
+declare v_n int;
 begin
   if p_outcome not in ('sent','unknown','released') then
     raise exception 'outcome tidak sah: %', p_outcome;
   end if;
   update public.zs_notification_log
-     set state = case p_outcome when 'released' then 'claimed' else p_outcome end,
+     set state       = case p_outcome when 'released' then 'claimed' else p_outcome end,
          lease_until = case p_outcome when 'released' then now() else null end,
-         updated_at = now()
-   where kind = p_kind and ref_id = p_ref and state = 'claimed';
+         claim_token = null,
+         updated_at  = now()
+   where kind = p_kind and ref_id = p_ref and state = 'claimed' and claim_token = p_token;
+  get diagnostics v_n = row_count;
+  return v_n = 1;
 end; $$;
 
 -- ---------------------------------------------------------------------
@@ -485,11 +504,12 @@ select cron.schedule('zs-notify-retry', '*/15 * * * *', $$ select public.zs_retr
 -- ---------------------------------------------------------------------
 -- H. Orphan payment proofs (uploaded, never linked to a payments row)
 -- ---------------------------------------------------------------------
+-- Never returns a file younger than 24 hours, whatever p_min_age is passed.
 create or replace function public.zs_orphan_payment_proofs(p_min_age interval default interval '24 hours')
-returns table (name text) language sql stable security definer set search_path = '' as $$
-  select so.name from storage.objects so
+returns table (name text, created_at timestamptz) language sql stable security definer set search_path = '' as $$
+  select so.name, so.created_at from storage.objects so
    where so.bucket_id = 'payment-proofs'
-     and so.created_at < now() - p_min_age
+     and so.created_at < now() - greatest(p_min_age, interval '24 hours')
      and not exists (select 1 from public.payments p where p.proof_path = so.name)
    order by so.created_at
    limit 500
@@ -503,11 +523,11 @@ revoke execute on function
   public.zs_after_payment_review(), public.zs_after_report_insert(), public.zs_archive_report(),
   public.zs_log_order_status(), public.zs_retry_report_notifications(),
   public.zs_orphan_payment_proofs(interval),
-  public.zs_claim_notification(text, uuid, integer), public.zs_finish_notification(text, uuid, text)
+  public.zs_claim_notification(text, uuid, integer), public.zs_finish_notification(text, uuid, uuid, text)
   from public, anon, authenticated;
 grant execute on function public.zs_orphan_payment_proofs(interval) to service_role;
 grant execute on function public.zs_claim_notification(text, uuid, integer) to service_role;
-grant execute on function public.zs_finish_notification(text, uuid, text) to service_role;
+grant execute on function public.zs_finish_notification(text, uuid, uuid, text) to service_role;
 revoke execute on function public.zs_archive_enabled() from public, anon;
 grant execute on function public.zs_archive_enabled() to authenticated;
 
