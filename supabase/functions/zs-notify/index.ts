@@ -1,5 +1,5 @@
 // ZiminStore notifications (Supabase Edge Function "zs-notify").
-// DRAFT v4, NOT DEPLOYED. Live version is v3 (same behaviour minus the attempt log).
+// DRAFT v4, NOT DEPLOYED. Live version is v3.
 //
 // Called by database triggers / the retry job (pg_net) with {type, id, attempt?, source?}:
 //   payment_submitted  id = payments.id -> Telegram message to the admin
@@ -8,12 +8,27 @@
 // service role, checks it really is in that state, and claims it once in
 // public.zs_notification_log, so each event is sent at most once.
 //
-// NEW in v4 (report_ready only): every attempt is written to public.zs_order_events
-//   notify_sent   Brevo accepted the e-mail (HTTP status, Brevo messageId)
-//   notify_failed Brevo refused / unreachable (HTTP status, Brevo error code), or no e-mail address
-// The log write never blocks or changes the e-mail itself; if the table does not
-// exist yet (migration not applied) the e-mail still goes out as in v3.
-// No customer e-mail address or name is stored in the log.
+// NEW in v4
+// 1. Leased claims (needs migration 20261118: zs_claim_notification / zs_finish_notification).
+//    A claim holds for 5 minutes. If this function dies after claiming and before
+//    sending, the lease expires and the retry job can claim and send it.
+//    Outcomes: 'sent' (provider accepted), 'released' (definite failure, may be
+//    retried), 'unknown' (no response at all: NOT retried automatically, because the
+//    provider may already have delivered it; an admin checks Brevo first).
+//    Without the migration the function falls back to the v3 claim/release.
+// 2. Attempt log (report_ready only) in public.zs_order_events:
+//      notify_sent   HTTP status + Brevo messageId
+//      notify_failed reason, HTTP status, Brevo error code (or no e-mail address)
+//    BEST EFFORT, NOT GUARANTEED: if the insert fails, the e-mail is unaffected and
+//    the only traces are this function's logs and the response ("logged": false)
+//    that pg_net keeps for a few hours.
+//    No customer e-mail address or name is stored in the log.
+//
+// Duplicate e-mail risk that remains: if Brevo accepts an e-mail but the connection
+// drops before its response arrives, the outcome is 'unknown' and nothing is resent
+// automatically. A duplicate is still possible if Brevo returns an error status for
+// an e-mail it nevertheless delivered (outcome 'released', then retried); Brevo's
+// API used here has no idempotency key, so this cannot be ruled out completely.
 //
 // Secrets (Dashboard -> Edge Functions -> Secrets), never in the website or GitHub:
 //   TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
@@ -32,23 +47,45 @@ const money = (sen: number) => "RM" + (Number(sen || 0) / 100).toFixed(2);
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 
-async function claim(sb: SupabaseClient, kind: string, id: string) {
-  const { data, error } = await sb.from("zs_notification_log")
+const LEASE_SECONDS = 300;
+const PROVIDER_TIMEOUT_MS = 15_000;
+type ClaimMode = "leased" | "legacy";
+type Outcome = "sent" | "released" | "unknown";
+const missingFn = (e: { code?: string; message?: string }) =>
+  e.code === "PGRST202" || /could not find the function|does not exist/i.test(e.message ?? "");
+
+// Returns the claim mode when this call owns the notification, or null if someone
+// else has sent / is sending it.
+async function claim(sb: SupabaseClient, kind: string, id: string): Promise<ClaimMode | null> {
+  const { data, error } = await sb.rpc("zs_claim_notification", { p_kind: kind, p_ref: id, p_lease_seconds: LEASE_SECONDS });
+  if (!error) return data === true ? "leased" : null;
+  if (!missingFn(error)) throw new Error("db_error");
+  // Migration not applied yet: v3 behaviour (insert once, delete on failure).
+  const { data: rows, error: upErr } = await sb.from("zs_notification_log")
     .upsert({ kind, ref_id: id }, { onConflict: "kind,ref_id", ignoreDuplicates: true })
     .select("ref_id");
-  if (error) throw new Error("db_error");
-  return !!data && data.length > 0;
+  if (upErr) throw new Error("db_error");
+  return rows && rows.length > 0 ? "legacy" : null;
 }
-const release = (sb: SupabaseClient, kind: string, id: string) =>
-  sb.from("zs_notification_log").delete().eq("kind", kind).eq("ref_id", id);
 
-// NEW: best-effort attempt log. Never throws.
+async function finish(sb: SupabaseClient, mode: ClaimMode, kind: string, id: string, outcome: Outcome) {
+  if (mode === "leased") {
+    const { error } = await sb.rpc("zs_finish_notification", { p_kind: kind, p_ref: id, p_outcome: outcome });
+    if (error) console.warn("zs_finish_notification failed:", error.code ?? error.message); // lease still expires by itself
+    return;
+  }
+  // legacy (v3): only a definite failure frees the slot; 'unknown' stays claimed to avoid a second e-mail.
+  if (outcome === "released") await sb.from("zs_notification_log").delete().eq("kind", kind).eq("ref_id", id);
+}
+
+// Best-effort attempt log. Never throws; returns whether the row was written.
 async function logAttempt(sb: SupabaseClient, orderId: string, kind: "notify_sent" | "notify_failed",
-                          detail: string, meta: Record<string, unknown>) {
+                          detail: string, meta: Record<string, unknown>): Promise<boolean> {
   try {
     const { error } = await sb.from("zs_order_events").insert({ order_id: orderId, kind, detail: detail.slice(0, 500), meta });
-    if (error) console.warn("zs_order_events insert skipped:", error.code ?? error.message);
-  } catch (e) { console.warn("zs_order_events insert failed:", String(e)); }
+    if (error) { console.warn("zs_order_events insert failed:", error.code ?? error.message); return false; }
+    return true;
+  } catch (e) { console.warn("zs_order_events insert failed:", String(e)); return false; }
 }
 
 async function paymentSubmitted(sb: SupabaseClient, id: string, env: Env, fetchFn: typeof fetch) {
@@ -59,7 +96,8 @@ async function paymentSubmitted(sb: SupabaseClient, id: string, env: Env, fetchF
   if (error) return json(500, { error: "db_error" });
   if (!pay) return json(404, { error: "not_found" });
   if (Date.now() - new Date(pay.created_at).getTime() > 60 * 60 * 1000) return json(200, { skipped: "too_old" });
-  if (!(await claim(sb, "payment_submitted", pay.id))) return json(200, { skipped: "already_sent" });
+  const mode = await claim(sb, "payment_submitted", pay.id);
+  if (!mode) return json(200, { skipped: "already_sent" });
 
   const [{ data: order }, { data: prof }] = await Promise.all([
     sb.from("orders").select("order_number, document_count, total_sen").eq("id", pay.order_id).maybeSingle(),
@@ -79,8 +117,11 @@ async function paymentSubmitted(sb: SupabaseClient, id: string, env: Env, fetchF
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true }),
+    signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
   }).catch(() => null);
-  if (!r || !r.ok) { await release(sb, "payment_submitted", pay.id); return json(502, { error: "telegram_failed", status: r?.status ?? 0 }); }
+  if (!r) { await finish(sb, mode, "payment_submitted", pay.id, "unknown"); return json(502, { error: "telegram_no_response" }); }
+  if (!r.ok) { await finish(sb, mode, "payment_submitted", pay.id, "released"); return json(502, { error: "telegram_failed", status: r.status }); }
+  await finish(sb, mode, "payment_submitted", pay.id, "sent");
   return json(200, { sent: true });
 }
 
@@ -102,7 +143,8 @@ async function reportReady(sb: SupabaseClient, id: string, env: Env, fetchFn: ty
     await logAttempt(sb, order.id, "notify_failed", "Akaun pelanggan tiada alamat e-mel", { ...ctx, reason: "no_email" });
     return json(200, { skipped: "no_email" });
   }
-  if (!(await claim(sb, "report_ready", order.id))) return json(200, { skipped: "already_sent" });
+  const mode = await claim(sb, "report_ready", order.id);
+  if (!mode) return json(200, { skipped: "already_sent_or_in_progress" });
 
   const { data: prof } = await sb.from("profiles").select("full_name").eq("id", order.customer_id).maybeSingle();
   const name = (prof?.full_name || "").trim();
@@ -141,25 +183,34 @@ async function reportReady(sb: SupabaseClient, id: string, env: Env, fetchFn: ty
         subject, htmlContent, textContent,
         tags: ["report_ready"],
       }),
+      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
   } catch (e) { netError = String(e).slice(0, 120); }
 
-  if (!r || !r.ok) {
+  if (!r) {
+    // No response: Brevo may or may not have delivered it. Do not resend automatically.
+    await finish(sb, mode, "report_ready", order.id, "unknown");
+    const logged = await logAttempt(sb, order.id, "notify_failed",
+      "Tiada respons daripada Brevo. Semak log Brevo sebelum menghantar semula secara manual.",
+      { ...ctx, reason: "no_response", outcome: "unknown", error: netError || null, claim: mode });
+    return json(502, { error: "brevo_no_response", logged });
+  }
+  if (!r.ok) {
     let brevoCode = "";
-    try { brevoCode = r ? String((await r.json())?.code ?? "") : ""; } catch { /* body not JSON */ }
-    await release(sb, "report_ready", order.id);
-    await logAttempt(sb, order.id, "notify_failed",
-      `E-mel gagal dihantar (Brevo ${r?.status ?? "tiada respons"}${brevoCode ? ", " + brevoCode : ""})`,
-      { ...ctx, reason: r ? "brevo_failed" : "network", brevo_status: r?.status ?? 0, brevo_code: brevoCode || null,
-        error: netError || null });
-    return json(502, { error: "brevo_failed", status: r?.status ?? 0 });
+    try { brevoCode = String((await r.json())?.code ?? ""); } catch { /* body not JSON */ }
+    await finish(sb, mode, "report_ready", order.id, "released");
+    const logged = await logAttempt(sb, order.id, "notify_failed",
+      `E-mel gagal dihantar (Brevo ${r.status}${brevoCode ? ", " + brevoCode : ""})`,
+      { ...ctx, reason: "brevo_failed", outcome: "released", brevo_status: r.status, brevo_code: brevoCode || null, claim: mode });
+    return json(502, { error: "brevo_failed", status: r.status, logged });
   }
 
+  await finish(sb, mode, "report_ready", order.id, "sent");
   let messageId: string | null = null;
   try { messageId = String((await r.json())?.messageId ?? "") || null; } catch { /* ignore */ }
-  await logAttempt(sb, order.id, "notify_sent", `E-mel laporan siap dihantar (Brevo ${r.status})`,
-    { ...ctx, brevo_status: r.status, message_id: messageId });
-  return json(200, { sent: true });
+  const logged = await logAttempt(sb, order.id, "notify_sent", `E-mel laporan siap dihantar (Brevo ${r.status})`,
+    { ...ctx, outcome: "sent", brevo_status: r.status, message_id: messageId, claim: mode });
+  return json(200, { sent: true, logged });
 }
 
 export async function handle(req: Request, env: Env, fetchFn: typeof fetch = fetch) {

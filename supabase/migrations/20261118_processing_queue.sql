@@ -1,64 +1,85 @@
 -- =====================================================================
 -- ZiminStore: processing queue, automatic status, history, report archive,
--- e-mail retry with attempt logging, duplicate-payment guards.
+-- leased e-mail claims with retry and attempt logging, duplicate-payment guards.
 --
 -- STATUS: DRAFT FOR REVIEW. NOT APPLIED. NOT APPROVED TO RUN.
 -- Rollback: supabase/migrations/20261118_processing_queue_rollback.sql
+-- Deploy order after approval: this migration -> zs-notify v4 -> zs-cleanup -> website.
 --
--- Runs as ONE transaction: if any step fails (including the pre-checks),
--- nothing is changed.
+-- Runs as ONE transaction: if any step or pre-check fails, nothing is changed.
 --
--- Adds (nothing existing is dropped or loosened):
---   A. public.zs_order_events     history + error log (admin read-only).
---   B. public.zs_report_archive   metadata of replaced/removed reports. The old
---                                 PDF stays in the private "similarity-reports"
---                                 bucket; nothing deletes it.
---   C. Automatic order status     payment verified -> payment_verified;
---                                 report inserted  -> processing / report_ready
---                                 (row lock on the order, DISTINCT documents).
---   D. Status history             every orders.status change, with from/to.
---   E. Duplicate payment guards   one PENDING proof per order (unique index);
---                                 no new proof once a payment is VERIFIED.
---   F. E-mail retry               keyed on the time the order BECAME report_ready
---                                 (not updated_at). Every attempt is logged by
---                                 zs-notify as notify_sent / notify_failed; after
---                                 5 retries an 'error' event is written once.
---   G. Orphan payment proofs      helper for zs-cleanup (service role only) to
---                                 delete proof files that never got a payments row.
--- The website keeps working whether or not this file has been applied.
+-- A. public.zs_order_events     history + error log (admin read-only).
+-- B. public.zs_report_archive   metadata of replaced/removed reports.
+--    Archive-in-place (keeping the old PDF) is switched on ONLY if a live test in
+--    this transaction proves a customer cannot read a report file once its
+--    public.reports row is gone. Otherwise the archive trigger is not created,
+--    zs_archive_enabled() returns false and the website keeps deleting old PDFs
+--    exactly as it does today.
+-- C. Automatic order status     payment verified -> payment_verified;
+--                               report inserted  -> processing / report_ready
+--                               (row lock on the order, DISTINCT documents).
+-- D. Status history             every orders.status change, with from/to.
+-- E. Duplicate payment guards   one PENDING proof per order (unique index);
+--                               no new proof once a payment is VERIFIED.
+-- F. Leased notification claims zs_notification_log gets state/lease columns;
+--                               a claim that was never sent can be taken over
+--                               after its lease expires.
+-- G. E-mail retry               keyed on the time the order BECAME report_ready.
+-- H. Orphan payment proofs      helper for zs-cleanup (service role only).
 -- =====================================================================
 
 begin;
 
 -- ---------------------------------------------------------------------
--- 0. Pre-checks (abort the whole transaction if the data is not ready)
+-- 0. Pre-checks and backups
 -- ---------------------------------------------------------------------
 do $$
+declare v_pk text[];
 begin
   if exists (select 1 from public.payments where status = 'pending'
              group by order_id having count(*) > 1) then
     raise exception 'DIHENTIKAN: ada pesanan dengan lebih daripada satu bukti bayaran pending. Selesaikan dahulu.';
   end if;
+
   if to_regclass('public.zs_notification_log') is null then
-    raise exception 'DIHENTIKAN: public.zs_notification_log tidak wujud (zs-notify bergantung padanya).';
+    raise exception 'DIHENTIKAN: public.zs_notification_log tidak wujud.';
   end if;
-  if not exists (select 1 from pg_constraint
-                  where conrelid = 'public.zs_notification_log'::regclass and contype = 'p') then
-    raise exception 'DIHENTIKAN: zs_notification_log tiada primary key (kind, ref_id).';
+  -- The primary key must be EXACTLY (kind, ref_id), in that order.
+  select array_agg(a.attname::text order by k.ord) into v_pk
+    from pg_constraint c
+    cross join lateral unnest(c.conkey) with ordinality as k(attnum, ord)
+    join pg_attribute a on a.attrelid = c.conrelid and a.attnum = k.attnum
+   where c.conrelid = 'public.zs_notification_log'::regclass and c.contype = 'p';
+  if v_pk is distinct from array['kind','ref_id'] then
+    raise exception 'DIHENTIKAN: primary key zs_notification_log ialah %, dijangka (kind, ref_id).', coalesce(v_pk::text, 'tiada');
   end if;
+  if (select format_type(atttypid, atttypmod) from pg_attribute
+       where attrelid = 'public.zs_notification_log'::regclass and attname = 'kind') <> 'text'
+     or (select format_type(atttypid, atttypmod) from pg_attribute
+       where attrelid = 'public.zs_notification_log'::regclass and attname = 'ref_id') <> 'uuid' then
+    raise exception 'DIHENTIKAN: jenis lajur zs_notification_log bukan (kind text, ref_id uuid).';
+  end if;
+
   if not exists (select 1 from pg_extension where extname = 'pg_net')
      or not exists (select 1 from pg_extension where extname = 'pg_cron') then
     raise exception 'DIHENTIKAN: pg_net dan pg_cron mesti dihidupkan.';
   end if;
-  -- Archive-in-place relies on customers reading a report file only while a
-  -- public.reports row points to it. Warn (do not abort) if no such policy is found.
-  if not exists (select 1 from pg_policies
-                  where schemaname = 'storage' and tablename = 'objects'
-                    and coalesce(qual, '') ilike '%similarity-reports%'
-                    and coalesce(qual, '') ilike '%reports%') then
-    raise warning 'SEMAK: tiada polisi storage yang mengikat fail similarity-reports kepada jadual reports. Sahkan pelanggan tidak boleh membaca laporan lama yang diarkib.';
-  end if;
 end $$;
+
+-- Backup of anything the rollback must restore exactly (kept until removed by hand).
+create table if not exists public.zs_migration_backup (
+  key        text primary key,
+  acl        aclitem[],
+  note       text,
+  created_at timestamptz not null default now()
+);
+alter table public.zs_migration_backup enable row level security;   -- no policies: not reachable from the API
+revoke all on public.zs_migration_backup from anon, authenticated;
+insert into public.zs_migration_backup (key, acl, note)
+select '20261118:zs_prepare_payment:acl', p.proacl,
+       'proacl of public.zs_prepare_payment() before migration 20261118 (NULL = default privileges)'
+  from pg_proc p where p.oid = 'public.zs_prepare_payment()'::regprocedure
+on conflict (key) do nothing;     -- re-running never overwrites the original backup
 
 -- ---------------------------------------------------------------------
 -- A. History / error log
@@ -86,7 +107,7 @@ create policy zs_order_events_admin_select on public.zs_order_events
   for select to authenticated using ((select public.is_admin()));
 
 -- Admins may add their own entries from the portal; everything else is written by
--- triggers (table owner) or by zs-notify (service role). No update/delete policies.
+-- triggers (table owner) or zs-notify (service role). No update/delete policies.
 drop policy if exists zs_order_events_admin_insert on public.zs_order_events;
 create policy zs_order_events_admin_insert on public.zs_order_events
   for insert to authenticated
@@ -97,7 +118,7 @@ revoke all on public.zs_order_events from anon, authenticated;
 grant select, insert on public.zs_order_events to authenticated;
 
 -- ---------------------------------------------------------------------
--- B. Report archive (metadata; the PDF itself is never deleted)
+-- B. Report archive
 -- ---------------------------------------------------------------------
 create table if not exists public.zs_report_archive (
   id           uuid primary key default gen_random_uuid(),
@@ -105,10 +126,10 @@ create table if not exists public.zs_report_archive (
   order_id     uuid not null,
   document_id  uuid,
   customer_id  uuid not null,
-  report_path  text not null,          -- still in bucket "similarity-reports"
+  report_path  text not null,          -- kept in bucket "similarity-reports"
   uploaded_at  timestamptz,
   archived_at  timestamptz not null default now(),
-  archived_by  uuid,                   -- admin who replaced/removed it
+  archived_by  uuid,
   replaced_by  uuid                    -- the newer public.reports.id, if any
 );
 create index if not exists zs_report_archive_order_idx on public.zs_report_archive (order_id, archived_at desc);
@@ -120,6 +141,90 @@ create policy zs_report_archive_admin_select on public.zs_report_archive
 
 revoke all on public.zs_report_archive from anon, authenticated;
 grant select on public.zs_report_archive to authenticated;
+
+create or replace function public.zs_archive_report()
+returns trigger language plpgsql security definer set search_path = '' as $$
+declare v_new uuid;
+begin
+  select r.id into v_new from public.reports r
+   where r.order_id = old.order_id and r.document_id is not distinct from old.document_id and r.id <> old.id
+   order by r.uploaded_at desc nulls last limit 1;
+
+  insert into public.zs_report_archive
+    (report_id, order_id, document_id, customer_id, report_path, uploaded_at, archived_by, replaced_by)
+  values (old.id, old.order_id, old.document_id, old.customer_id, old.report_path, old.uploaded_at, auth.uid(), v_new);
+
+  insert into public.zs_order_events (order_id, kind, actor, detail, meta)
+  values (old.order_id, case when v_new is null then 'report_removed' else 'report_replaced' end, auth.uid(),
+          case when v_new is null then 'Laporan dikeluarkan (fail diarkib)' else 'Laporan diganti (fail lama diarkib)' end,
+          jsonb_build_object('old_report_id', old.id, 'document_id', old.document_id,
+                             'old_report_path', old.report_path, 'old_uploaded_at', old.uploaded_at,
+                             'replaced_by', v_new));
+  return null;
+end; $$;
+
+-- B1. LIVE POLICY TEST (inside this transaction, fully rolled back):
+--     take the newest report whose file exists, act as its customer, confirm the
+--     customer CAN read the file while the reports row exists and CANNOT read it
+--     after the row is deleted. Archive-in-place is enabled only if both hold.
+do $$
+declare
+  v_r record; v_before boolean; v_after boolean; v_result text := 'not_run';
+begin
+  select r.id, r.report_path, r.customer_id into v_r
+    from public.reports r
+    join storage.objects so on so.bucket_id = 'similarity-reports' and so.name = r.report_path
+   order by r.uploaded_at desc nulls last limit 1;
+
+  if v_r.id is null then
+    v_result := 'no_sample';
+  else
+    begin
+      perform set_config('request.jwt.claims',
+        json_build_object('sub', v_r.customer_id, 'role', 'authenticated')::text, true);
+      set local role authenticated;
+      v_before := exists (select 1 from storage.objects
+                           where bucket_id = 'similarity-reports' and name = v_r.report_path);
+      reset role;
+
+      delete from public.reports where id = v_r.id;        -- simulated replacement
+
+      set local role authenticated;
+      v_after := exists (select 1 from storage.objects
+                          where bucket_id = 'similarity-reports' and name = v_r.report_path);
+      reset role;
+      perform set_config('request.jwt.claims', '', true);
+
+      -- Always roll this block back (restores the deleted row and the settings).
+      raise exception using errcode = 'ZS001',
+        message = case when v_before and not v_after then 'pass'
+                       when not v_before then 'customer_cannot_read_current'
+                       else 'customer_can_read_old' end;
+    exception
+      when sqlstate 'ZS001' then v_result := sqlerrm;
+      when others then v_result := 'test_error: ' || sqlerrm;
+    end;
+  end if;
+
+  perform set_config('zs.archive_policy_test', v_result, true);
+  if v_result = 'pass' then
+    execute 'drop trigger if exists zs_reports_after_delete on public.reports';
+    execute 'create trigger zs_reports_after_delete after delete on public.reports
+               for each row execute function public.zs_archive_report()';
+    raise notice 'ARKIB DIHIDUPKAN: pelanggan tidak boleh membaca PDF selepas baris reports dipadam.';
+  else
+    execute 'drop trigger if exists zs_reports_after_delete on public.reports';
+    raise warning 'ARKIB DIHENTIKAN (%): laman akan terus memadam PDF lama semasa penggantian. Betulkan polisi storage similarity-reports, kemudian jalankan semula migrasi ini.', v_result;
+  end if;
+end $$;
+
+-- The website asks this before replacing a report: true = keep the old PDF.
+create or replace function public.zs_archive_enabled()
+returns boolean language sql stable security definer set search_path = '' as $$
+  select public.is_admin() and exists (
+    select 1 from pg_trigger
+     where tgrelid = 'public.reports'::regclass and tgname = 'zs_reports_after_delete' and not tgisinternal)
+$$;
 
 -- ---------------------------------------------------------------------
 -- C1. Payment reviewed -> order status + history
@@ -177,34 +282,7 @@ create trigger zs_reports_after_insert after insert on public.reports
   for each row execute function public.zs_after_report_insert();
 
 -- ---------------------------------------------------------------------
--- C3. Report deleted (replacement) -> archive metadata + history
--- ---------------------------------------------------------------------
-create or replace function public.zs_archive_report()
-returns trigger language plpgsql security definer set search_path = '' as $$
-declare v_new uuid;
-begin
-  select r.id into v_new from public.reports r
-   where r.order_id = old.order_id and r.document_id is not distinct from old.document_id and r.id <> old.id
-   order by r.uploaded_at desc nulls last limit 1;
-
-  insert into public.zs_report_archive
-    (report_id, order_id, document_id, customer_id, report_path, uploaded_at, archived_by, replaced_by)
-  values (old.id, old.order_id, old.document_id, old.customer_id, old.report_path, old.uploaded_at, auth.uid(), v_new);
-
-  insert into public.zs_order_events (order_id, kind, actor, detail, meta)
-  values (old.order_id, case when v_new is null then 'report_removed' else 'report_replaced' end, auth.uid(),
-          case when v_new is null then 'Laporan dikeluarkan (fail diarkib)' else 'Laporan diganti (fail lama diarkib)' end,
-          jsonb_build_object('old_report_id', old.id, 'document_id', old.document_id,
-                             'old_report_path', old.report_path, 'old_uploaded_at', old.uploaded_at,
-                             'replaced_by', v_new));
-  return null;
-end; $$;
-drop trigger if exists zs_reports_after_delete on public.reports;
-create trigger zs_reports_after_delete after delete on public.reports
-  for each row execute function public.zs_archive_report();
-
--- ---------------------------------------------------------------------
--- D. Status history (from/to kept in meta; F uses the time of -> report_ready)
+-- D. Status history
 -- ---------------------------------------------------------------------
 create or replace function public.zs_log_order_status()
 returns trigger language plpgsql security definer set search_path = '' as $$
@@ -227,7 +305,7 @@ create unique index if not exists zs_payments_one_pending
   on public.payments (order_id) where status = 'pending';
 
 -- E2. zs_prepare_payment: identical to the live version (read 18 Nov 2026) plus ONE
---     new check: reject a new proof when the order already has a VERIFIED payment.
+--     new check. CREATE OR REPLACE keeps the function's existing grants.
 create or replace function public.zs_prepare_payment()
 returns trigger language plpgsql security definer set search_path = '' as $$
 declare
@@ -307,14 +385,57 @@ end;
 $$;
 
 -- ---------------------------------------------------------------------
--- F. E-mail retry, keyed on when the order BECAME report_ready
+-- F. Leased notification claims
+-- ---------------------------------------------------------------------
+-- state:  claimed = a sender holds it until lease_until;
+--         sent    = provider accepted it (existing rows default to this);
+--         unknown = outcome uncertain (no response from the provider); never
+--                   retried automatically, an admin decides.
+alter table public.zs_notification_log
+  add column if not exists state       text not null default 'sent',
+  add column if not exists lease_until timestamptz,
+  add column if not exists attempts    integer not null default 1,
+  add column if not exists updated_at  timestamptz not null default now();
+alter table public.zs_notification_log drop constraint if exists zs_notification_log_state_check;
+alter table public.zs_notification_log add constraint zs_notification_log_state_check
+  check (state in ('claimed','sent','unknown'));
+
+-- Claim: free, or a previous claim whose lease has expired. Returns true if this caller owns it.
+create or replace function public.zs_claim_notification(p_kind text, p_ref uuid, p_lease_seconds integer default 300)
+returns boolean language plpgsql security definer set search_path = '' as $$
+declare v_ok boolean;
+begin
+  insert into public.zs_notification_log as l (kind, ref_id, state, lease_until, attempts, created_at, updated_at)
+  values (p_kind, p_ref, 'claimed', now() + make_interval(secs => greatest(p_lease_seconds, 30)), 1, now(), now())
+  on conflict (kind, ref_id) do update
+     set state = 'claimed', lease_until = now() + make_interval(secs => greatest(p_lease_seconds, 30)),
+         attempts = l.attempts + 1, updated_at = now()
+   where l.state = 'claimed' and l.lease_until < now()
+  returning true into v_ok;
+  return coalesce(v_ok, false);
+end; $$;
+
+-- Finish: 'sent' (accepted), 'unknown' (no response) or 'released' (definite failure:
+-- lease ends now so the next retry may claim it). Only the current claim can be finished.
+create or replace function public.zs_finish_notification(p_kind text, p_ref uuid, p_outcome text)
+returns void language plpgsql security definer set search_path = '' as $$
+begin
+  if p_outcome not in ('sent','unknown','released') then
+    raise exception 'outcome tidak sah: %', p_outcome;
+  end if;
+  update public.zs_notification_log
+     set state = case p_outcome when 'released' then 'claimed' else p_outcome end,
+         lease_until = case p_outcome when 'released' then now() else null end,
+         updated_at = now()
+   where kind = p_kind and ref_id = p_ref and state = 'claimed';
+end; $$;
+
+-- ---------------------------------------------------------------------
+-- G. E-mail retry, keyed on when the order BECAME report_ready
 -- ---------------------------------------------------------------------
 -- Attempt 1 = the existing zs_orders_notify_report_ready trigger.
--- Attempts 2..6 = up to 5 retries, at least 15 minutes apart, within 3 days.
--- zs-notify writes notify_sent / notify_failed for every attempt (draft in
--- supabase/functions/zs-notify/index.ts) and sends at most once per order
--- (primary key on zs_notification_log). Replacing an old report does not
--- change status, so it never starts a new e-mail.
+-- Retries (max 5, every 15 min, within 3 days) only while the log has no row
+-- or holds an EXPIRED claim. 'sent' and 'unknown' are never retried.
 create or replace function public.zs_retry_report_notifications()
 returns void language plpgsql security definer set search_path = '' as $$
 declare r record; v_retries int;
@@ -326,12 +447,12 @@ begin
         select max(e.created_at) as ready_at
           from public.zs_order_events e
          where e.order_id = o.id and e.kind = 'status_changed' and e.meta->>'to' = 'report_ready') t
+      left join public.zs_notification_log l on l.kind = 'report_ready' and l.ref_id = o.id
      where o.status = 'report_ready'
        and t.ready_at is not null
        and t.ready_at < now() - interval '10 minutes'
        and t.ready_at > now() - interval '3 days'
-       and not exists (select 1 from public.zs_notification_log l
-                        where l.kind = 'report_ready' and l.ref_id = o.id)
+       and (l.ref_id is null or (l.state = 'claimed' and l.lease_until < now()))
   loop
     select count(*) into v_retries from public.zs_order_events e
      where e.order_id = r.id and e.kind = 'notify_retry' and e.created_at >= r.ready_at;
@@ -362,11 +483,8 @@ end; $$;
 select cron.schedule('zs-notify-retry', '*/15 * * * *', $$ select public.zs_retry_report_notifications() $$);
 
 -- ---------------------------------------------------------------------
--- G. Orphan payment proofs (files uploaded but never linked to a payments row)
+-- H. Orphan payment proofs (uploaded, never linked to a payments row)
 -- ---------------------------------------------------------------------
--- Customers cannot delete storage files, so a failed insert can leave a proof
--- behind. zs-cleanup (service role) lists them with this function and removes
--- them through the Storage API after 24 hours.
 create or replace function public.zs_orphan_payment_proofs(p_min_age interval default interval '24 hours')
 returns table (name text) language sql stable security definer set search_path = '' as $$
   select so.name from storage.objects so
@@ -378,14 +496,19 @@ returns table (name text) language sql stable security definer set search_path =
 $$;
 
 -- ---------------------------------------------------------------------
--- Function privileges: trigger/cron functions are never called by browsers.
+-- Function privileges (zs_prepare_payment's grants are NOT changed here;
+-- its original ACL is in zs_migration_backup for the rollback).
 -- ---------------------------------------------------------------------
 revoke execute on function
   public.zs_after_payment_review(), public.zs_after_report_insert(), public.zs_archive_report(),
   public.zs_log_order_status(), public.zs_retry_report_notifications(),
-  public.zs_orphan_payment_proofs(interval)
+  public.zs_orphan_payment_proofs(interval),
+  public.zs_claim_notification(text, uuid, integer), public.zs_finish_notification(text, uuid, text)
   from public, anon, authenticated;
-revoke execute on function public.zs_prepare_payment() from public, anon, authenticated;
 grant execute on function public.zs_orphan_payment_proofs(interval) to service_role;
+grant execute on function public.zs_claim_notification(text, uuid, integer) to service_role;
+grant execute on function public.zs_finish_notification(text, uuid, text) to service_role;
+revoke execute on function public.zs_archive_enabled() from public, anon;
+grant execute on function public.zs_archive_enabled() to authenticated;
 
 commit;

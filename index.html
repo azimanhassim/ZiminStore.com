@@ -2524,6 +2524,14 @@ async function loadAdminCustomers(){
     const cnt=document.createElement('p');cnt.className='portal-note';cnt.style.margin='0 0 8px';cnt.textContent=list.length+' pelanggan berdaftar.';host.append(cnt,wrap);
   }catch(err){host.textContent='Tidak dapat memuatkan pelanggan: '+(err.message||'Ralat');}
 }
+// true only when the archive trigger exists (created by the migration after its policy test passed).
+let zsArchiveFlag=null;
+async function zsArchiveEnabled(){
+  if(zsArchiveFlag!==null) return zsArchiveFlag;
+  try{ const {data,error}=await sb.rpc('zs_archive_enabled'); zsArchiveFlag=!error&&data===true; }
+  catch(e){ zsArchiveFlag=false; }
+  return zsArchiveFlag;
+}
 async function loadAdminOrders(){
   const host=document.getElementById('zs-admin-list');host.textContent='Memuatkan semua pesanan...';
   try{
@@ -2640,10 +2648,14 @@ async function loadAdminOrders(){
         const {error:reportError}=await sb.from('reports').insert({order_id:o.id,document_id:doc.id,customer_id:o.customer_id,report_path:path});
         if(reportError){await sb.storage.from('similarity-reports').remove([path]);throw new Error(file.name+': '+reportError.message);}
         if(old.length){
-          // The old PDF is NOT deleted: it stays in the private bucket. Removing the row hides it from the
-          // customer; the zs_reports_after_delete trigger (migration 20261118) records it in zs_report_archive.
           const {error:delErr}=await sb.from('reports').delete().in('id',old.map(r=>r.id));
           if(delErr) return ' (Laporan lama "'+doc.original_filename+'" tidak dapat dikeluarkan; pelanggan hanya nampak yang terbaru.)';
+          // Keep the old PDF only when the database has proved (migration 20261118, live policy test)
+          // that customers cannot read a report file without its reports row. Otherwise delete it as before.
+          if(!(await zsArchiveEnabled())){
+            const {error:rmErr}=await sb.storage.from('similarity-reports').remove(old.map(r=>r.report_path));
+            if(rmErr) return ' (Fail lama kekal dalam storan.)';
+          }
         }
         return '';
       }
